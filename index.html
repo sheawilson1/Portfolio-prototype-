@@ -20,12 +20,41 @@
 
     html { scroll-behavior: smooth; }
 
+
+    /* ══════════════════════════════════════
+       THEME VARIABLES
+    ══════════════════════════════════════ */
+
+    :root {
+      --bg: #fff6e8;
+      --bg-rgb: 255, 246, 232;
+      --text: #2c3543;
+      --text-rgb: 44, 53, 67;
+      --card-bg: #ffffff;
+      --surface: rgba(44, 53, 67, 0.03);
+      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.13);
+    }
+
+    body.dark {
+      --bg: #1a1e26;
+      --bg-rgb: 26, 30, 38;
+      --text: #e0dcd6;
+      --text-rgb: 224, 220, 214;
+      --card-bg: #252b35;
+      --surface: rgba(224, 220, 214, 0.04);
+      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.42);
+    }
+
+
     body {
-      background-color: #fff6e8;
-      color: #2c3543;
+      background-color: var(--bg);
+      color: var(--text);
       font-family: 'DM Sans', sans-serif;
       cursor: none;
       overflow-x: hidden;
+      transition:
+        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
     }
 
     @media (hover: none) {
@@ -42,13 +71,13 @@
       position: fixed;
       width: 6px;
       height: 6px;
-      background: #2c3543;
+      background: var(--text);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9999;
       top: 0; left: 0;
       transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease;
+      transition: opacity 0.3s ease, background 0.55s ease;
       will-change: left, top;
     }
 
@@ -56,7 +85,7 @@
       position: fixed;
       width: 30px;
       height: 30px;
-      border: 1.5px solid rgba(44, 53, 67, 0.32);
+      border: 1.5px solid rgba(var(--text-rgb), 0.32);
       border-radius: 50%;
       pointer-events: none;
       z-index: 9998;
@@ -73,7 +102,7 @@
     body.cursor-hover #cursor-ring {
       width: 52px;
       height: 52px;
-      border-color: rgba(44, 53, 67, 0.16);
+      border-color: rgba(var(--text-rgb), 0.16);
     }
 
 
@@ -94,7 +123,7 @@
     }
 
     nav#main-nav.scrolled {
-      background: rgba(255, 246, 232, 0.82);
+      background: rgba(var(--bg-rgb), 0.82);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
     }
@@ -104,9 +133,16 @@
       font-style: italic;
       font-weight: 400;
       font-size: 22px;
-      color: #2c3543;
+      color: var(--text);
       text-decoration: none;
       letter-spacing: -0.5px;
+      transition: color 0.55s ease;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
     }
 
     .nav-links {
@@ -119,7 +155,7 @@
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 15px;
-      color: rgba(44, 53, 67, 0.6);
+      color: rgba(var(--text-rgb), 0.6);
       text-decoration: none;
       position: relative;
       transition: color 0.25s ease;
@@ -132,12 +168,77 @@
       left: 0;
       width: 0;
       height: 1px;
-      background: #2c3543;
-      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      background: var(--text);
+      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
     }
 
-    .nav-links a:hover        { color: #2c3543; }
+    .nav-links a:hover        { color: var(--text); }
     .nav-links a:hover::after { width: 100%; }
+
+
+    /* ══════════════════════════════════════
+       THEME TOGGLE
+       Animated sun/moon icon button.
+    ══════════════════════════════════════ */
+
+    .theme-toggle {
+      appearance: none;
+      background: none;
+      border: 1.5px solid rgba(var(--text-rgb), 0.18);
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      cursor: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition:
+        border-color 0.3s ease,
+        transform 0.5s cubic-bezier(0.23, 1, 0.32, 1),
+        color 0.55s ease;
+    }
+
+    .theme-toggle:hover {
+      border-color: rgba(var(--text-rgb), 0.42);
+      transform: scale(1.08);
+    }
+
+    .theme-toggle:active {
+      transform: scale(0.95);
+    }
+
+    /* Sun icon (visible in light mode) */
+    .toggle-sun,
+    .toggle-moon {
+      position: absolute;
+      width: 18px;
+      height: 18px;
+      transition:
+        opacity 0.4s ease,
+        transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .toggle-sun {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
+
+    .toggle-moon {
+      opacity: 0;
+      transform: rotate(-90deg) scale(0.5);
+    }
+
+    body.dark .toggle-sun {
+      opacity: 0;
+      transform: rotate(90deg) scale(0.5);
+    }
+
+    body.dark .toggle-moon {
+      opacity: 1;
+      transform: rotate(0deg) scale(1);
+    }
 
 
     /* ══════════════════════════════════════
@@ -187,7 +288,7 @@
       font-size: 13px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.45);
+      color: rgba(var(--text-rgb), 0.45);
       margin-bottom: 20px;
       opacity: 0;
       animation: fadeUp 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
@@ -199,9 +300,10 @@
       font-size: 130px;
       letter-spacing: -7px;
       line-height: 0.92;
-      color: #2c3543;
+      color: var(--text);
       opacity: 0;
       animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+      transition: color 0.55s ease;
     }
 
     .hero-tagline {
@@ -209,7 +311,7 @@
       font-family: 'DM Sans', sans-serif;
       font-weight: 200;
       font-size: 22px;
-      color: rgba(44, 53, 67, 0.58);
+      color: rgba(var(--text-rgb), 0.58);
       max-width: 420px;
       line-height: 1.5;
       opacity: 0;
@@ -234,14 +336,14 @@
       font-size: 11px;
       letter-spacing: 2px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.35);
+      color: rgba(var(--text-rgb), 0.35);
       writing-mode: vertical-rl;
     }
 
     .scroll-line {
       width: 1px;
       height: 52px;
-      background: rgba(44, 53, 67, 0.12);
+      background: rgba(var(--text-rgb), 0.12);
       position: relative;
       overflow: hidden;
     }
@@ -253,7 +355,7 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(44, 53, 67, 0.5);
+      background: rgba(var(--text-rgb), 0.5);
       animation: scrollPulse 2s ease-in-out 1.5s infinite;
     }
 
@@ -286,8 +388,9 @@
       font-size: 144px;
       letter-spacing: -8.64px;
       line-height: 1;
-      color: #000;
+      color: var(--text);
       white-space: nowrap;
+      transition: color 0.55s ease;
     }
 
     .section-subtitle {
@@ -296,7 +399,8 @@
       font-size: 32px;
       max-width: 728px;
       line-height: 1.4;
-      color: #2c3543;
+      color: var(--text);
+      transition: color 0.55s ease;
     }
 
     .cards-row {
@@ -307,7 +411,7 @@
     }
 
     .card {
-      background: #fff;
+      background: var(--card-bg);
       width: 340px;
       height: 408px;
       border-radius: 20px;
@@ -317,9 +421,15 @@
       gap: 48px;
       overflow: hidden;
       box-shadow: none;
-      transition: box-shadow 280ms ease;
+      transition:
+        box-shadow 280ms ease,
+        background 0.55s ease;
       will-change: transform;
       cursor: none;
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-hover);
     }
 
     /* Cipher card is clickable */
@@ -336,7 +446,7 @@
       font-size: 11px;
       letter-spacing: 1.5px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.3);
+      color: rgba(var(--text-rgb), 0.3);
       opacity: 0;
       transition: opacity 0.3s ease;
     }
@@ -358,8 +468,9 @@
       font-style: italic;
       font-size: 32px;
       letter-spacing: -1.28px;
-      color: #2c3543;
+      color: var(--text);
       line-height: 1;
+      transition: color 0.55s ease;
     }
 
     .card-desc {
@@ -367,7 +478,7 @@
       font-weight: 400;
       font-size: 20px;
       letter-spacing: -0.8px;
-      color: rgba(44, 53, 67, 0.80);
+      color: rgba(var(--text-rgb), 0.80);
       line-height: 1.3;
     }
 
@@ -424,7 +535,7 @@
     .case-study-overlay {
       position: fixed;
       inset: 0;
-      background: #fff6e8;
+      background: var(--bg);
       z-index: 2000;
       overflow-y: auto;
       overflow-x: hidden;
@@ -433,7 +544,8 @@
       transform: translateY(100%);
       transition:
         transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
-        opacity   0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        opacity   0.5s cubic-bezier(0.23, 1, 0.32, 1),
+        background 0.55s ease;
     }
 
     .case-study-overlay.open {
@@ -457,7 +569,7 @@
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 14px;
-      color: rgba(44, 53, 67, 0.55);
+      color: rgba(var(--text-rgb), 0.55);
       cursor: none;
       z-index: 2001;
       opacity: 0;
@@ -470,7 +582,7 @@
       transform: translateY(0);
     }
 
-    .cs-back:hover { color: #2c3543; }
+    .cs-back:hover { color: var(--text); }
 
     .cs-back svg {
       transition: transform 0.25s ease;
@@ -501,7 +613,7 @@
       font-size: 12px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.38);
+      color: rgba(var(--text-rgb), 0.38);
       margin-bottom: 24px;
     }
 
@@ -512,15 +624,16 @@
       font-size: 100px;
       letter-spacing: -4.5px;
       line-height: 1;
-      color: #2c3543;
+      color: var(--text);
       margin-bottom: 28px;
+      transition: color 0.55s ease;
     }
 
     .cs-subtitle {
       font-family: 'DM Sans', sans-serif;
       font-weight: 200;
       font-size: 24px;
-      color: rgba(44, 53, 67, 0.55);
+      color: rgba(var(--text-rgb), 0.55);
       max-width: 480px;
       margin: 0 auto;
       line-height: 1.5;
@@ -573,7 +686,7 @@
       font-weight: 300;
       font-size: 18px;
       line-height: 1.8;
-      color: rgba(44, 53, 67, 0.6);
+      color: rgba(var(--text-rgb), 0.6);
     }
 
 
@@ -600,7 +713,7 @@
       font-size: 12px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.38);
+      color: rgba(var(--text-rgb), 0.38);
       margin-bottom: 28px;
     }
 
@@ -610,8 +723,9 @@
       font-size: 60px;
       letter-spacing: -3px;
       line-height: 1.04;
-      color: #2c3543;
+      color: var(--text);
       margin-bottom: 36px;
+      transition: color 0.55s ease;
     }
 
     .about-heading em {
@@ -623,7 +737,7 @@
       font-weight: 300;
       font-size: 18px;
       line-height: 1.75;
-      color: rgba(44, 53, 67, 0.68);
+      color: rgba(var(--text-rgb), 0.68);
     }
 
     .about-body p + p {
@@ -636,7 +750,8 @@
       border-radius: 20px;
       position: relative;
       overflow: hidden;
-      background: rgba(44, 53, 67, 0.03);
+      background: var(--surface);
+      transition: background 0.55s ease;
     }
 
     .about-visual iframe {
@@ -667,7 +782,7 @@
       font-size: 12px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: rgba(44, 53, 67, 0.38);
+      color: rgba(var(--text-rgb), 0.38);
     }
 
     .contact-heading {
@@ -676,14 +791,15 @@
       font-size: 100px;
       letter-spacing: -5.5px;
       line-height: 1;
-      color: #2c3543;
+      color: var(--text);
+      transition: color 0.55s ease;
     }
 
     .contact-sub {
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 19px;
-      color: rgba(44, 53, 67, 0.5);
+      color: rgba(var(--text-rgb), 0.5);
       max-width: 380px;
       line-height: 1.6;
     }
@@ -693,12 +809,12 @@
       align-items: center;
       gap: 10px;
       padding: 18px 44px;
-      border: 1.5px solid rgba(44, 53, 67, 0.28);
+      border: 1.5px solid rgba(var(--text-rgb), 0.28);
       border-radius: 100px;
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 16px;
-      color: #2c3543;
+      color: var(--text);
       text-decoration: none;
       letter-spacing: 0.2px;
       margin-top: 8px;
@@ -710,9 +826,9 @@
     }
 
     .magnetic-btn:hover {
-      border-color: #2c3543;
-      background: #2c3543;
-      color: #fff6e8;
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
     }
 
 
@@ -725,14 +841,14 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      border-top: 1px solid rgba(44, 53, 67, 0.07);
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
     }
 
     .footer-copy {
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 13px;
-      color: rgba(44, 53, 67, 0.3);
+      color: rgba(var(--text-rgb), 0.3);
     }
 
   </style>
@@ -747,11 +863,31 @@
   <!-- ══════════════ NAV ══════════════ -->
   <nav id="main-nav">
     <a href="#hero" class="nav-logo">SW</a>
-    <ul class="nav-links">
-      <li><a href="#work">Work</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="#work">Work</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <!-- Sun icon -->
+        <svg class="toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <!-- Moon icon -->
+        <svg class="toggle-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
   </nav>
 
 
@@ -944,7 +1080,7 @@
       requestAnimationFrame(animateRing);
     })();
 
-    /* Event delegation for cursor hover — works with all elements including case study */
+    /* Event delegation for cursor hover -- works with all elements including case study */
     document.addEventListener('mouseover', e => {
       if (e.target.closest('a, button, [data-card], .magnetic-btn')) {
         document.body.classList.add('cursor-hover');
@@ -967,7 +1103,7 @@
 
 
     /* ─────────────────────────────────────────
-       INTERACTION 2: NAV — FROSTED GLASS
+       INTERACTION 2: NAV -- FROSTED GLASS
     ───────────────────────────────────────── */
 
     const mainNav = document.getElementById('main-nav');
@@ -1000,7 +1136,6 @@
     const PERSPECTIVE  = 1200;
     const MAX_TILT     = 7;
     const TILT_LERP    = 0.09;
-    const HOVER_SHADOW = '0 24px 64px rgba(0, 0, 0, 0.13)';
 
     const cards = Array.from(document.querySelectorAll('[data-card]'));
     let tRX = 0, tRY = 0;
@@ -1014,11 +1149,6 @@
     });
 
     document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
-
-    cards.forEach(card => {
-      card.addEventListener('mouseenter', () => { card.style.boxShadow = HOVER_SHADOW; });
-      card.addEventListener('mouseleave', () => { card.style.boxShadow = 'none'; });
-    });
 
     (function tiltTick() {
       cRX += (tRX - cRX) * TILT_LERP;
@@ -1080,6 +1210,18 @@
       if (e.key === 'Escape' && caseStudy.classList.contains('open')) {
         closeCaseStudy();
       }
+    });
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 7: DARK MODE TOGGLE
+       Animated sun/moon button in the nav.
+    ───────────────────────────────────────── */
+
+    const themeToggle = document.getElementById('theme-toggle');
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
     });
 
   </script>
