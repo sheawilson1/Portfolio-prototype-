@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Shea Wilson, Product Designer</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Spline 3D viewer web component -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background-color: #fff6e8;
+      color: #2c3543;
+      font-family: 'DM Sans', sans-serif;
+      cursor: none;
+      overflow-x: hidden;
+    }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+      #cursor-dot, #cursor-ring { display: none; }
+    }
+
+
+    /* ══════════════════════════════════════
+       CUSTOM CURSOR
+    ══════════════════════════════════════ */
+
+    #cursor-dot {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: #2c3543;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease;
+      will-change: left, top;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 30px;
+      height: 30px;
+      border: 1.5px solid rgba(44, 53, 67, 0.32);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition:
+        width  0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        border-color 0.3s ease,
+        opacity 0.3s ease;
+      will-change: left, top, width, height;
+    }
+
+    body.cursor-hover #cursor-ring {
+      width: 52px;
+      height: 52px;
+      border-color: rgba(44, 53, 67, 0.16);
+    }
+
+
+    /* ══════════════════════════════════════
+       NAV
+    ══════════════════════════════════════ */
+
+    nav#main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      padding: 0 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease;
+    }
+
+    nav#main-nav.scrolled {
+      background: rgba(255, 246, 232, 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .nav-logo {
+      font-family: 'Spectral', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: #2c3543;
+      text-decoration: none;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 44px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      color: rgba(44, 53, 67, 0.6);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: #2c3543;
+      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .nav-links a:hover        { color: #2c3543; }
+    .nav-links a:hover::after { width: 100%; }
+
+
+    /* ══════════════════════════════════════
+       SCROLL REVEAL
+    ══════════════════════════════════════ */
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition:
+        opacity   0.9s cubic-bezier(0.23, 1, 0.32, 1),
+        transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-1 { transition-delay: 0.10s; }
+    .delay-2 { transition-delay: 0.20s; }
+    .delay-3 { transition-delay: 0.30s; }
+    .delay-4 { transition-delay: 0.40s; }
+
+
+    /* ══════════════════════════════════════
+       HERO
+    ══════════════════════════════════════ */
+
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      padding: 72px 80px 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(22px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .hero-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.45);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
+    }
+
+    .hero-name {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-size: 130px;
+      letter-spacing: -7px;
+      line-height: 0.92;
+      color: #2c3543;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
+    }
+
+    .hero-tagline {
+      margin-top: 44px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      font-size: 22px;
+      color: rgba(44, 53, 67, 0.58);
+      max-width: 420px;
+      line-height: 1.5;
+      opacity: 0;
+      animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 52px;
+      right: 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeUp 0.8s ease 1.1s forwards;
+    }
+
+    .scroll-hint-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.35);
+      writing-mode: vertical-rl;
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 52px;
+      background: rgba(44, 53, 67, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(44, 53, 67, 0.5);
+      animation: scrollPulse 2s ease-in-out 1.5s infinite;
+    }
+
+    @keyframes scrollPulse {
+      0%   { top: -100%; }
+      100% { top:  100%; }
+    }
+
+
+    /* ══════════════════════════════════════
+       WORK SECTION
+    ══════════════════════════════════════ */
+
+    #work {
+      padding: 140px 80px;
+    }
+
+    .section-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 36px;
+      text-align: center;
+      margin-bottom: 80px;
+    }
+
+    .section-title {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-size: 144px;
+      letter-spacing: -8.64px;
+      line-height: 1;
+      color: #000;
+      white-space: nowrap;
+    }
+
+    .section-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      font-size: 32px;
+      max-width: 728px;
+      line-height: 1.4;
+      color: #2c3543;
+    }
+
+    .cards-row {
+      display: flex;
+      gap: 36px;
+      align-items: flex-start;
+      justify-content: center;
+    }
+
+    .card {
+      background: #fff;
+      width: 340px;
+      height: 408px;
+      border-radius: 20px;
+      padding: 24px 24px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 48px;
+      overflow: hidden;
+      box-shadow: none;
+      transition: box-shadow 280ms ease;
+      will-change: transform;
+      cursor: none;
+    }
+
+    /* Cipher card is clickable */
+    .card[data-card="cipher"] {
+      position: relative;
+    }
+
+    .card-view-label {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.3);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .card[data-card="cipher"]:hover .card-view-label {
+      opacity: 1;
+    }
+
+    .card-titles {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      flex-shrink: 0;
+    }
+
+    .card-name {
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 32px;
+      letter-spacing: -1.28px;
+      color: #2c3543;
+      line-height: 1;
+    }
+
+    .card-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      letter-spacing: -0.8px;
+      color: rgba(44, 53, 67, 0.80);
+      line-height: 1.3;
+    }
+
+    .card-image {
+      flex: 1;
+      border-radius: 10px 10px 0 0;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+      border-radius: inherit;
+    }
+
+    .card-image--cipher {
+      box-shadow: -4px 4px 8px 0px rgba(0, 0, 0, 0.10);
+    }
+
+    .card-image--captr {
+      border-radius: 15px 15px 0 0;
+    }
+
+    .card-image--captr img {
+      position: absolute;
+      width: 157%;
+      height: 137.53%;
+      left: -28.35%;
+      top: -18.95%;
+      object-fit: cover;
+      border-radius: 15px 15px 0 0;
+    }
+
+    .card-image--amp {
+      border-radius: 15px 15px 0 0;
+      box-shadow: -4px 4px 4px 0px rgba(0, 0, 0, 0.25);
+    }
+
+    .card-image--amp img {
+      border-radius: 15px 15px 0 0;
+    }
+
+
+    /* ══════════════════════════════════════
+       CIPHER CASE STUDY OVERLAY
+       Slides up from bottom on card click.
+       Contains Spline 3D iPhone mockup.
+    ══════════════════════════════════════ */
+
+    .case-study-overlay {
+      position: fixed;
+      inset: 0;
+      background: #fff6e8;
+      z-index: 2000;
+      overflow-y: auto;
+      overflow-x: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(100%);
+      transition:
+        transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
+        opacity   0.5s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .case-study-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    /* Back button */
+    .cs-back {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 80px;
+      background: transparent;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: rgba(44, 53, 67, 0.55);
+      cursor: none;
+      z-index: 2001;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity 0.4s ease 0.35s, transform 0.4s ease 0.35s, color 0.2s ease;
+    }
+
+    .case-study-overlay.open .cs-back {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .cs-back:hover { color: #2c3543; }
+
+    .cs-back svg {
+      transition: transform 0.25s ease;
+    }
+
+    .cs-back:hover svg {
+      transform: translateX(-3px);
+    }
+
+    /* Case study hero */
+    .cs-hero {
+      padding: 80px 80px 40px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .case-study-overlay.open .cs-hero {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.2s;
+    }
+
+    .cs-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.38);
+      margin-bottom: 24px;
+    }
+
+    .cs-title {
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 100px;
+      letter-spacing: -4.5px;
+      line-height: 1;
+      color: #2c3543;
+      margin-bottom: 28px;
+    }
+
+    .cs-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      font-size: 24px;
+      color: rgba(44, 53, 67, 0.55);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* Spline 3D viewer area */
+    .cs-spline-wrap {
+      width: 100%;
+      max-width: 900px;
+      height: 620px;
+      margin: 60px auto 80px;
+      padding: 0 80px;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .case-study-overlay.open .cs-spline-wrap {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.4s;
+    }
+
+    .cs-spline-wrap spline-viewer {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      display: block;
+    }
+
+    /* Brief project details */
+    .cs-details {
+      padding: 0 80px 140px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+
+    .case-study-overlay.open .cs-details {
+      opacity: 1;
+      transform: translateY(0);
+      transition-delay: 0.55s;
+    }
+
+    .cs-details p {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 1.8;
+      color: rgba(44, 53, 67, 0.6);
+    }
+
+
+    /* ══════════════════════════════════════
+       ABOUT SECTION
+    ══════════════════════════════════════ */
+
+    #about {
+      padding: 160px 80px;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 100px;
+      align-items: center;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .about-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.38);
+      margin-bottom: 28px;
+    }
+
+    .about-heading {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-size: 60px;
+      letter-spacing: -3px;
+      line-height: 1.04;
+      color: #2c3543;
+      margin-bottom: 36px;
+    }
+
+    .about-heading em {
+      font-style: italic;
+    }
+
+    .about-body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 1.75;
+      color: rgba(44, 53, 67, 0.68);
+    }
+
+    .about-body p + p {
+      margin-top: 18px;
+    }
+
+    /* Right side: interactive 3D sphere */
+    .about-visual {
+      aspect-ratio: 4 / 5;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+      background: rgba(44, 53, 67, 0.03);
+    }
+
+    .about-visual iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 20px;
+      display: block;
+    }
+
+
+    /* ══════════════════════════════════════
+       CONTACT SECTION
+    ══════════════════════════════════════ */
+
+    #contact {
+      padding: 140px 80px 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 40px;
+    }
+
+    .contact-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(44, 53, 67, 0.38);
+    }
+
+    .contact-heading {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-size: 100px;
+      letter-spacing: -5.5px;
+      line-height: 1;
+      color: #2c3543;
+    }
+
+    .contact-sub {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 19px;
+      color: rgba(44, 53, 67, 0.5);
+      max-width: 380px;
+      line-height: 1.6;
+    }
+
+    .magnetic-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 44px;
+      border: 1.5px solid rgba(44, 53, 67, 0.28);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      color: #2c3543;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+      margin-top: 8px;
+      transition:
+        transform     0.5s cubic-bezier(0.23, 1, 0.32, 1),
+        border-color  0.3s ease,
+        background    0.3s ease,
+        color         0.3s ease;
+    }
+
+    .magnetic-btn:hover {
+      border-color: #2c3543;
+      background: #2c3543;
+      color: #fff6e8;
+    }
+
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+
+    footer {
+      padding: 36px 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(44, 53, 67, 0.07);
+    }
+
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      color: rgba(44, 53, 67, 0.3);
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav id="main-nav">
+    <a href="#hero" class="nav-logo">SW</a>
+    <ul class="nav-links">
+      <li><a href="#work">Work</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <section id="hero">
+    <p class="hero-eyebrow">Product Designer</p>
+    <h1 class="hero-name">Shea<br>Wilson</h1>
+    <p class="hero-tagline">
+      Designing software that feels as intelligent as the people using it.
+    </p>
+    <div class="scroll-hint" aria-hidden="true">
+      <span class="scroll-hint-label">Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+
+  <!-- ══════════════ WORK ══════════════ -->
+  <section id="work">
+    <div class="section-header">
+      <h2 class="section-title reveal">Selected Work</h2>
+      <p class="section-subtitle reveal delay-1">
+        Three projects, each built around one idea: software should feel as intelligent as the people using it.
+      </p>
+    </div>
+
+    <div class="cards-row">
+
+      <!-- Cipher (clickable: opens case study) -->
+      <div class="card reveal delay-1" data-card="cipher">
+        <div class="card-titles">
+          <p class="card-name">Cipher</p>
+          <p class="card-desc">Your finances, finally made clear with AI</p>
+        </div>
+        <div class="card-image card-image--cipher">
+          <img
+            src="https://www.figma.com/api/mcp/asset/edaee0e2-237c-44f6-a466-0178a8189d3b"
+            alt="Cipher: AI finance app on a laptop"
+          />
+        </div>
+        <span class="card-view-label">View project</span>
+      </div>
+
+      <!-- Captr -->
+      <div class="card reveal delay-2" data-card="captr">
+        <div class="card-titles">
+          <p class="card-name">Captr</p>
+          <p class="card-desc">See what matters most, at a glance</p>
+        </div>
+        <div class="card-image card-image--captr">
+          <img
+            src="https://www.figma.com/api/mcp/asset/b3ab0aee-fe78-474e-900c-0cf98aacbda3"
+            alt="Captr: Apple Watch with smart widget display"
+          />
+        </div>
+      </div>
+
+      <!-- Amp -->
+      <div class="card reveal delay-3" data-card="amp">
+        <div class="card-titles">
+          <p class="card-name">Amp</p>
+          <p class="card-desc">Take full control of your music with smart controls</p>
+        </div>
+        <div class="card-image card-image--amp">
+          <img
+            src="https://www.figma.com/api/mcp/asset/74457771-6870-4bf3-9909-6f6fdb67d09f"
+            alt="Amp: music control app on iPhone"
+          />
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════ CIPHER CASE STUDY ══════════════ -->
+  <div class="case-study-overlay" id="cipher-case-study">
+    <button class="cs-back" id="case-study-close" aria-label="Back to work">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      Back to work
+    </button>
+
+    <div class="cs-hero">
+      <p class="cs-eyebrow">Case Study</p>
+      <h2 class="cs-title">Cipher</h2>
+      <p class="cs-subtitle">
+        Your finances, finally made clear with AI
+      </p>
+    </div>
+
+    <div class="cs-spline-wrap">
+      <spline-viewer
+        url="https://prod.spline.design/WyPjkwRYCWi9H8W9/scene.splinecode"
+        loading-anim-type="spinner-small-dark"
+      ></spline-viewer>
+    </div>
+
+    <div class="cs-details">
+      <!-- Replace with your own case study copy -->
+      <p>
+        Cipher rethinks personal finance by putting AI at the core. Instead of drowning users in charts and numbers, it surfaces the insights that actually matter, explains them clearly, and helps people make better decisions with their money.
+      </p>
+    </div>
+  </div>
+
+
+  <!-- ══════════════ ABOUT ══════════════ -->
+  <section id="about">
+    <div class="about-grid">
+
+      <div class="about-text">
+        <p class="about-label reveal">About</p>
+        <h2 class="about-heading reveal delay-1">
+          Designed to<br><em>make sense.</em>
+        </h2>
+        <div class="about-body reveal delay-2">
+          <!-- Replace with your own bio -->
+          <p>
+            I'm Shea Wilson, a product designer with a thing for the details nobody notices until they're missing. I work at the intersection of clarity and craft, building products that feel effortless to use.
+          </p>
+          <p>
+            Currently studying design. Currently thinking about how good software should get out of the way and let people think.
+          </p>
+        </div>
+      </div>
+
+      <div class="about-visual reveal delay-2" aria-label="Interactive 3D sphere">
+        <iframe
+          src="https://my.spline.design/3dinteractivespheres-wMcbtRpMP6dmVFoSaKpyY6tG/"
+          loading="lazy"
+          title="Interactive 3D spheres"
+        ></iframe>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- ══════════════ CONTACT ══════════════ -->
+  <section id="contact">
+    <p class="contact-label reveal">Get in touch</p>
+    <h2 class="contact-heading reveal delay-1">Let's talk.</h2>
+    <p class="contact-sub reveal delay-2">
+      Open to freelance, collaborations, and interesting problems.
+    </p>
+    <!-- Update the href with your actual email -->
+    <a href="mailto:hello@sheawilson.com" class="magnetic-btn reveal delay-3" id="magnetic-btn">
+      Say hello
+    </a>
+  </section>
+
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer>
+    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
+  </footer>
+
+
+  <!-- ══════════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════════ -->
+  <script>
+
+    /* ─────────────────────────────────────────
+       INTERACTION 1: CUSTOM CURSOR
+    ───────────────────────────────────────── */
+
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+
+    let mouseX = window.innerWidth  / 2;
+    let mouseY = window.innerHeight / 2;
+    let ringX  = mouseX;
+    let ringY  = mouseY;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+      dot.style.left = mouseX + 'px';
+      dot.style.top  = mouseY + 'px';
+    });
+
+    (function animateRing() {
+      ringX += (mouseX - ringX) * 0.13;
+      ringY += (mouseY - ringY) * 0.13;
+      ring.style.left = ringX + 'px';
+      ring.style.top  = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    /* Event delegation for cursor hover — works with all elements including case study */
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('a, button, [data-card], .magnetic-btn')) {
+        document.body.classList.add('cursor-hover');
+      }
+    });
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('a, button, [data-card], .magnetic-btn')) {
+        document.body.classList.remove('cursor-hover');
+      }
+    });
+
+    document.addEventListener('mouseleave', () => {
+      dot.style.opacity  = '0';
+      ring.style.opacity = '0';
+    });
+    document.addEventListener('mouseenter', () => {
+      dot.style.opacity  = '1';
+      ring.style.opacity = '1';
+    });
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 2: NAV — FROSTED GLASS
+    ───────────────────────────────────────── */
+
+    const mainNav = document.getElementById('main-nav');
+
+    window.addEventListener('scroll', () => {
+      mainNav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 3: SCROLL REVEAL
+    ───────────────────────────────────────── */
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 4: GLOBAL CARD TILT
+    ───────────────────────────────────────── */
+
+    const PERSPECTIVE  = 1200;
+    const MAX_TILT     = 7;
+    const TILT_LERP    = 0.09;
+    const HOVER_SHADOW = '0 24px 64px rgba(0, 0, 0, 0.13)';
+
+    const cards = Array.from(document.querySelectorAll('[data-card]'));
+    let tRX = 0, tRY = 0;
+    let cRX = 0, cRY = 0;
+
+    document.addEventListener('mousemove', e => {
+      const nx = (e.clientX / window.innerWidth)  * 2 - 1;
+      const ny = (e.clientY / window.innerHeight) * 2 - 1;
+      tRY =  nx * MAX_TILT;
+      tRX = -ny * MAX_TILT;
+    });
+
+    document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
+
+    cards.forEach(card => {
+      card.addEventListener('mouseenter', () => { card.style.boxShadow = HOVER_SHADOW; });
+      card.addEventListener('mouseleave', () => { card.style.boxShadow = 'none'; });
+    });
+
+    (function tiltTick() {
+      cRX += (tRX - cRX) * TILT_LERP;
+      cRY += (tRY - cRY) * TILT_LERP;
+      const t = `perspective(${PERSPECTIVE}px) rotateX(${cRX.toFixed(3)}deg) rotateY(${cRY.toFixed(3)}deg)`;
+      cards.forEach(c => c.style.transform = t);
+      requestAnimationFrame(tiltTick);
+    })();
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 5: MAGNETIC BUTTON
+    ───────────────────────────────────────── */
+
+    const magneticBtn = document.getElementById('magnetic-btn');
+    const STRENGTH    = 0.34;
+
+    magneticBtn.addEventListener('mousemove', e => {
+      const r  = magneticBtn.getBoundingClientRect();
+      const cx = r.left + r.width  / 2;
+      const cy = r.top  + r.height / 2;
+      const dx = (e.clientX - cx) * STRENGTH;
+      const dy = (e.clientY - cy) * STRENGTH;
+      magneticBtn.style.transform = `translate(${dx}px, ${dy}px)`;
+    });
+
+    magneticBtn.addEventListener('mouseleave', () => {
+      magneticBtn.style.transform = 'translate(0, 0)';
+    });
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 6: CIPHER CASE STUDY
+       Clicking the Cipher card opens a full-page
+       overlay with the Spline 3D iPhone mockup.
+       Close with back button or Escape key.
+    ───────────────────────────────────────── */
+
+    const cipherCard = document.querySelector('[data-card="cipher"]');
+    const caseStudy  = document.getElementById('cipher-case-study');
+    const closeBtn   = document.getElementById('case-study-close');
+
+    function openCaseStudy() {
+      caseStudy.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      /* Scroll overlay to top in case it was left scrolled */
+      caseStudy.scrollTop = 0;
+    }
+
+    function closeCaseStudy() {
+      caseStudy.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    cipherCard.addEventListener('click', openCaseStudy);
+    closeBtn.addEventListener('click', closeCaseStudy);
+
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape' && caseStudy.classList.contains('open')) {
+        closeCaseStudy();
+      }
+    });
+
+  </script>
+
+</body>
+</html>
