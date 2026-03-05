@@ -385,9 +385,9 @@
     .section-title {
       font-family: 'Spectral', serif;
       font-weight: 400;
-      font-size: 144px;
-      letter-spacing: -8.64px;
-      line-height: 1;
+      font-size: 130px;
+      letter-spacing: -7px;
+      line-height: 0.92;
       color: var(--text);
       white-space: nowrap;
       transition: color 0.55s ease;
@@ -396,10 +396,10 @@
     .section-subtitle {
       font-family: 'DM Sans', sans-serif;
       font-weight: 200;
-      font-size: 32px;
-      max-width: 728px;
-      line-height: 1.4;
-      color: var(--text);
+      font-size: 22px;
+      max-width: 420px;
+      line-height: 1.5;
+      color: rgba(var(--text-rgb), 0.58);
       transition: color 0.55s ease;
     }
 
@@ -504,15 +504,10 @@
 
     .card-image--captr {
       border-radius: 15px 15px 0 0;
+      box-shadow: -4px 4px 8px 0px rgba(0, 0, 0, 0.10);
     }
 
     .card-image--captr img {
-      position: absolute;
-      width: 157%;
-      height: 137.53%;
-      left: -28.35%;
-      top: -18.95%;
-      object-fit: cover;
       border-radius: 15px 15px 0 0;
     }
 
@@ -523,170 +518,6 @@
 
     .card-image--amp img {
       border-radius: 15px 15px 0 0;
-    }
-
-
-    /* ══════════════════════════════════════
-       CIPHER CASE STUDY OVERLAY
-       Slides up from bottom on card click.
-       Contains Spline 3D iPhone mockup.
-    ══════════════════════════════════════ */
-
-    .case-study-overlay {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 2000;
-      overflow-y: auto;
-      overflow-x: hidden;
-      opacity: 0;
-      pointer-events: none;
-      transform: translateY(100%);
-      transition:
-        transform 0.7s cubic-bezier(0.23, 1, 0.32, 1),
-        opacity   0.5s cubic-bezier(0.23, 1, 0.32, 1),
-        background 0.55s ease;
-    }
-
-    .case-study-overlay.open {
-      opacity: 1;
-      pointer-events: auto;
-      transform: translateY(0);
-    }
-
-    /* Back button */
-    .cs-back {
-      position: sticky;
-      top: 0;
-      left: 0;
-      right: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 24px 80px;
-      background: transparent;
-      border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 14px;
-      color: rgba(var(--text-rgb), 0.55);
-      cursor: none;
-      z-index: 2001;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition: opacity 0.4s ease 0.35s, transform 0.4s ease 0.35s, color 0.2s ease;
-    }
-
-    .case-study-overlay.open .cs-back {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .cs-back:hover { color: var(--text); }
-
-    .cs-back svg {
-      transition: transform 0.25s ease;
-    }
-
-    .cs-back:hover svg {
-      transform: translateX(-3px);
-    }
-
-    /* Case study hero */
-    .cs-hero {
-      padding: 80px 80px 40px;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .case-study-overlay.open .cs-hero {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.2s;
-    }
-
-    .cs-eyebrow {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-      margin-bottom: 24px;
-    }
-
-    .cs-title {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 100px;
-      letter-spacing: -4.5px;
-      line-height: 1;
-      color: var(--text);
-      margin-bottom: 28px;
-      transition: color 0.55s ease;
-    }
-
-    .cs-subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 24px;
-      color: rgba(var(--text-rgb), 0.55);
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    /* Spline 3D viewer area */
-    .cs-spline-wrap {
-      width: 100%;
-      max-width: none;
-      height: 80vh;
-      margin: 60px auto 80px;
-      padding: 0;
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .case-study-overlay.open .cs-spline-wrap {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.4s;
-    }
-
-    .cs-spline-wrap spline-viewer {
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
-      display: block;
-    }
-
-    /* Brief project details */
-    .cs-details {
-      padding: 0 80px 140px;
-      max-width: 680px;
-      margin: 0 auto;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(24px);
-      transition: opacity 0.7s ease, transform 0.7s ease;
-    }
-
-    .case-study-overlay.open .cs-details {
-      opacity: 1;
-      transform: translateY(0);
-      transition-delay: 0.55s;
-    }
-
-    .cs-details p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 1.8;
-      color: rgba(var(--text-rgb), 0.6);
     }
 
 
@@ -875,12 +706,6 @@
       }
       .card { width: calc(50% - 18px); height: 380px; }
 
-      .cs-back { padding: 24px 40px; }
-      .cs-hero { padding: 60px 40px 30px; }
-      .cs-title { font-size: 72px; letter-spacing: -3px; }
-      .cs-spline-wrap { padding: 0; height: 70vh; }
-      .cs-details { padding: 0 40px 100px; }
-
       #about { padding: 100px 40px; }
       .about-grid { gap: 60px; }
       .about-heading { font-size: 48px; letter-spacing: -2px; }
@@ -918,15 +743,6 @@
 
       .cards-row { flex-direction: column; align-items: center; gap: 24px; }
       .card { width: 100%; max-width: 400px; height: 380px; }
-
-      .cs-back { padding: 20px 24px; font-size: 13px; }
-      .cs-hero { padding: 40px 24px 20px; }
-      .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
-      .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
-      .cs-subtitle { font-size: 18px; }
-      .cs-spline-wrap { padding: 0; height: 60vh; margin: 40px auto 60px; }
-      .cs-details { padding: 0 24px 80px; }
-      .cs-details p { font-size: 16px; }
 
       #about { padding: 80px 24px; }
       .about-grid { grid-template-columns: 1fr; gap: 48px; }
@@ -1008,8 +824,8 @@
 
     <div class="cards-row">
 
-      <!-- Cipher (clickable: opens case study) -->
-      <div class="card reveal delay-1" data-card="cipher">
+      <!-- Cipher (links to case study page) -->
+      <a href="cipher.html" class="card reveal delay-1" data-card="cipher" style="text-decoration:none; color:inherit;">
         <div class="card-titles">
           <p class="card-name">Cipher</p>
           <p class="card-desc">Your finances, finally made clear with AI</p>
@@ -1021,24 +837,10 @@
           />
         </div>
         <span class="card-view-label">View project</span>
-      </div>
-
-      <!-- Captr -->
-      <div class="card reveal delay-2" data-card="captr">
-        <div class="card-titles">
-          <p class="card-name">Captr</p>
-          <p class="card-desc">See what matters most, at a glance</p>
-        </div>
-        <div class="card-image card-image--captr">
-          <img
-            src="https://www.figma.com/api/mcp/asset/b3ab0aee-fe78-474e-900c-0cf98aacbda3"
-            alt="Captr: Apple Watch with smart widget display"
-          />
-        </div>
-      </div>
+      </a>
 
       <!-- Amp -->
-      <div class="card reveal delay-3" data-card="amp">
+      <div class="card reveal delay-2" data-card="amp">
         <div class="card-titles">
           <p class="card-name">Amp</p>
           <p class="card-desc">Take full control of your music with smart controls</p>
@@ -1051,41 +853,22 @@
         </div>
       </div>
 
+      <!-- Captr -->
+      <div class="card reveal delay-3" data-card="captr">
+        <div class="card-titles">
+          <p class="card-name">Captr</p>
+          <p class="card-desc">See what matters most, at a glance</p>
+        </div>
+        <div class="card-image card-image--captr">
+          <img
+            src="captr-watch.jpg"
+            alt="Captr: Apple Watch with smart widget display"
+          />
+        </div>
+      </div>
+
     </div>
   </section>
-
-
-  <!-- ══════════════ CIPHER CASE STUDY ══════════════ -->
-  <div class="case-study-overlay" id="cipher-case-study">
-    <button class="cs-back" id="case-study-close" aria-label="Back to work">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-        <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-      Back to work
-    </button>
-
-    <div class="cs-hero">
-      <p class="cs-eyebrow">Case Study</p>
-      <h2 class="cs-title">Cipher</h2>
-      <p class="cs-subtitle">
-        Your finances, finally made clear with AI
-      </p>
-    </div>
-
-    <div class="cs-spline-wrap">
-      <spline-viewer
-        url="https://prod.spline.design/WyPjkwRYCWi9H8W9/scene.splinecode"
-        loading-anim-type="spinner-small-dark"
-      ></spline-viewer>
-    </div>
-
-    <div class="cs-details">
-      <!-- Replace with your own case study copy -->
-      <p>
-        Cipher rethinks personal finance by putting AI at the core. Instead of drowning users in charts and numbers, it surfaces the insights that actually matter, explains them clearly, and helps people make better decisions with their money.
-      </p>
-    </div>
-  </div>
 
 
   <!-- ══════════════ ABOUT ══════════════ -->
@@ -1247,11 +1030,14 @@
       document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
     }
 
-    /* ── Mobile: gyroscope-driven tilt ── */
-    if (isTouchDevice && window.DeviceOrientationEvent) {
+    /* ── Mobile: gyroscope-driven tilt + touch fallback ── */
+    if (isTouchDevice) {
+
+      let gyroActive = false;
 
       function handleOrientation(e) {
-        /* beta = front-back tilt (-180 to 180), gamma = left-right tilt (-90 to 90) */
+        if (e.beta === null && e.gamma === null) return;
+        gyroActive = true;
         const beta  = e.beta  || 0;
         const gamma = e.gamma || 0;
         /* Normalise: phone held upright (~45° beta) is neutral */
@@ -1261,22 +1047,43 @@
         tRY =  normGamma;
       }
 
-      /* iOS 13+ requires explicit permission request */
-      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        /* We attach permission request to the first user tap anywhere on the page */
-        document.addEventListener('click', function requestGyro() {
-          DeviceOrientationEvent.requestPermission()
-            .then(state => {
-              if (state === 'granted') {
-                window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-              }
-            })
-            .catch(() => {});
-          document.removeEventListener('click', requestGyro);
-        }, { once: true });
-      } else {
-        /* Android and older iOS: no permission needed */
+      function enableGyro() {
         window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+      }
+
+      /* Try to activate gyroscope */
+      if (window.DeviceOrientationEvent) {
+        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+          /* iOS 13+: request permission on first touch interaction */
+          document.addEventListener('touchend', function requestGyro() {
+            DeviceOrientationEvent.requestPermission()
+              .then(state => { if (state === 'granted') enableGyro(); })
+              .catch(() => {});
+            document.removeEventListener('touchend', requestGyro);
+          }, { once: true });
+        } else {
+          /* Android & older iOS: no permission needed */
+          enableGyro();
+        }
+      }
+
+      /* Touch fallback: if gyro isn't available/permitted,
+         dragging a finger across the cards area tilts them */
+      const cardsRow = document.querySelector('.cards-row');
+      if (cardsRow) {
+        cardsRow.addEventListener('touchmove', e => {
+          if (gyroActive) return; /* gyro takes priority */
+          const touch = e.touches[0];
+          const rect  = cardsRow.getBoundingClientRect();
+          const nx = ((touch.clientX - rect.left) / rect.width)  * 2 - 1;
+          const ny = ((touch.clientY - rect.top)  / rect.height) * 2 - 1;
+          tRY =  nx * MAX_TILT;
+          tRX = -ny * MAX_TILT;
+        }, { passive: true });
+
+        cardsRow.addEventListener('touchend', () => {
+          if (!gyroActive) { tRX = 0; tRY = 0; }
+        }, { passive: true });
       }
     }
 
@@ -1308,39 +1115,6 @@
 
     magneticBtn.addEventListener('mouseleave', () => {
       magneticBtn.style.transform = 'translate(0, 0)';
-    });
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 6: CIPHER CASE STUDY
-       Clicking the Cipher card opens a full-page
-       overlay with the Spline 3D iPhone mockup.
-       Close with back button or Escape key.
-    ───────────────────────────────────────── */
-
-    const cipherCard = document.querySelector('[data-card="cipher"]');
-    const caseStudy  = document.getElementById('cipher-case-study');
-    const closeBtn   = document.getElementById('case-study-close');
-
-    function openCaseStudy() {
-      caseStudy.classList.add('open');
-      document.body.style.overflow = 'hidden';
-      /* Scroll overlay to top in case it was left scrolled */
-      caseStudy.scrollTop = 0;
-    }
-
-    function closeCaseStudy() {
-      caseStudy.classList.remove('open');
-      document.body.style.overflow = '';
-    }
-
-    cipherCard.addEventListener('click', openCaseStudy);
-    closeBtn.addEventListener('click', closeCaseStudy);
-
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && caseStudy.classList.contains('open')) {
-        closeCaseStudy();
-      }
     });
 
 

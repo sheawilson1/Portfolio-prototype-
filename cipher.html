@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cipher — Shea Wilson</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- Spline 3D viewer web component -->
+  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Theme variables ── */
+    :root {
+      --bg: #fff6e8;
+      --bg-rgb: 255, 246, 232;
+      --text: #2c3543;
+      --text-rgb: 44, 53, 67;
+    }
+
+    body.dark {
+      --bg: #1a1e26;
+      --bg-rgb: 26, 30, 38;
+      --text: #e0dcd6;
+      --text-rgb: 224, 220, 214;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      cursor: none;
+      overflow-x: hidden;
+      transition:
+        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+      #cursor-dot, #cursor-ring { display: none; }
+    }
+
+    /* ── Custom cursor ── */
+    #cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--text);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease, background 0.55s ease;
+      will-change: left, top;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 30px; height: 30px;
+      border: 1.5px solid rgba(var(--text-rgb), 0.32);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition:
+        width 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        border-color 0.3s ease, opacity 0.3s ease;
+      will-change: left, top, width, height;
+    }
+
+    body.cursor-hover #cursor-ring {
+      width: 52px; height: 52px;
+      border-color: rgba(var(--text-rgb), 0.16);
+    }
+
+    /* ── Nav ── */
+    nav#main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      padding: 0 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease;
+    }
+
+    nav#main-nav.scrolled {
+      background: rgba(var(--bg-rgb), 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .nav-logo {
+      font-family: 'Spectral', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      transition: color 0.55s ease;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
+
+    .nav-links { display: flex; gap: 44px; list-style: none; }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      color: rgba(var(--text-rgb), 0.6);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--text);
+      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      appearance: none;
+      background: none;
+      border: 1.5px solid rgba(var(--text-rgb), 0.18);
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      cursor: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: border-color 0.3s ease, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), color 0.55s ease;
+    }
+
+    .theme-toggle:hover { border-color: rgba(var(--text-rgb), 0.42); transform: scale(1.08); }
+    .theme-toggle:active { transform: scale(0.95); }
+
+    .toggle-sun, .toggle-moon {
+      position: absolute;
+      width: 18px; height: 18px;
+      transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .toggle-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+    .toggle-moon { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+    body.dark .toggle-sun { opacity: 0; transform: rotate(90deg) scale(0.5); }
+    body.dark .toggle-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+
+    /* ── Back button ── */
+    .cs-back {
+      position: sticky;
+      top: 0; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 80px;
+      background: transparent;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: rgba(var(--text-rgb), 0.55);
+      text-decoration: none;
+      cursor: none;
+      z-index: 2001;
+      transition: color 0.2s ease;
+    }
+
+    .cs-back:hover { color: var(--text); }
+    .cs-back svg { transition: transform 0.25s ease; }
+    .cs-back:hover svg { transform: translateX(-3px); }
+
+    /* ── Case study hero ── */
+    .cs-hero {
+      padding: 80px 80px 40px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0);    }
+    }
+
+    .cs-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+      margin-bottom: 24px;
+    }
+
+    .cs-title {
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 100px;
+      letter-spacing: -4.5px;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 28px;
+      transition: color 0.55s ease;
+    }
+
+    .cs-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      font-size: 24px;
+      color: rgba(var(--text-rgb), 0.55);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* ── Spline 3D viewer ── */
+    .cs-spline-wrap {
+      width: 100%;
+      max-width: none;
+      height: 80vh;
+      margin: 60px auto 80px;
+      padding: 0;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.3s forwards;
+    }
+
+    .cs-spline-wrap spline-viewer {
+      width: 100%;
+      height: 100%;
+      border-radius: 20px;
+      display: block;
+    }
+
+    /* ── Details ── */
+    .cs-details {
+      padding: 0 80px 140px;
+      max-width: 680px;
+      margin: 0 auto;
+      text-align: center;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.5s forwards;
+    }
+
+    .cs-details p {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      line-height: 1.8;
+      color: rgba(var(--text-rgb), 0.6);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 36px 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+    }
+
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      color: rgba(var(--text-rgb), 0.3);
+    }
+
+    /* ── Responsive: Tablet ── */
+    @media (max-width: 1024px) {
+      nav#main-nav { padding: 0 40px; }
+      .cs-back { padding: 24px 40px; }
+      .cs-hero { padding: 60px 40px 30px; }
+      .cs-title { font-size: 72px; letter-spacing: -3px; }
+      .cs-spline-wrap { height: 70vh; }
+      .cs-details { padding: 0 40px 100px; }
+      footer { padding: 36px 40px; }
+    }
+
+    /* ── Responsive: Phone ── */
+    @media (max-width: 640px) {
+      nav#main-nav { padding: 0 24px; height: 64px; }
+      .nav-logo { font-size: 20px; }
+      .nav-right { gap: 24px; }
+      .nav-links { gap: 24px; }
+      .nav-links a { font-size: 13px; }
+      .theme-toggle { width: 44px; height: 44px; }
+      .cs-back { padding: 20px 24px; font-size: 13px; }
+      .cs-hero { padding: 40px 24px 20px; }
+      .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
+      .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
+      .cs-subtitle { font-size: 18px; }
+      .cs-spline-wrap { height: 60vh; margin: 40px auto 60px; }
+      .cs-details { padding: 0 24px 80px; }
+      .cs-details p { font-size: 16px; }
+      footer { padding: 28px 24px; }
+      .footer-copy { font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav id="main-nav">
+    <a href="index.html#hero" class="nav-logo">SW</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="toggle-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════ BACK BUTTON ══════════════ -->
+  <a href="index.html#work" class="cs-back" id="case-study-close" aria-label="Back to work">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to work
+  </a>
+
+  <div class="cs-hero">
+    <p class="cs-eyebrow">Case Study</p>
+    <h2 class="cs-title">Cipher</h2>
+    <p class="cs-subtitle">
+      Your finances, finally made clear with AI
+    </p>
+  </div>
+
+  <div class="cs-spline-wrap">
+    <spline-viewer
+      url="https://prod.spline.design/WyPjkwRYCWi9H8W9/scene.splinecode"
+      loading-anim-type="spinner-small-dark"
+    ></spline-viewer>
+  </div>
+
+  <div class="cs-details">
+    <p>
+      Cipher rethinks personal finance by putting AI at the core. Instead of drowning users in charts and numbers, it surfaces the insights that actually matter, explains them clearly, and helps people make better decisions with their money.
+    </p>
+  </div>
+
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer>
+    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
+  </footer>
+
+
+  <script>
+    /* ── Custom cursor ── */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+    });
+
+    (function animateRing() {
+      ringX += (mouseX - ringX) * 0.13;
+      ringY += (mouseY - ringY) * 0.13;
+      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('a, button')) document.body.classList.add('cursor-hover');
+    });
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('a, button')) document.body.classList.remove('cursor-hover');
+    });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+
+    /* ── Nav scroll effect ── */
+    const mainNav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      mainNav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── Dark mode (shared with index.html via localStorage) ── */
+    const themeToggle = document.getElementById('theme-toggle');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
+      document.body.classList.add('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      const isDark = document.body.classList.contains('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    });
+
+    systemPrefersDark.addEventListener('change', e => {
+      if (!localStorage.getItem('theme')) {
+        document.body.classList.toggle('dark', e.matches);
+      }
+    });
+  </script>
+
+</body>
+</html>
