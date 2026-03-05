@@ -851,6 +851,98 @@
       color: rgba(var(--text-rgb), 0.3);
     }
 
+
+    /* ══════════════════════════════════════
+       RESPONSIVE — TABLET (≤ 1024px)
+    ══════════════════════════════════════ */
+
+    @media (max-width: 1024px) {
+
+      nav#main-nav { padding: 0 40px; }
+
+      #hero { padding: 72px 40px 80px; }
+      .hero-name { font-size: 100px; letter-spacing: -5px; }
+      .hero-tagline { font-size: 20px; max-width: 360px; }
+      .scroll-hint { right: 40px; }
+
+      #work { padding: 100px 40px; }
+      .section-title { font-size: 80px; letter-spacing: -4.8px; }
+      .section-subtitle { font-size: 26px; }
+
+      .cards-row {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+      .card { width: calc(50% - 18px); height: 380px; }
+
+      .cs-back { padding: 24px 40px; }
+      .cs-hero { padding: 60px 40px 30px; }
+      .cs-title { font-size: 72px; letter-spacing: -3px; }
+      .cs-spline-wrap { padding: 0 40px; height: 480px; }
+      .cs-details { padding: 0 40px 100px; }
+
+      #about { padding: 100px 40px; }
+      .about-grid { gap: 60px; }
+      .about-heading { font-size: 48px; letter-spacing: -2px; }
+
+      #contact { padding: 100px 40px 80px; }
+      .contact-heading { font-size: 72px; letter-spacing: -4px; }
+
+      footer { padding: 36px 40px; }
+    }
+
+
+    /* ══════════════════════════════════════
+       RESPONSIVE — PHONE (≤ 640px)
+    ══════════════════════════════════════ */
+
+    @media (max-width: 640px) {
+
+      nav#main-nav { padding: 0 24px; height: 64px; }
+      .nav-logo { font-size: 20px; }
+      .nav-right { gap: 24px; }
+      .nav-links { gap: 24px; }
+      .nav-links a { font-size: 13px; }
+      .theme-toggle { width: 44px; height: 44px; }
+
+      #hero { padding: 64px 24px 60px; min-height: 85vh; }
+      .hero-eyebrow { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }
+      .hero-name { font-size: 72px; letter-spacing: -3.5px; }
+      .hero-tagline { font-size: 18px; margin-top: 32px; max-width: 300px; }
+      .scroll-hint { display: none; }
+
+      #work { padding: 80px 24px; }
+      .section-header { margin-bottom: 48px; gap: 24px; }
+      .section-title { font-size: 56px; letter-spacing: -3.36px; white-space: normal; }
+      .section-subtitle { font-size: 20px; }
+
+      .cards-row { flex-direction: column; align-items: center; gap: 24px; }
+      .card { width: 100%; max-width: 400px; height: 380px; }
+
+      .cs-back { padding: 20px 24px; font-size: 13px; }
+      .cs-hero { padding: 40px 24px 20px; }
+      .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
+      .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
+      .cs-subtitle { font-size: 18px; }
+      .cs-spline-wrap { padding: 0 24px; height: 360px; margin: 40px auto 60px; }
+      .cs-details { padding: 0 24px 80px; }
+      .cs-details p { font-size: 16px; }
+
+      #about { padding: 80px 24px; }
+      .about-grid { grid-template-columns: 1fr; gap: 48px; }
+      .about-heading { font-size: 36px; letter-spacing: -1.5px; margin-bottom: 24px; }
+      .about-body { font-size: 16px; }
+      .about-visual { aspect-ratio: 1 / 1; }
+
+      #contact { padding: 80px 24px 60px; gap: 28px; }
+      .contact-heading { font-size: 48px; letter-spacing: -2.5px; }
+      .contact-sub { font-size: 17px; }
+      .magnetic-btn { padding: 16px 36px; font-size: 15px; }
+
+      footer { padding: 28px 24px; }
+      .footer-copy { font-size: 12px; }
+    }
+
   </style>
 </head>
 
