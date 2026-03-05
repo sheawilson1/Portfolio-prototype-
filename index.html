@@ -642,10 +642,10 @@
     /* Spline 3D viewer area */
     .cs-spline-wrap {
       width: 100%;
-      max-width: 900px;
-      height: 620px;
+      max-width: none;
+      height: 80vh;
       margin: 60px auto 80px;
-      padding: 0 80px;
+      padding: 0;
       opacity: 0;
       transform: translateY(24px);
       transition: opacity 0.7s ease, transform 0.7s ease;
@@ -878,7 +878,7 @@
       .cs-back { padding: 24px 40px; }
       .cs-hero { padding: 60px 40px 30px; }
       .cs-title { font-size: 72px; letter-spacing: -3px; }
-      .cs-spline-wrap { padding: 0 40px; height: 480px; }
+      .cs-spline-wrap { padding: 0; height: 70vh; }
       .cs-details { padding: 0 40px 100px; }
 
       #about { padding: 100px 40px; }
@@ -924,7 +924,7 @@
       .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
       .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
       .cs-subtitle { font-size: 18px; }
-      .cs-spline-wrap { padding: 0 24px; height: 360px; margin: 40px auto 60px; }
+      .cs-spline-wrap { padding: 0; height: 60vh; margin: 40px auto 60px; }
       .cs-details { padding: 0 24px 80px; }
       .cs-details p { font-size: 16px; }
 
@@ -1223,6 +1223,8 @@
 
     /* ─────────────────────────────────────────
        INTERACTION 4: GLOBAL CARD TILT
+       Desktop: follows mouse cursor.
+       Mobile: uses device gyroscope.
     ───────────────────────────────────────── */
 
     const PERSPECTIVE  = 1200;
@@ -1232,16 +1234,53 @@
     const cards = Array.from(document.querySelectorAll('[data-card]'));
     let tRX = 0, tRY = 0;
     let cRX = 0, cRY = 0;
+    const isTouchDevice = matchMedia('(hover: none)').matches;
 
-    document.addEventListener('mousemove', e => {
-      const nx = (e.clientX / window.innerWidth)  * 2 - 1;
-      const ny = (e.clientY / window.innerHeight) * 2 - 1;
-      tRY =  nx * MAX_TILT;
-      tRX = -ny * MAX_TILT;
-    });
+    /* ── Desktop: mouse-driven tilt ── */
+    if (!isTouchDevice) {
+      document.addEventListener('mousemove', e => {
+        const nx = (e.clientX / window.innerWidth)  * 2 - 1;
+        const ny = (e.clientY / window.innerHeight) * 2 - 1;
+        tRY =  nx * MAX_TILT;
+        tRX = -ny * MAX_TILT;
+      });
+      document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
+    }
 
-    document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
+    /* ── Mobile: gyroscope-driven tilt ── */
+    if (isTouchDevice && window.DeviceOrientationEvent) {
 
+      function handleOrientation(e) {
+        /* beta = front-back tilt (-180 to 180), gamma = left-right tilt (-90 to 90) */
+        const beta  = e.beta  || 0;
+        const gamma = e.gamma || 0;
+        /* Normalise: phone held upright (~45° beta) is neutral */
+        const normBeta  = Math.max(-MAX_TILT, Math.min(MAX_TILT, (beta - 45) * 0.25));
+        const normGamma = Math.max(-MAX_TILT, Math.min(MAX_TILT, gamma * 0.25));
+        tRX = -normBeta;
+        tRY =  normGamma;
+      }
+
+      /* iOS 13+ requires explicit permission request */
+      if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        /* We attach permission request to the first user tap anywhere on the page */
+        document.addEventListener('click', function requestGyro() {
+          DeviceOrientationEvent.requestPermission()
+            .then(state => {
+              if (state === 'granted') {
+                window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+              }
+            })
+            .catch(() => {});
+          document.removeEventListener('click', requestGyro);
+        }, { once: true });
+      } else {
+        /* Android and older iOS: no permission needed */
+        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+      }
+    }
+
+    /* ── Shared animation loop ── */
     (function tiltTick() {
       cRX += (tRX - cRX) * TILT_LERP;
       cRY += (tRY - cRY) * TILT_LERP;
