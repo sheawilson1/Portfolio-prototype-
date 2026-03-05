@@ -178,12 +178,14 @@
     /* ── Back button ── */
     .cs-back {
       position: sticky;
-      top: 0; left: 0; right: 0;
+      top: 72px; left: 0; right: 0;
       display: flex;
       align-items: center;
       gap: 10px;
       padding: 24px 80px;
-      background: transparent;
+      background: rgba(var(--bg-rgb), 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
       border: none;
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
@@ -191,8 +193,8 @@
       color: rgba(var(--text-rgb), 0.55);
       text-decoration: none;
       cursor: none;
-      z-index: 2001;
-      transition: color 0.2s ease;
+      z-index: 999;
+      transition: color 0.2s ease, background 0.5s ease;
     }
 
     .cs-back:hover { color: var(--text); }
@@ -316,7 +318,7 @@
       .nav-links { gap: 24px; }
       .nav-links a { font-size: 13px; }
       .theme-toggle { width: 44px; height: 44px; }
-      .cs-back { padding: 20px 24px; font-size: 13px; }
+      .cs-back { top: 64px; padding: 20px 24px; font-size: 13px; }
       .cs-hero { padding: 40px 24px 20px; }
       .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
       .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
