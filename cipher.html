@@ -261,6 +261,7 @@
       height: 100%;
       border-radius: 20px;
       display: block;
+      pointer-events: none; /* lock camera — no panning or zooming */
     }
 
     /* ── Overview ── */
@@ -331,14 +332,76 @@
       border-radius: 0;
     }
 
-    /* Contained (padded) variant */
+    /* Contained (padded + rounded) variant */
     .cs-deliverable-img--contained {
+      width: calc(100% - 160px);
       max-width: 1100px;
       margin: 0 auto;
       border-radius: 20px;
       display: block;
+    }
+
+    /* ── Browser mockup scroll ── */
+    .cs-browser-section {
+      height: 280vh;
+      margin-bottom: 140px;
+    }
+
+    .cs-browser-sticky {
+      position: sticky;
+      top: 140px;
       padding: 0 80px;
-      box-sizing: border-box;
+    }
+
+    .cs-browser-frame {
+      background: #1c1c1e;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .cs-browser-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      background: #2c2c2e;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .cs-browser-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cs-browser-dot:nth-child(1) { background: #ff5f57; }
+    .cs-browser-dot:nth-child(2) { background: #febc2e; }
+    .cs-browser-dot:nth-child(3) { background: #28c840; }
+
+    .cs-browser-url-bar {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.07);
+      border-radius: 5px;
+      padding: 4px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255, 255, 255, 0.32);
+      text-align: center;
+    }
+
+    .cs-browser-screen {
+      height: 60vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cs-browser-content {
+      width: 100%;
+      display: block;
+      will-change: transform;
     }
 
     /* ── Details ── */
@@ -385,7 +448,9 @@
       .cs-overview { padding: 0 40px; }
       .cs-deliverable-header { padding: 0 40px; }
       .cs-deliverable-caption { padding: 0 40px; }
-      .cs-deliverable-img--contained { padding: 0 40px; }
+      .cs-deliverable-img--contained { width: calc(100% - 80px); }
+      .cs-browser-sticky { padding: 0 40px; }
+      .cs-browser-screen { height: 50vh; }
       .cs-details { padding: 0 40px 100px; }
       footer { padding: 36px 40px; }
     }
@@ -410,7 +475,10 @@
       .cs-deliverable-header { padding: 0 24px; flex-wrap: wrap; }
       .cs-deliverable-title { font-size: 28px; }
       .cs-deliverable-caption { padding: 0 24px; font-size: 15px; }
-      .cs-deliverable-img--contained { padding: 0 24px; }
+      .cs-deliverable-img--contained { width: calc(100% - 48px); }
+      .cs-browser-sticky { padding: 0 24px; }
+      .cs-browser-screen { height: 42vh; }
+      .cs-browser-section { height: 320vh; }
       .cs-details { padding: 0 24px 80px; }
       .cs-details p { font-size: 16px; }
       footer { padding: 28px 24px; }
@@ -479,7 +547,7 @@
   <!-- ══════════════ OVERVIEW ══════════════ -->
   <div class="cs-overview">
     <p>
-      Cipher is a digital-first banking app built around AI. No physical card — just a glass card, crypto wallets, and an AI assistant called Ci that learns how you spend and helps you do better. The brand, the app, and the website were designed from scratch: identity first, product second, then the landing page to bring it all together.
+      Cipher is a digital-first banking app built around AI. No physical card, just a glass card, crypto wallets, and an AI assistant called Ci that actually learns how you spend. The brand, the app, and the website were all designed from scratch.
     </p>
   </div>
 
@@ -490,29 +558,41 @@
       <h3 class="cs-deliverable-title">The App</h3>
     </div>
     <p class="cs-deliverable-caption">
-      A dark, immersive interface with a glass card at the centre. Ci — the AI assistant — sits inside the app, answering questions, flagging subscriptions, predicting cashflow, and adapting to how you actually use money. Features include crypto, savings goals, spending limits, and instant transfers.
+      Dark, immersive, with a glass card at the centre. Ci lives inside the app to answer questions, flag subscriptions, and predict cashflow. It adapts to how you actually use money. Everything else is there too: crypto, savings goals, spending limits, instant transfers.
     </p>
     <img
       src="cipher-app-hand.png"
       alt="Cipher app screens spread across an iPhone in hand"
-      class="cs-deliverable-img"
+      class="cs-deliverable-img--contained"
     />
   </div>
 
   <!-- ══════════════ WEBSITE ══════════════ -->
-  <div class="cs-deliverable">
+  <div class="cs-deliverable" style="padding-bottom: 40px;">
     <div class="cs-deliverable-header">
       <span class="cs-deliverable-tag">Deliverable 02</span>
       <h3 class="cs-deliverable-title">The Website</h3>
     </div>
     <p class="cs-deliverable-caption">
-      Built using Relume AI as a structural starting point, then fully redesigned in Figma with Spline interactions layered in. The landing page introduces Ci, showcases the app's key features, and drives sign-up — all in Cipher's signature black and green.
+      Started in Relume AI, then rebuilt properly in Figma with Spline interactions added. The landing page introduces Ci, walks through the key features, and drives sign-up. All in black and green.
     </p>
-    <img
-      src="cipher-website.png"
-      alt="Cipher landing page screenshot"
-      class="cs-deliverable-img--contained"
-    />
+  </div>
+
+  <!-- Browser scroll mockup -->
+  <div class="cs-browser-section">
+    <div class="cs-browser-sticky">
+      <div class="cs-browser-frame">
+        <div class="cs-browser-bar">
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-url-bar">cipher.com</div>
+        </div>
+        <div class="cs-browser-screen">
+          <img src="cipher-website.png" class="cs-browser-content" alt="Cipher website" />
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- ══════════════ BRAND ══════════════ -->
@@ -522,12 +602,12 @@
       <h3 class="cs-deliverable-title">Brand Guidelines</h3>
     </div>
     <p class="cs-deliverable-caption">
-      The identity started with a question: what does financial transparency actually look like? The answer was a "C" that forms both the Cipher wordmark and an optical illusion — a circle with a gap, like a viewfinder. Raleway typeface, electric green on near-black, and a brand voice that's confident without being corporate.
+      The identity came from asking what financial transparency actually looks like. The answer was a C that doubles as a viewfinder, a circle with a gap. Raleway typeface, electric green on near-black, and a voice that's confident without being corporate.
     </p>
     <img
       src="cipher-brand.png"
-      alt="Cipher brand guidelines collage — logo, typography, card, colour palette"
-      class="cs-deliverable-img"
+      alt="Cipher brand collage showing logo, typography, card, and colour palette"
+      class="cs-deliverable-img--contained"
     />
   </div>
 
@@ -592,6 +672,25 @@
         document.body.classList.toggle('dark', e.matches);
       }
     });
+
+    /* ── Browser mockup scroll ── */
+    const browserSection = document.querySelector('.cs-browser-section');
+    const browserContent = document.querySelector('.cs-browser-content');
+
+    if (browserSection && browserContent) {
+      function updateBrowserScroll() {
+        const rect = browserSection.getBoundingClientRect();
+        const scrolled = -rect.top;
+        const scrollable = browserSection.offsetHeight - window.innerHeight;
+        const progress = Math.max(0, Math.min(1, scrolled / scrollable));
+        const imgH = browserContent.offsetHeight;
+        const screenH = browserContent.parentElement.offsetHeight;
+        const maxY = Math.max(0, imgH - screenH);
+        browserContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
+      }
+      window.addEventListener('scroll', updateBrowserScroll, { passive: true });
+      updateBrowserScroll();
+    }
   </script>
 
 </body>

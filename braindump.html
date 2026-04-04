@@ -263,11 +263,15 @@
       opacity: 0;
       animation: fadeUp 0.7s ease 0.3s forwards;
       box-shadow: 0 40px 100px rgba(0,0,0,0.22);
+      background: #000; /* prevents flash of white before video loads */
+      font-size: 0;     /* closes any inline gap beneath the video element */
+      line-height: 0;
     }
 
     .cs-video-wrap video {
       width: 100%;
       display: block;
+      vertical-align: top;
     }
 
     /* ── Features ── */
