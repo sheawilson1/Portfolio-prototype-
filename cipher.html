@@ -280,154 +280,72 @@
       color: rgba(var(--text-rgb), 0.58);
     }
 
-    /* ── Deliverable sections ── */
-    .cs-deliverable {
-      padding: 0 0 140px;
-    }
-
-    .cs-deliverable-header {
+    /* ── Feature sections ── */
+    .cs-features {
+      padding: 0 80px 120px;
       display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 0 80px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 40px;
+      flex-direction: column;
+      gap: 120px;
     }
 
-    .cs-deliverable-tag {
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .feature-row.flip .feature-text { order: 2; }
+    .feature-row.flip .feature-image { order: 1; }
+
+    .feature-label {
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
       font-size: 11px;
       letter-spacing: 2.5px;
       text-transform: uppercase;
-      color: #00e06e;
-      background: rgba(0, 224, 110, 0.1);
-      border: 1px solid rgba(0, 224, 110, 0.25);
-      padding: 5px 12px;
-      border-radius: 100px;
+      color: rgba(var(--text-rgb), 0.35);
+      margin-bottom: 20px;
     }
 
-    .cs-deliverable-title {
+    .feature-heading {
       font-family: 'Spectral', serif;
-      font-weight: 600;
+      font-weight: 400;
       font-style: italic;
-      font-size: 48px;
-      letter-spacing: -2px;
+      font-size: 44px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
       color: var(--text);
+      margin-bottom: 24px;
+      transition: color 0.55s ease;
     }
 
-    .cs-deliverable-caption {
+    .feature-body {
       font-family: 'DM Sans', sans-serif;
       font-weight: 300;
-      font-size: 18px;
+      font-size: 17px;
       line-height: 1.75;
-      color: rgba(var(--text-rgb), 0.5);
-      padding: 0 80px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-      margin-bottom: 48px;
+      color: rgba(var(--text-rgb), 0.62);
     }
 
-    .cs-deliverable-img {
-      width: 100%;
-      display: block;
-      border-radius: 0;
-    }
-
-    /* Contained (padded + rounded) variant */
-    .cs-deliverable-img--contained {
-      width: calc(100% - 160px);
-      max-width: 900px;
-      margin: 0 auto;
-      border-radius: 20px;
-      display: block;
-    }
-
-    /* ── Browser mockup scroll ── */
-    .cs-browser-section {
-      height: 180vh;
-      margin-bottom: 140px;
-    }
-
-    .cs-browser-sticky {
-      position: sticky;
-      top: 140px;
-      padding: 0 80px;
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .cs-browser-frame {
-      background: #1c1c1e;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0, 0, 0, 0.28), 0 0 0 1px rgba(255,255,255,0.06);
-    }
-
-    .cs-browser-bar {
+    .feature-image {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 11px 16px;
-      background: #2c2c2e;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      justify-content: center;
     }
 
-    .cs-browser-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .cs-browser-dot:nth-child(1) { background: #ff5f57; }
-    .cs-browser-dot:nth-child(2) { background: #febc2e; }
-    .cs-browser-dot:nth-child(3) { background: #28c840; }
-
-    .cs-browser-url-bar {
-      flex: 1;
-      background: rgba(255, 255, 255, 0.07);
-      border-radius: 5px;
-      padding: 4px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 300;
-      color: rgba(255, 255, 255, 0.32);
-      text-align: center;
-    }
-
-    .cs-browser-screen {
-      height: 65vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .cs-browser-content {
+    .feature-image img {
       width: 100%;
+      border-radius: 20px;
       display: block;
-      will-change: transform;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
     }
 
-    /* ── Details ── */
-    .cs-details {
-      padding: 0 80px 140px;
-      max-width: 680px;
-      margin: 0 auto;
-      text-align: center;
-      opacity: 0;
-      animation: fadeUp 0.7s ease 0.5s forwards;
-    }
-
-    .cs-details p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 1.8;
-      color: rgba(var(--text-rgb), 0.6);
+    body.dark .feature-image img {
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
     }
 
     /* ── Footer ── */
@@ -454,12 +372,9 @@
       .cs-title { font-size: 72px; letter-spacing: -3px; }
       .cs-spline-wrap { height: 70vh; }
       .cs-overview { padding: 0 40px; }
-      .cs-deliverable-header { padding: 0 40px; }
-      .cs-deliverable-caption { padding: 0 40px; }
-      .cs-deliverable-img--contained { width: calc(100% - 80px); }
-      .cs-browser-sticky { padding: 0 40px; }
-      .cs-browser-screen { height: 55vh; }
-      .cs-details { padding: 0 40px 100px; }
+      .cs-features { padding: 0 40px 100px; gap: 80px; }
+      .feature-row { gap: 48px; }
+      .feature-heading { font-size: 36px; }
       footer { padding: 36px 40px; }
     }
 
@@ -479,16 +394,11 @@
       .cs-spline-wrap { height: 60vh; margin: 40px auto 60px; }
       .cs-overview { padding: 0 24px; margin-bottom: 64px; }
       .cs-overview p { font-size: 16px; }
-      .cs-deliverable { padding-bottom: 80px; }
-      .cs-deliverable-header { padding: 0 24px; flex-wrap: wrap; }
-      .cs-deliverable-title { font-size: 28px; }
-      .cs-deliverable-caption { padding: 0 24px; font-size: 15px; }
-      .cs-deliverable-img--contained { width: calc(100% - 48px); }
-      .cs-browser-sticky { padding: 0 24px; }
-      .cs-browser-screen { height: 58vh; }
-      .cs-browser-section { height: 320vh; }
-      .cs-details { padding: 0 24px 80px; }
-      .cs-details p { font-size: 16px; }
+      .cs-features { padding: 0 24px 80px; gap: 64px; }
+      .feature-row { grid-template-columns: 1fr; gap: 36px; }
+      .feature-row.flip .feature-text { order: unset; }
+      .feature-row.flip .feature-image { order: unset; }
+      .feature-heading { font-size: 30px; }
       footer { padding: 28px 24px; }
       .footer-copy { font-size: 12px; }
     }
@@ -559,65 +469,52 @@
     </p>
   </div>
 
-  <!-- ══════════════ APP ══════════════ -->
-  <div class="cs-deliverable">
-    <div class="cs-deliverable-header">
-      <span class="cs-deliverable-tag">Deliverable 01</span>
-      <h3 class="cs-deliverable-title">The App</h3>
-    </div>
-    <p class="cs-deliverable-caption">
-      Dark, immersive, with a glass card at the centre. Ci lives inside the app to answer questions, flag subscriptions, and predict cashflow. It adapts to how you actually use money. Everything else is there too: crypto, savings goals, spending limits, instant transfers.
-    </p>
-    <img
-      src="cipher-app-hand.png"
-      alt="Cipher app screens spread across an iPhone in hand"
-      class="cs-deliverable-img--contained"
-    />
-  </div>
+  <!-- ══════════════ FEATURES ══════════════ -->
+  <section class="cs-features">
 
-  <!-- ══════════════ WEBSITE ══════════════ -->
-  <div class="cs-deliverable" style="padding-bottom: 40px;">
-    <div class="cs-deliverable-header">
-      <span class="cs-deliverable-tag">Deliverable 02</span>
-      <h3 class="cs-deliverable-title">The Website</h3>
-    </div>
-    <p class="cs-deliverable-caption">
-      Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
-    </p>
-  </div>
-
-  <!-- Browser scroll mockup -->
-  <div class="cs-browser-section">
-    <div class="cs-browser-sticky">
-      <div class="cs-browser-frame">
-        <div class="cs-browser-bar">
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-url-bar">cipher.com</div>
-        </div>
-        <div class="cs-browser-screen">
-          <img src="cipher-website.png" class="cs-browser-content" alt="Cipher website" />
-        </div>
+    <!-- The App -->
+    <div class="feature-row reveal">
+      <div class="feature-text">
+        <p class="feature-label">The App</p>
+        <h2 class="feature-heading">Ci handles the thinking</h2>
+        <p class="feature-body">
+          Dark, immersive, with a glass card at the centre. Ci lives inside the app to answer questions, flag subscriptions, and predict cashflow. It adapts to how you actually use money. Everything else is there too: crypto, savings goals, spending limits, instant transfers.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="cipher-app-hand.png" alt="Cipher app screens spread across an iPhone in hand" />
       </div>
     </div>
-  </div>
 
-  <!-- ══════════════ BRAND ══════════════ -->
-  <div class="cs-deliverable">
-    <div class="cs-deliverable-header">
-      <span class="cs-deliverable-tag">Deliverable 03</span>
-      <h3 class="cs-deliverable-title">Brand Guidelines</h3>
+    <!-- The Website -->
+    <div class="feature-row flip reveal">
+      <div class="feature-text">
+        <p class="feature-label">The Website</p>
+        <h2 class="feature-heading">Introducing Ci</h2>
+        <p class="feature-body">
+          Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="cipher-website.png" alt="Cipher website landing page" />
+      </div>
     </div>
-    <p class="cs-deliverable-caption">
-      The mark comes from Ci, the app's AI. Stack a C and an I and you get a Psi. Raleway typeface, electric green on near-black, and a tone that's confident without being corporate.
-    </p>
-    <img
-      src="cipher-brand.png"
-      alt="Cipher brand collage showing logo, typography, card, and colour palette"
-      class="cs-deliverable-img--contained"
-    />
-  </div>
+
+    <!-- Brand -->
+    <div class="feature-row reveal">
+      <div class="feature-text">
+        <p class="feature-label">Brand</p>
+        <h2 class="feature-heading">The mark comes from Ci</h2>
+        <p class="feature-body">
+          Stack a C and an I and you get a Psi. Raleway typeface, electric green on near-black, and a tone that's confident without being corporate.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="cipher-brand.png" alt="Cipher brand collage showing logo, typography, card, and colour palette" />
+      </div>
+    </div>
+
+  </section>
 
 
   <!-- ══════════════ FOOTER ══════════════ -->
