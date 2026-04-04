@@ -348,30 +348,28 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
     }
 
-    /* ── Website intro text ── */
-    .cs-website-section {
-      padding: 0 80px;
-      margin-bottom: 60px;
-    }
-
-    .cs-website-intro {
-      max-width: 640px;
-      margin: 0 auto;
-      text-align: center;
-    }
-
     /* ── Browser tab mockup ── */
     .cs-browser-section {
-      height: 200vh;
+      height: 250vh;
       margin-bottom: 120px;
     }
 
     .cs-browser-sticky {
       position: sticky;
-      top: 80px;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       padding: 0 80px;
-      max-width: 1400px;
-      margin: 0 auto;
+      gap: 32px;
+    }
+
+    .cs-website-intro {
+      max-width: 640px;
+      text-align: center;
+      flex-shrink: 0;
     }
 
     .cs-browser-frame {
@@ -414,7 +412,7 @@
     }
 
     .cs-browser-screen {
-      height: 52vh;
+      height: 44vh;
       overflow: hidden;
       position: relative;
     }
@@ -452,9 +450,8 @@
       .cs-features { padding: 0 40px 100px; gap: 80px; }
       .feature-row { gap: 48px; }
       .feature-heading { font-size: 36px; }
-      .cs-website-section { padding: 0 40px; }
       .cs-browser-sticky { padding: 0 40px; }
-      .cs-browser-screen { height: 44vh; }
+      .cs-browser-screen { height: 38vh; }
       footer { padding: 36px 40px; }
     }
 
@@ -479,10 +476,9 @@
       .feature-row.flip .feature-text { order: unset; }
       .feature-row.flip .feature-image { order: unset; }
       .feature-heading { font-size: 30px; }
-      .cs-website-section { padding: 0 24px; }
-      .cs-browser-section { height: 260vh; }
+      .cs-browser-section { height: 270vh; }
       .cs-browser-sticky { padding: 0 24px; }
-      .cs-browser-screen { height: 36vh; }
+      .cs-browser-screen { height: 32vh; }
       footer { padding: 28px 24px; }
       .footer-copy { font-size: 12px; }
     }
@@ -554,20 +550,17 @@
   </div>
 
   <!-- ══════════════ WEBSITE INTRO ══════════════ -->
-  <div class="cs-website-section">
-    <div class="cs-website-intro reveal">
-      <p class="feature-label">The Website</p>
-      <h2 class="feature-heading">Introducing Ci</h2>
-      <p class="feature-body">
-        Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
-      </p>
-    </div>
-  </div>
-
   <!-- ══════════════ BROWSER ══════════════ -->
   <div class="cs-browser-section">
     <div class="cs-browser-sticky">
-      <div class="cs-browser-frame">
+      <div class="cs-website-intro reveal">
+        <p class="feature-label">The Website</p>
+        <h2 class="feature-heading">Introducing Ci</h2>
+        <p class="feature-body">
+          Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
+        </p>
+      </div>
+      <div class="cs-browser-frame" style="width: 100%; max-width: 1240px;">
         <div class="cs-browser-bar">
           <div class="cs-browser-dot"></div>
           <div class="cs-browser-dot"></div>
