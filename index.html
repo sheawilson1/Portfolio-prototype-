@@ -419,12 +419,14 @@
     ══════════════════════════════════════ */
 
     .featured-card {
-      display: block;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-decoration: none;
       color: inherit;
       background: var(--card-bg);
       border-radius: 20px;
-      padding: 48px 48px 0;
+      padding: 52px 52px 0;
       margin-bottom: 36px;
       overflow: hidden;
       box-shadow: none;
@@ -441,9 +443,10 @@
     .featured-card-inner {
       display: flex;
       flex-direction: column;
+      align-items: center;
+      text-align: center;
       gap: 12px;
-      max-width: 600px;
-      margin-bottom: 40px;
+      margin-bottom: 48px;
     }
 
     .featured-eyebrow {
@@ -459,8 +462,8 @@
       font-family: 'Spectral', serif;
       font-weight: 600;
       font-style: italic;
-      font-size: 52px;
-      letter-spacing: -2px;
+      font-size: 64px;
+      letter-spacing: -2.5px;
       line-height: 1;
       color: var(--text);
       transition: color 0.55s ease;
@@ -474,6 +477,7 @@
       color: rgba(var(--text-rgb), 0.70);
       line-height: 1.4;
       margin-top: 4px;
+      max-width: 480px;
     }
 
     .featured-view-label {
@@ -495,40 +499,22 @@
     }
 
     .featured-video-wrap {
-      border-radius: 12px 12px 0 0;
+      border-radius: 20px 20px 0 0;
       overflow: hidden;
-      max-width: 340px;
+      width: 100%;
+      max-width: 860px;
       margin: 0 auto;
+      box-shadow: 0 -8px 40px rgba(0,0,0,0.10);
     }
 
     .featured-video-wrap video {
       width: 100%;
       display: block;
-      border-radius: 12px 12px 0 0;
-    }
-
-    @media (min-width: 760px) {
-      .featured-card {
-        display: grid;
-        grid-template-columns: 1fr auto;
-        gap: 0 48px;
-        align-items: flex-end;
-        padding: 48px 48px 0;
-      }
-
-      .featured-card-inner {
-        margin-bottom: 60px;
-        align-self: center;
-      }
-
-      .featured-video-wrap {
-        max-width: 240px;
-        margin: 0;
-      }
     }
 
     @media (max-width: 1024px) {
-      .featured-name { font-size: 40px; letter-spacing: -1.5px; }
+      .featured-name { font-size: 48px; letter-spacing: -2px; }
+      .featured-video-wrap { max-width: 340px; }
     }
 
     @media (max-width: 640px) {
@@ -981,7 +967,7 @@
   <!-- ══════════════ WORK ══════════════ -->
   <section id="work">
     <div class="section-header">
-      <h2 class="section-title reveal">Selected Work</h2>
+      <h2 class="section-title reveal">Work</h2>
       <p class="section-subtitle reveal delay-1">
         Design and code, together.
       </p>
@@ -1001,6 +987,7 @@
       </div>
       <span class="featured-view-label">View case study</span>
     </a>
+
 
     <div class="cards-row">
 

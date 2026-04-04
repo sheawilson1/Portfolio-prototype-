@@ -255,13 +255,14 @@
 
     /* ── Demo video ── */
     .cs-video-wrap {
-      max-width: 320px;
-      margin: 60px auto 80px;
-      border-radius: 32px;
+      max-width: 900px;
+      width: calc(100% - 160px);
+      margin: 60px auto 100px;
+      border-radius: 24px;
       overflow: hidden;
       opacity: 0;
       animation: fadeUp 0.7s ease 0.3s forwards;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.18);
+      box-shadow: 0 40px 100px rgba(0,0,0,0.22);
     }
 
     .cs-video-wrap video {
@@ -287,8 +288,8 @@
       width: 100%;
     }
 
-    .feature-row.flip .feature-text { order: 1; }
-    .feature-row.flip .feature-image { order: 2; }
+    .feature-row.flip .feature-text { order: 2; }
+    .feature-row.flip .feature-image { order: 1; }
 
     .feature-label {
       font-family: 'DM Sans', sans-serif;
@@ -328,9 +329,18 @@
     .feature-image img {
       width: 100%;
       max-width: 280px;
-      border-radius: 28px;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.14);
+      border-radius: 44px;
       display: block;
+      mix-blend-mode: multiply;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
+    }
+
+    body.dark .feature-image img {
+      mix-blend-mode: normal;
+      box-shadow:
+        0 24px 60px rgba(0,0,0,0.5),
+        0 0 0 1px rgba(255,255,255,0.06),
+        0 0 60px rgba(120,80,255,0.18);
     }
 
     /* ── Stack strip ── */
