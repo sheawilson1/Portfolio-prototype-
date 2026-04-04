@@ -1194,23 +1194,27 @@
     ───────────────────────────────────────── */
 
     const PERSPECTIVE  = 1200;
-    const MAX_TILT     = 7;
     const TILT_LERP    = 0.09;
 
+    /* Per-card max tilt: featured card is larger so needs less rotation
+       for the same perceptual effect as the smaller three cards */
+    const TILT_MAX = { braindump: 5, cipher: 10, amp: 10, captr: 10 };
+
     const cards = Array.from(document.querySelectorAll('[data-card]'));
-    let tRX = 0, tRY = 0;
-    let cRX = 0, cRY = 0;
+    /* Per-card lerp state */
+    const cardState = new Map();
+    cards.forEach(c => cardState.set(c, { cRX: 0, cRY: 0 }));
+
+    let tNX = 0, tNY = 0; /* normalised -1..1 */
     const isTouchDevice = matchMedia('(hover: none)').matches;
 
     /* ── Desktop: mouse-driven tilt ── */
     if (!isTouchDevice) {
       document.addEventListener('mousemove', e => {
-        const nx = (e.clientX / window.innerWidth)  * 2 - 1;
-        const ny = (e.clientY / window.innerHeight) * 2 - 1;
-        tRY =  nx * MAX_TILT;
-        tRX = -ny * MAX_TILT;
+        tNX = (e.clientX / window.innerWidth)  * 2 - 1;
+        tNY = (e.clientY / window.innerHeight) * 2 - 1;
       });
-      document.addEventListener('mouseleave', () => { tRX = 0; tRY = 0; });
+      document.addEventListener('mouseleave', () => { tNX = 0; tNY = 0; });
     }
 
     /* ── Mobile: gyroscope-driven tilt + touch fallback ── */
@@ -1224,10 +1228,8 @@
         const beta  = e.beta  || 0;
         const gamma = e.gamma || 0;
         /* Normalise: phone held upright (~45° beta) is neutral */
-        const normBeta  = Math.max(-MAX_TILT, Math.min(MAX_TILT, (beta - 45) * 0.25));
-        const normGamma = Math.max(-MAX_TILT, Math.min(MAX_TILT, gamma * 0.25));
-        tRX = -normBeta;
-        tRY =  normGamma;
+        tNX = Math.max(-1, Math.min(1, gamma * 0.025));
+        tNY = Math.max(-1, Math.min(1, (beta - 45) * 0.025));
       }
 
       function enableGyro() {
@@ -1258,24 +1260,27 @@
           if (gyroActive) return; /* gyro takes priority */
           const touch = e.touches[0];
           const rect  = cardsRow.getBoundingClientRect();
-          const nx = ((touch.clientX - rect.left) / rect.width)  * 2 - 1;
-          const ny = ((touch.clientY - rect.top)  / rect.height) * 2 - 1;
-          tRY =  nx * MAX_TILT;
-          tRX = -ny * MAX_TILT;
+          tNX = ((touch.clientX - rect.left) / rect.width)  * 2 - 1;
+          tNY = ((touch.clientY - rect.top)  / rect.height) * 2 - 1;
         }, { passive: true });
 
         cardsRow.addEventListener('touchend', () => {
-          if (!gyroActive) { tRX = 0; tRY = 0; }
+          if (!gyroActive) { tNX = 0; tNY = 0; }
         }, { passive: true });
       }
     }
 
-    /* ── Shared animation loop ── */
+    /* ── Shared animation loop — per-card max tilt ── */
     (function tiltTick() {
-      cRX += (tRX - cRX) * TILT_LERP;
-      cRY += (tRY - cRY) * TILT_LERP;
-      const t = `perspective(${PERSPECTIVE}px) rotateX(${cRX.toFixed(3)}deg) rotateY(${cRY.toFixed(3)}deg)`;
-      cards.forEach(c => c.style.transform = t);
+      cards.forEach(c => {
+        const max = TILT_MAX[c.dataset.card] || 8;
+        const tRX = -tNY * max;
+        const tRY =  tNX * max;
+        const s = cardState.get(c);
+        s.cRX += (tRX - s.cRX) * TILT_LERP;
+        s.cRY += (tRY - s.cRY) * TILT_LERP;
+        c.style.transform = `perspective(${PERSPECTIVE}px) rotateX(${s.cRX.toFixed(3)}deg) rotateY(${s.cRY.toFixed(3)}deg)`;
+      });
       requestAnimationFrame(tiltTick);
     })();
 
