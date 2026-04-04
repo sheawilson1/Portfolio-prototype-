@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Brain Dump — Shea Wilson</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
+    rel="stylesheet"
+  />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    /* ── Theme variables ── */
+    :root {
+      --bg: #ffffff;
+      --bg-rgb: 255, 255, 255;
+      --text: #0a0a0a;
+      --text-rgb: 10, 10, 10;
+      --card-bg: #f5f5f5;
+    }
+
+    body.dark {
+      --bg: #000000;
+      --bg-rgb: 0, 0, 0;
+      --text: #f0f0f0;
+      --text-rgb: 240, 240, 240;
+      --card-bg: #111111;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      cursor: none;
+      overflow-x: hidden;
+      transition:
+        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
+        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    @media (hover: none) {
+      body { cursor: auto; }
+      #cursor-dot, #cursor-ring { display: none; }
+    }
+
+    /* ── Custom cursor ── */
+    #cursor-dot {
+      position: fixed;
+      width: 6px; height: 6px;
+      background: var(--text);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition: opacity 0.3s ease, background 0.55s ease;
+      will-change: left, top;
+    }
+
+    #cursor-ring {
+      position: fixed;
+      width: 30px; height: 30px;
+      border: 1.5px solid rgba(var(--text-rgb), 0.32);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      top: 0; left: 0;
+      transform: translate(-50%, -50%);
+      transition:
+        width 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
+        border-color 0.3s ease, opacity 0.3s ease;
+      will-change: left, top, width, height;
+    }
+
+    body.cursor-hover #cursor-ring {
+      width: 52px; height: 52px;
+      border-color: rgba(var(--text-rgb), 0.16);
+    }
+
+    /* ── Nav ── */
+    nav#main-nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 72px;
+      padding: 0 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 1000;
+      transition: background 0.5s ease, backdrop-filter 0.5s ease;
+    }
+
+    nav#main-nav.scrolled {
+      background: rgba(var(--bg-rgb), 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+
+    .nav-logo {
+      font-family: 'Spectral', serif;
+      font-style: italic;
+      font-weight: 400;
+      font-size: 22px;
+      color: var(--text);
+      text-decoration: none;
+      letter-spacing: -0.5px;
+      transition: color 0.55s ease;
+    }
+
+    .nav-right { display: flex; align-items: center; gap: 40px; }
+    .nav-links { display: flex; gap: 44px; list-style: none; }
+
+    .nav-links a {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      color: rgba(var(--text-rgb), 0.6);
+      text-decoration: none;
+      position: relative;
+      transition: color 0.25s ease;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -2px; left: 0;
+      width: 0; height: 1px;
+      background: var(--text);
+      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── Theme toggle ── */
+    .theme-toggle {
+      appearance: none;
+      background: none;
+      border: 1.5px solid rgba(var(--text-rgb), 0.18);
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      cursor: none;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      transition: border-color 0.3s ease, transform 0.5s cubic-bezier(0.23, 1, 0.32, 1), color 0.55s ease;
+    }
+
+    .theme-toggle:hover { border-color: rgba(var(--text-rgb), 0.42); transform: scale(1.08); }
+    .theme-toggle:active { transform: scale(0.95); }
+
+    .toggle-sun, .toggle-moon {
+      position: absolute;
+      width: 18px; height: 18px;
+      transition: opacity 0.4s ease, transform 0.55s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .toggle-sun { opacity: 1; transform: rotate(0deg) scale(1); }
+    .toggle-moon { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+    body.dark .toggle-sun { opacity: 0; transform: rotate(90deg) scale(0.5); }
+    body.dark .toggle-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+
+    /* ── Back button ── */
+    .cs-back {
+      position: sticky;
+      top: 72px; left: 0; right: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 80px;
+      background: rgba(var(--bg-rgb), 0.82);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 14px;
+      color: rgba(var(--text-rgb), 0.55);
+      text-decoration: none;
+      cursor: none;
+      z-index: 999;
+      transition: color 0.2s ease, background 0.5s ease;
+    }
+
+    .cs-back:hover { color: var(--text); }
+    .cs-back svg { transition: transform 0.25s ease; }
+    .cs-back:hover svg { transform: translateX(-3px); }
+
+    /* ── Scroll reveal ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(26px);
+      transition: opacity 0.9s cubic-bezier(0.23, 1, 0.32, 1), transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .delay-1 { transition-delay: 0.10s; }
+    .delay-2 { transition-delay: 0.20s; }
+    .delay-3 { transition-delay: 0.30s; }
+
+    /* ── Hero ── */
+    .cs-hero {
+      padding: 100px 80px 60px;
+      text-align: center;
+      opacity: 0;
+      transform: translateY(24px);
+      animation: fadeUp 0.7s ease 0.1s forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .cs-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+      margin-bottom: 24px;
+    }
+
+    .cs-title {
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 100px;
+      letter-spacing: -4.5px;
+      line-height: 1;
+      color: var(--text);
+      margin-bottom: 28px;
+      transition: color 0.55s ease;
+    }
+
+    .cs-subtitle {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 200;
+      font-size: 24px;
+      color: rgba(var(--text-rgb), 0.55);
+      max-width: 480px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    /* ── Demo video ── */
+    .cs-video-wrap {
+      max-width: 320px;
+      margin: 60px auto 80px;
+      border-radius: 32px;
+      overflow: hidden;
+      opacity: 0;
+      animation: fadeUp 0.7s ease 0.3s forwards;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.18);
+    }
+
+    .cs-video-wrap video {
+      width: 100%;
+      display: block;
+    }
+
+    /* ── Features ── */
+    .cs-features {
+      padding: 0 80px 120px;
+      display: flex;
+      flex-direction: column;
+      gap: 120px;
+    }
+
+    .feature-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+      max-width: 1080px;
+      margin: 0 auto;
+      width: 100%;
+    }
+
+    .feature-row.flip .feature-text { order: 1; }
+    .feature-row.flip .feature-image { order: 2; }
+
+    .feature-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.35);
+      margin-bottom: 20px;
+    }
+
+    .feature-heading {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 44px;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      color: var(--text);
+      margin-bottom: 24px;
+      transition: color 0.55s ease;
+    }
+
+    .feature-body {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.75;
+      color: rgba(var(--text-rgb), 0.62);
+    }
+
+    .feature-image {
+      display: flex;
+      justify-content: center;
+    }
+
+    .feature-image img {
+      width: 100%;
+      max-width: 280px;
+      border-radius: 28px;
+      box-shadow: 0 24px 60px rgba(0,0,0,0.14);
+      display: block;
+    }
+
+    /* ── Stack strip ── */
+    .cs-stack {
+      padding: 60px 80px;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+      border-bottom: 1px solid rgba(var(--text-rgb), 0.07);
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px 32px;
+    }
+
+    .stack-item {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.35);
+    }
+
+    /* ── CTA ── */
+    .cs-cta {
+      padding: 120px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 36px;
+    }
+
+    .cs-cta-heading {
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-size: 60px;
+      letter-spacing: -2.5px;
+      line-height: 1;
+      color: var(--text);
+      transition: color 0.55s ease;
+    }
+
+    .cs-cta-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 18px 44px;
+      border: 1.5px solid rgba(var(--text-rgb), 0.28);
+      border-radius: 100px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 16px;
+      color: var(--text);
+      text-decoration: none;
+      cursor: none;
+      transition:
+        border-color 0.3s ease,
+        background 0.3s ease,
+        color 0.3s ease;
+    }
+
+    .cs-cta-link:hover {
+      border-color: var(--text);
+      background: var(--text);
+      color: var(--bg);
+    }
+
+    /* ── Footer ── */
+    footer {
+      padding: 36px 80px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+    }
+
+    .footer-copy {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 13px;
+      color: rgba(var(--text-rgb), 0.3);
+    }
+
+    /* ── Responsive: Tablet ── */
+    @media (max-width: 1024px) {
+      nav#main-nav { padding: 0 40px; }
+      .cs-back { padding: 24px 40px; }
+      .cs-hero { padding: 80px 40px 40px; }
+      .cs-title { font-size: 72px; letter-spacing: -3px; }
+      .cs-features { padding: 0 40px 100px; gap: 80px; }
+      .feature-row { gap: 48px; }
+      .feature-heading { font-size: 36px; }
+      .cs-stack { padding: 48px 40px; }
+      .cs-cta { padding: 80px 40px; }
+      .cs-cta-heading { font-size: 48px; }
+      footer { padding: 36px 40px; }
+    }
+
+    /* ── Responsive: Phone ── */
+    @media (max-width: 640px) {
+      nav#main-nav { padding: 0 24px; height: 64px; }
+      .nav-logo { font-size: 20px; }
+      .nav-right { gap: 24px; }
+      .nav-links { gap: 24px; }
+      .nav-links a { font-size: 13px; }
+      .theme-toggle { width: 44px; height: 44px; }
+      .cs-back { top: 64px; padding: 20px 24px; font-size: 13px; }
+      .cs-hero { padding: 40px 24px 32px; }
+      .cs-title { font-size: 52px; letter-spacing: -2px; margin-bottom: 20px; }
+      .cs-subtitle { font-size: 18px; }
+      .cs-video-wrap { max-width: 260px; margin: 40px auto 60px; }
+      .cs-features { padding: 0 24px 80px; gap: 64px; }
+      .feature-row {
+        grid-template-columns: 1fr;
+        gap: 36px;
+      }
+      .feature-row.flip .feature-text { order: 2; }
+      .feature-row.flip .feature-image { order: 1; }
+      .feature-heading { font-size: 30px; }
+      .cs-stack { padding: 40px 24px; gap: 10px 24px; }
+      .cs-cta { padding: 64px 24px; gap: 28px; }
+      .cs-cta-heading { font-size: 36px; letter-spacing: -1.5px; }
+      footer { padding: 28px 24px; }
+      .footer-copy { font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="cursor-dot"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- ══════════════ NAV ══════════════ -->
+  <nav id="main-nav">
+    <a href="index.html#hero" class="nav-logo">SW</a>
+    <div class="nav-right">
+      <ul class="nav-links">
+        <li><a href="index.html#work">Work</a></li>
+        <li><a href="index.html#about">About</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+      </ul>
+      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
+        <svg class="toggle-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="5"/>
+          <line x1="12" y1="1" x2="12" y2="3"/>
+          <line x1="12" y1="21" x2="12" y2="23"/>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+          <line x1="1" y1="12" x2="3" y2="12"/>
+          <line x1="21" y1="12" x2="23" y2="12"/>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+        </svg>
+        <svg class="toggle-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════════ BACK ══════════════ -->
+  <a href="index.html#work" class="cs-back" aria-label="Back to work">
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+      <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    Back to work
+  </a>
+
+  <!-- ══════════════ HERO ══════════════ -->
+  <div class="cs-hero">
+    <p class="cs-eyebrow">Case study</p>
+    <h1 class="cs-title">Brain Dump</h1>
+    <p class="cs-subtitle">Type or speak freely. AI figures out the rest.</p>
+  </div>
+
+  <!-- ══════════════ DEMO VIDEO ══════════════ -->
+  <div class="cs-video-wrap">
+    <video autoplay muted loop playsinline>
+      <source src="braindump-demo.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- ══════════════ FEATURES ══════════════ -->
+  <section class="cs-features">
+
+    <!-- 1: Card selection -->
+    <div class="feature-row reveal">
+      <div class="feature-text">
+        <p class="feature-label">Onboarding</p>
+        <h2 class="feature-heading">Your dashboard, your way</h2>
+        <p class="feature-body">
+          Brain Dump isn't a fixed tool. On setup, you pick the cards that actually matter to your life — tasks, routines, ideas, projects, sleep, money. The dashboard only shows what you chose. It's the first decision you make, and it sets the tone for how the whole app feels.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="braindump-card-selection.png" alt="Brain Dump card selection screen showing options for Tasks, Routines, Ideas, Sleep, Projects and Money" />
+      </div>
+    </div>
+
+    <!-- 2: Home screen (flipped) -->
+    <div class="feature-row flip reveal">
+      <div class="feature-text">
+        <p class="feature-label">Dashboard</p>
+        <h2 class="feature-heading">Everything in one place</h2>
+        <p class="feature-body">
+          The home screen surfaces what needs your attention — overdue tasks, what's due today, how the week's going. Cards stack in the order you set. The purple brain button is always one tap away. It's designed to be the first thing you check in the morning and the last thing you update at night.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="braindump-home.png" alt="Brain Dump home screen showing tasks, routines and weekly earnings" />
+      </div>
+    </div>
+
+    <!-- 3: Voice input -->
+    <div class="feature-row reveal">
+      <div class="feature-text">
+        <p class="feature-label">Voice mode</p>
+        <h2 class="feature-heading">Just speak</h2>
+        <p class="feature-body">
+          Tap the brain, drag to unlock, and start talking. No typing, no formatting, no thinking about where something belongs. The interface strips back to almost nothing — a glowing orb and a question. It's built for the moments when your hands are busy or your thoughts are moving faster than your fingers.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="braindump-voice.png" alt="Brain Dump voice input screen with glowing purple orb and the prompt: So, what's on your mind?" />
+      </div>
+    </div>
+
+    <!-- 4: AI output (flipped) -->
+    <div class="feature-row flip reveal">
+      <div class="feature-text">
+        <p class="feature-label">AI categorisation</p>
+        <h2 class="feature-heading">Katara does the rest</h2>
+        <p class="feature-body">
+          Once you've typed or spoken, Katara — the AI at the core of Brain Dump — reads what you said and pulls out the tasks, dates, and intentions buried in it. You see exactly what it found, confirm what looks right, and it's logged. No manual sorting. The thinking is done before you've put your phone down.
+        </p>
+      </div>
+      <div class="feature-image">
+        <img src="braindump-ai-input.png" alt="Brain Dump AI output screen showing Katara categorising a spoken brain dump into two tasks with dates" />
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ══════════════ STACK ══════════════ -->
+  <div class="cs-stack reveal">
+    <span class="stack-item">Next.js</span>
+    <span class="stack-item">TypeScript</span>
+    <span class="stack-item">Tailwind CSS</span>
+    <span class="stack-item">Supabase</span>
+    <span class="stack-item">Vercel</span>
+    <span class="stack-item">Claude API</span>
+    <span class="stack-item">Google Auth</span>
+  </div>
+
+  <!-- ══════════════ CTA ══════════════ -->
+  <div class="cs-cta reveal">
+    <h2 class="cs-cta-heading">Try it yourself.</h2>
+    <a href="https://braindump.app" class="cs-cta-link" target="_blank" rel="noopener">
+      Open Brain Dump
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- ══════════════ FOOTER ══════════════ -->
+  <footer>
+    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
+  </footer>
+
+  <script>
+    /* ── Custom cursor ── */
+    const dot  = document.getElementById('cursor-dot');
+    const ring = document.getElementById('cursor-ring');
+    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
+    let ringX = mouseX, ringY = mouseY;
+
+    document.addEventListener('mousemove', e => {
+      mouseX = e.clientX; mouseY = e.clientY;
+      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
+    });
+
+    (function animateRing() {
+      ringX += (mouseX - ringX) * 0.13;
+      ringY += (mouseY - ringY) * 0.13;
+      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
+      requestAnimationFrame(animateRing);
+    })();
+
+    document.addEventListener('mouseover', e => {
+      if (e.target.closest('a, button')) document.body.classList.add('cursor-hover');
+    });
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('a, button')) document.body.classList.remove('cursor-hover');
+    });
+    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
+    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
+
+    /* ── Nav scroll ── */
+    const mainNav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      mainNav.classList.toggle('scrolled', window.scrollY > 60);
+    }, { passive: true });
+
+    /* ── Scroll reveal ── */
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+    /* ── Dark mode ── */
+    const themeToggle = document.getElementById('theme-toggle');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+    const savedTheme = localStorage.getItem('theme');
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
+      document.body.classList.add('dark');
+    }
+
+    themeToggle.addEventListener('click', () => {
+      document.body.classList.toggle('dark');
+      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
+    });
+
+    systemPrefersDark.addEventListener('change', e => {
+      if (!localStorage.getItem('theme')) document.body.classList.toggle('dark', e.matches);
+    });
+  </script>
+
+</body>
+</html>

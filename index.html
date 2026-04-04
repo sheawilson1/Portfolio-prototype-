@@ -12,9 +12,6 @@
     rel="stylesheet"
   />
 
-  <!-- Spline 3D viewer web component -->
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
-
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -26,23 +23,23 @@
     ══════════════════════════════════════ */
 
     :root {
-      --bg: #fff6e8;
-      --bg-rgb: 255, 246, 232;
-      --text: #2c3543;
-      --text-rgb: 44, 53, 67;
-      --card-bg: #ffffff;
-      --surface: rgba(44, 53, 67, 0.03);
+      --bg: #ffffff;
+      --bg-rgb: 255, 255, 255;
+      --text: #0a0a0a;
+      --text-rgb: 10, 10, 10;
+      --card-bg: #f5f5f5;
+      --surface: rgba(10, 10, 10, 0.03);
       --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.13);
     }
 
     body.dark {
-      --bg: #1a1e26;
-      --bg-rgb: 26, 30, 38;
-      --text: #e0dcd6;
-      --text-rgb: 224, 220, 214;
-      --card-bg: #252b35;
-      --surface: rgba(224, 220, 214, 0.04);
-      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.42);
+      --bg: #000000;
+      --bg-rgb: 0, 0, 0;
+      --text: #f0f0f0;
+      --text-rgb: 240, 240, 240;
+      --card-bg: #111111;
+      --surface: rgba(240, 240, 240, 0.04);
+      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.6);
     }
 
 
@@ -306,6 +303,20 @@
       transition: color 0.55s ease;
     }
 
+    .hero-word { display: inline-block; }
+
+    .hero-letter {
+      display: inline-block;
+      will-change: transform;
+      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
+      animation: heroFloat 4s ease-in-out calc(1.3s + var(--i) * 0.15s) infinite;
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-7px); }
+    }
+
     .hero-tagline {
       margin-top: 44px;
       font-family: 'DM Sans', sans-serif;
@@ -401,6 +412,130 @@
       line-height: 1.5;
       color: rgba(var(--text-rgb), 0.58);
       transition: color 0.55s ease;
+    }
+
+    /* ══════════════════════════════════════
+       FEATURED CARD — Brain Dump
+    ══════════════════════════════════════ */
+
+    .featured-card {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      background: var(--card-bg);
+      border-radius: 20px;
+      padding: 48px 48px 0;
+      margin-bottom: 36px;
+      overflow: hidden;
+      box-shadow: none;
+      transition: box-shadow 280ms ease, background 0.55s ease;
+      will-change: transform;
+      cursor: none;
+      position: relative;
+    }
+
+    .featured-card:hover {
+      box-shadow: var(--shadow-hover);
+    }
+
+    .featured-card-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-width: 600px;
+      margin-bottom: 40px;
+    }
+
+    .featured-eyebrow {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+    }
+
+    .featured-name {
+      font-family: 'Spectral', serif;
+      font-weight: 600;
+      font-style: italic;
+      font-size: 52px;
+      letter-spacing: -2px;
+      line-height: 1;
+      color: var(--text);
+      transition: color 0.55s ease;
+    }
+
+    .featured-desc {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 400;
+      font-size: 20px;
+      letter-spacing: -0.5px;
+      color: rgba(var(--text-rgb), 0.70);
+      line-height: 1.4;
+      margin-top: 4px;
+    }
+
+    .featured-view-label {
+      position: absolute;
+      bottom: 20px;
+      right: 28px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.3);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .featured-card:hover .featured-view-label {
+      opacity: 1;
+    }
+
+    .featured-video-wrap {
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      max-width: 340px;
+      margin: 0 auto;
+    }
+
+    .featured-video-wrap video {
+      width: 100%;
+      display: block;
+      border-radius: 12px 12px 0 0;
+    }
+
+    @media (min-width: 760px) {
+      .featured-card {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        gap: 0 48px;
+        align-items: flex-end;
+        padding: 48px 48px 0;
+      }
+
+      .featured-card-inner {
+        margin-bottom: 60px;
+        align-self: center;
+      }
+
+      .featured-video-wrap {
+        max-width: 240px;
+        margin: 0;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .featured-name { font-size: 40px; letter-spacing: -1.5px; }
+    }
+
+    @media (max-width: 640px) {
+      .featured-card { padding: 32px 28px 0; margin-bottom: 24px; }
+      .featured-name { font-size: 36px; }
+      .featured-desc { font-size: 17px; }
+      .featured-video-wrap { max-width: 260px; }
     }
 
     .cards-row {
@@ -508,7 +643,7 @@
 
     .card-image--captr img {
       border-radius: 15px 15px 0 0;
-      filter: drop-shadow(-4px 4px 8px rgba(0, 0, 0, 0.15));
+      box-shadow: -4px 4px 4px 0px rgba(0, 0, 0, 0.25);
     }
 
     .card-image--amp {
@@ -575,22 +710,47 @@
       margin-top: 18px;
     }
 
-    /* Right side: interactive 3D sphere */
-    .about-visual {
-      aspect-ratio: 4 / 5;
-      border-radius: 20px;
-      position: relative;
-      overflow: hidden;
-      background: var(--surface);
-      transition: background 0.55s ease;
+    /* Right side: tools grid */
+    .about-tools {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
-    .about-visual iframe {
-      width: 100%;
-      height: 100%;
-      border: none;
-      border-radius: 20px;
-      display: block;
+    .about-tools-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+      margin-bottom: 28px;
+      transition: color 0.55s ease;
+    }
+
+    .tools-grid {
+      display: flex;
+      gap: 48px;
+    }
+
+    .tools-col {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .tools-col li {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 20px;
+      color: rgba(var(--text-rgb), 0.68);
+      transition: color 0.55s ease;
+    }
+
+    @media (max-width: 640px) {
+      .tools-col li { font-size: 17px; }
+      .tools-grid { gap: 32px; }
     }
 
 
@@ -693,6 +853,10 @@
 
       #hero { padding: 72px 40px 80px; }
       .hero-name { font-size: 100px; letter-spacing: -5px; }
+      @keyframes heroFloat {
+        0%, 100% { transform: translateY(0); }
+        50%      { transform: translateY(-4px); }
+      }
       .hero-tagline { font-size: 20px; max-width: 360px; }
       .scroll-hint { right: 40px; }
 
@@ -733,6 +897,7 @@
       #hero { padding: 64px 24px 60px; min-height: 85vh; }
       .hero-eyebrow { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }
       .hero-name { font-size: 72px; letter-spacing: -3.5px; }
+      .hero-letter { animation: none; }
       .hero-tagline { font-size: 18px; margin-top: 32px; max-width: 300px; }
       .scroll-hint { display: none; }
 
@@ -802,7 +967,7 @@
   <!-- ══════════════ HERO ══════════════ -->
   <section id="hero">
     <p class="hero-eyebrow">Product Designer</p>
-    <h1 class="hero-name">Shea<br>Wilson</h1>
+    <h1 class="hero-name"><span class="hero-word"><span class="hero-letter" style="--i:0">S</span><span class="hero-letter" style="--i:1">h</span><span class="hero-letter" style="--i:2">e</span><span class="hero-letter" style="--i:3">a</span></span><br><span class="hero-word"><span class="hero-letter" style="--i:4">W</span><span class="hero-letter" style="--i:5">i</span><span class="hero-letter" style="--i:6">l</span><span class="hero-letter" style="--i:7">s</span><span class="hero-letter" style="--i:8">o</span><span class="hero-letter" style="--i:9">n</span></span></h1>
     <p class="hero-tagline">
       Designing software that feels as intelligent as the people using it.
     </p>
@@ -818,9 +983,24 @@
     <div class="section-header">
       <h2 class="section-title reveal">Selected Work</h2>
       <p class="section-subtitle reveal delay-1">
-        Three projects, each built around one idea: software should feel as intelligent as the people using it.
+        Design and code, together.
       </p>
     </div>
+
+    <!-- Brain Dump featured card -->
+    <a href="braindump.html" class="featured-card reveal" data-card="braindump">
+      <div class="featured-card-inner">
+        <p class="featured-eyebrow">Featured project</p>
+        <h3 class="featured-name">Brain Dump</h3>
+        <p class="featured-desc">Type or speak freely. AI figures out the rest.</p>
+      </div>
+      <div class="featured-video-wrap">
+        <video autoplay muted loop playsinline>
+          <source src="braindump-demo.mp4" type="video/mp4">
+        </video>
+      </div>
+      <span class="featured-view-label">View case study</span>
+    </a>
 
     <div class="cards-row">
 
@@ -881,22 +1061,37 @@
           Designed to<br><em>make sense.</em>
         </h2>
         <div class="about-body reveal delay-2">
-          <!-- Replace with your own bio -->
           <p>
-            I'm Shea Wilson, a product designer with a thing for the details nobody notices until they're missing. I work at the intersection of clarity and craft, building products that feel effortless to use.
+            I'm Shea Wilson, a second-year Digital Design student at Ulster University. I design interfaces and I build them.
           </p>
           <p>
-            Currently studying design. Currently thinking about how good software should get out of the way and let people think.
+            My biggest project right now is Brain Dump, a full-stack app where you type or speak freely and AI sorts everything into tasks, routines, ideas and projects. I designed it in Figma, built it with Next.js and Supabase, and it has real users in beta. It started as a personal project because I kept losing track of things across too many apps.
+          </p>
+          <p>
+            I've been using AI tools since ChatGPT first came out and more seriously for about a year. Claude Code to build, Perplexity and NotebookLM for research, Nano Banana 2 for images. I test most things when they come out. It's changed what I can get done on my own.
+          </p>
+          <p>
+            Most designers don't build. I think that's a mistake.
           </p>
         </div>
       </div>
 
-      <div class="about-visual reveal delay-2" aria-label="Interactive 3D sphere">
-        <iframe
-          src="https://my.spline.design/3dinteractivespheres-wMcbtRpMP6dmVFoSaKpyY6tG/"
-          loading="lazy"
-          title="Interactive 3D spheres"
-        ></iframe>
+      <div class="about-tools reveal delay-2">
+        <p class="about-tools-label">Tools &amp; stack</p>
+        <div class="tools-grid">
+          <ul class="tools-col">
+            <li>Figma</li>
+            <li>Photoshop</li>
+            <li>Illustrator</li>
+            <li>Next.js</li>
+          </ul>
+          <ul class="tools-col">
+            <li>Claude</li>
+            <li>Perplexity</li>
+            <li>NotebookLM</li>
+            <li>Nano Banana 2</li>
+          </ul>
+        </div>
       </div>
 
     </div>
@@ -1116,6 +1311,68 @@
     magneticBtn.addEventListener('mouseleave', () => {
       magneticBtn.style.transform = 'translate(0, 0)';
     });
+
+
+    /* ─────────────────────────────────────────
+       INTERACTION 8: KINETIC HERO TYPOGRAPHY
+       Desktop: letters repel from cursor.
+       Mobile: letters drift with gyroscope tilt.
+    ───────────────────────────────────────── */
+
+    const heroLetters = Array.from(document.querySelectorAll('.hero-letter'));
+    const heroSection = document.getElementById('hero');
+    const REPEL_RADIUS = 250;     // px — how close cursor needs to be
+    const REPEL_STRENGTH = 45;    // px — max displacement
+
+    if (!isTouchDevice && heroLetters.length) {
+      // Desktop: magnetic repulsion from cursor
+      (function kineticTick() {
+        // Only calculate when hero is in view (performance)
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroInView = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
+
+        if (heroInView) {
+          heroLetters.forEach(letter => {
+            const rect = letter.getBoundingClientRect();
+            const lx = rect.left + rect.width / 2;
+            const ly = rect.top + rect.height / 2;
+            const dx = lx - mouseX;
+            const dy = ly - mouseY;
+            const dist = Math.sqrt(dx * dx + dy * dy);
+
+            if (dist < REPEL_RADIUS) {
+              const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
+              const angle = Math.atan2(dy, dx);
+              const tx = Math.cos(angle) * force;
+              const ty = Math.sin(angle) * force;
+              letter.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
+            } else {
+              letter.style.transform = '';
+            }
+          });
+        }
+        requestAnimationFrame(kineticTick);
+      })();
+    }
+
+    if (isTouchDevice && heroLetters.length) {
+      // Mobile: gentle drift based on gyroscope tilt data (tRX/tRY from INTERACTION 4)
+      (function kineticMobileTick() {
+        const heroRect = heroSection.getBoundingClientRect();
+        const heroInView = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
+
+        if (heroInView) {
+          heroLetters.forEach(letter => {
+            const i = parseInt(letter.style.getPropertyValue('--i'));
+            const offsetScale = 1 + i * 0.15; // letters further in the word move more
+            const tx = cRY * 1.8 * offsetScale;
+            const ty = cRX * 1.2 * offsetScale;
+            letter.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
+          });
+        }
+        requestAnimationFrame(kineticMobileTick);
+      })();
+    }
 
 
     /* ─────────────────────────────────────────
