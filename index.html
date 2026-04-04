@@ -520,9 +520,10 @@
 
     @media (max-width: 640px) {
       .featured-card { padding: 32px 28px 0; margin-bottom: 24px; }
+      .featured-card-inner { align-items: flex-start; text-align: left; }
       .featured-name { font-size: 36px; }
       .featured-desc { font-size: 17px; }
-      .featured-video-wrap { max-width: 260px; }
+      .featured-video-wrap { max-width: 100%; }
     }
 
     .cards-row {
@@ -879,7 +880,7 @@
       .nav-right { gap: 24px; }
       .nav-links { gap: 24px; }
       .nav-links a { font-size: 13px; }
-      .theme-toggle { width: 44px; height: 44px; }
+      .theme-toggle { width: 44px; height: 44px; cursor: pointer; touch-action: manipulation; }
 
       #hero { padding: 64px 24px 60px; min-height: 85vh; }
       .hero-eyebrow { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }

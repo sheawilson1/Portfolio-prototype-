@@ -461,8 +461,9 @@
         grid-template-columns: 1fr;
         gap: 36px;
       }
-      .feature-row.flip .feature-text { order: 2; }
-      .feature-row.flip .feature-image { order: 1; }
+      /* On mobile always show text first, then image regardless of flip */
+      .feature-row.flip .feature-text { order: unset; }
+      .feature-row.flip .feature-image { order: unset; }
       .feature-heading { font-size: 30px; }
       .cs-stack { padding: 40px 24px; gap: 10px 24px; }
       .cs-cta { padding: 64px 24px; gap: 28px; }
