@@ -360,13 +360,13 @@
       text-align: center;
     }
 
-    /* ── Desktop monitor mockup ── */
-    .cs-monitor-section {
-      height: 220vh;
+    /* ── Browser tab mockup ── */
+    .cs-browser-section {
+      height: 200vh;
       margin-bottom: 120px;
     }
 
-    .cs-monitor-sticky {
+    .cs-browser-sticky {
       position: sticky;
       top: 80px;
       padding: 0 80px;
@@ -374,69 +374,55 @@
       margin: 0 auto;
     }
 
-    .cs-monitor {
-      background: linear-gradient(160deg, #404040 0%, #282828 100%);
-      border-radius: 12px 12px 0 0;
-      padding: 10px 10px 0;
-      box-shadow:
-        0 40px 100px rgba(0,0,0,0.4),
-        0 0 0 1px rgba(255,255,255,0.08),
-        inset 0 1px 0 rgba(255,255,255,0.12);
-      position: relative;
-    }
-
-    .cs-monitor::before {
-      content: '';
-      position: absolute;
-      top: 4px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 5px;
-      height: 5px;
-      background: #555;
-      border-radius: 50%;
-    }
-
-    .cs-monitor-screen {
-      background: #000;
-      border-radius: 4px 4px 0 0;
+    .cs-browser-frame {
+      background: #1c1c1e;
+      border-radius: 12px;
       overflow: hidden;
-      height: 65vh;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06);
+    }
+
+    .cs-browser-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 11px 16px;
+      background: #2c2c2e;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .cs-browser-dot {
+      width: 11px;
+      height: 11px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .cs-browser-dot:nth-child(1) { background: #ff5f57; }
+    .cs-browser-dot:nth-child(2) { background: #febc2e; }
+    .cs-browser-dot:nth-child(3) { background: #28c840; }
+
+    .cs-browser-url-bar {
+      flex: 1;
+      background: rgba(255,255,255,0.07);
+      border-radius: 5px;
+      padding: 4px 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      font-weight: 300;
+      color: rgba(255,255,255,0.32);
+      text-align: center;
+    }
+
+    .cs-browser-screen {
+      height: 52vh;
+      overflow: hidden;
       position: relative;
     }
 
-    .cs-monitor-content {
+    .cs-browser-content {
       width: 100%;
       display: block;
       will-change: transform;
-    }
-
-    .cs-monitor-chin {
-      background: linear-gradient(180deg, #383838 0%, #2a2a2a 100%);
-      height: 24px;
-      border-radius: 0 0 4px 4px;
-      border-top: 1px solid rgba(0,0,0,0.5);
-    }
-
-    .cs-monitor-neck {
-      width: 80px;
-      height: 20px;
-      background: linear-gradient(180deg, #2e2e2e 0%, #262626 100%);
-      margin: 0 auto;
-    }
-
-    .cs-monitor-base {
-      width: 220px;
-      height: 12px;
-      background: linear-gradient(180deg, #2e2e2e 0%, #262626 100%);
-      border-radius: 0 0 6px 6px;
-      margin: 0 auto;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
-    }
-
-    /* ── Tail features (Brand section) ── */
-    .cs-features--tail {
-      padding-top: 120px;
     }
 
     /* ── Footer ── */
@@ -467,8 +453,8 @@
       .feature-row { gap: 48px; }
       .feature-heading { font-size: 36px; }
       .cs-website-section { padding: 0 40px; }
-      .cs-monitor-sticky { padding: 0 40px; }
-      .cs-monitor-screen { height: 55vh; }
+      .cs-browser-sticky { padding: 0 40px; }
+      .cs-browser-screen { height: 44vh; }
       footer { padding: 36px 40px; }
     }
 
@@ -494,12 +480,9 @@
       .feature-row.flip .feature-image { order: unset; }
       .feature-heading { font-size: 30px; }
       .cs-website-section { padding: 0 24px; }
-      .cs-monitor-section { height: 280vh; }
-      .cs-monitor-sticky { padding: 0 24px; }
-      .cs-monitor-screen { height: 45vh; }
-      .cs-monitor-neck { width: 50px; }
-      .cs-monitor-base { width: 140px; }
-      .cs-features--tail { padding-top: 80px; }
+      .cs-browser-section { height: 260vh; }
+      .cs-browser-sticky { padding: 0 24px; }
+      .cs-browser-screen { height: 36vh; }
       footer { padding: 28px 24px; }
       .footer-copy { font-size: 12px; }
     }
@@ -570,8 +553,37 @@
     </p>
   </div>
 
-  <!-- ══════════════ APP ══════════════ -->
+  <!-- ══════════════ WEBSITE INTRO ══════════════ -->
+  <div class="cs-website-section">
+    <div class="cs-website-intro reveal">
+      <p class="feature-label">The Website</p>
+      <h2 class="feature-heading">Introducing Ci</h2>
+      <p class="feature-body">
+        Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════ BROWSER ══════════════ -->
+  <div class="cs-browser-section">
+    <div class="cs-browser-sticky">
+      <div class="cs-browser-frame">
+        <div class="cs-browser-bar">
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-dot"></div>
+          <div class="cs-browser-url-bar">cipher.com</div>
+        </div>
+        <div class="cs-browser-screen">
+          <img src="cipher-website.png" class="cs-browser-content" alt="Cipher website landing page" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════ APP + BRAND ══════════════ -->
   <section class="cs-features">
+
     <div class="feature-row reveal">
       <div class="feature-text">
         <p class="feature-label">The App</p>
@@ -584,36 +596,8 @@
         <img src="cipher-app-hand.png" alt="Cipher app screens spread across an iPhone in hand" />
       </div>
     </div>
-  </section>
 
-  <!-- ══════════════ WEBSITE INTRO ══════════════ -->
-  <div class="cs-website-section">
-    <div class="cs-website-intro reveal">
-      <p class="feature-label">The Website</p>
-      <h2 class="feature-heading">Introducing Ci</h2>
-      <p class="feature-body">
-        Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
-      </p>
-    </div>
-  </div>
-
-  <!-- ══════════════ MONITOR ══════════════ -->
-  <div class="cs-monitor-section">
-    <div class="cs-monitor-sticky">
-      <div class="cs-monitor">
-        <div class="cs-monitor-screen">
-          <img src="cipher-website.png" class="cs-monitor-content" alt="Cipher website landing page" />
-        </div>
-        <div class="cs-monitor-chin"></div>
-      </div>
-      <div class="cs-monitor-neck"></div>
-      <div class="cs-monitor-base"></div>
-    </div>
-  </div>
-
-  <!-- ══════════════ BRAND ══════════════ -->
-  <section class="cs-features cs-features--tail">
-    <div class="feature-row reveal">
+    <div class="feature-row flip reveal">
       <div class="feature-text">
         <p class="feature-label">Brand</p>
         <h2 class="feature-heading">The mark comes from Ci</h2>
@@ -625,6 +609,7 @@
         <img src="cipher-brand.png" alt="Cipher brand collage showing logo, typography, card, and colour palette" />
       </div>
     </div>
+
   </section>
 
 
@@ -689,23 +674,23 @@
       }
     });
 
-    /* ── Monitor scroll ── */
-    const monitorSection = document.querySelector('.cs-monitor-section');
-    const monitorContent = document.querySelector('.cs-monitor-content');
+    /* ── Browser scroll ── */
+    const browserSection = document.querySelector('.cs-browser-section');
+    const browserContent = document.querySelector('.cs-browser-content');
 
-    if (monitorSection && monitorContent) {
-      function updateMonitorScroll() {
-        const rect = monitorSection.getBoundingClientRect();
+    if (browserSection && browserContent) {
+      function updateBrowserScroll() {
+        const rect = browserSection.getBoundingClientRect();
         const scrolled = -rect.top;
-        const scrollable = monitorSection.offsetHeight - window.innerHeight;
+        const scrollable = browserSection.offsetHeight - window.innerHeight;
         const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        const imgH = monitorContent.offsetHeight;
-        const screenH = monitorContent.parentElement.offsetHeight;
+        const imgH = browserContent.offsetHeight;
+        const screenH = browserContent.parentElement.offsetHeight;
         const maxY = Math.max(0, imgH - screenH);
-        monitorContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
+        browserContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
       }
-      window.addEventListener('scroll', updateMonitorScroll, { passive: true });
-      updateMonitorScroll();
+      window.addEventListener('scroll', updateBrowserScroll, { passive: true });
+      updateBrowserScroll();
     }
   </script>
 
