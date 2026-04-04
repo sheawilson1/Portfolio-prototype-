@@ -293,7 +293,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 80px;
       align-items: center;
-      max-width: 1080px;
+      max-width: 1400px;
       margin: 0 auto;
       width: 100%;
     }
@@ -348,6 +348,97 @@
       box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
     }
 
+    /* ── Website intro text ── */
+    .cs-website-section {
+      padding: 0 80px;
+      margin-bottom: 60px;
+    }
+
+    .cs-website-intro {
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    /* ── Desktop monitor mockup ── */
+    .cs-monitor-section {
+      height: 220vh;
+      margin-bottom: 120px;
+    }
+
+    .cs-monitor-sticky {
+      position: sticky;
+      top: 80px;
+      padding: 0 80px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .cs-monitor {
+      background: linear-gradient(160deg, #404040 0%, #282828 100%);
+      border-radius: 12px 12px 0 0;
+      padding: 10px 10px 0;
+      box-shadow:
+        0 40px 100px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.08),
+        inset 0 1px 0 rgba(255,255,255,0.12);
+      position: relative;
+    }
+
+    .cs-monitor::before {
+      content: '';
+      position: absolute;
+      top: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 5px;
+      height: 5px;
+      background: #555;
+      border-radius: 50%;
+    }
+
+    .cs-monitor-screen {
+      background: #000;
+      border-radius: 4px 4px 0 0;
+      overflow: hidden;
+      height: 65vh;
+      position: relative;
+    }
+
+    .cs-monitor-content {
+      width: 100%;
+      display: block;
+      will-change: transform;
+    }
+
+    .cs-monitor-chin {
+      background: linear-gradient(180deg, #383838 0%, #2a2a2a 100%);
+      height: 24px;
+      border-radius: 0 0 4px 4px;
+      border-top: 1px solid rgba(0,0,0,0.5);
+    }
+
+    .cs-monitor-neck {
+      width: 80px;
+      height: 20px;
+      background: linear-gradient(180deg, #2e2e2e 0%, #262626 100%);
+      margin: 0 auto;
+    }
+
+    .cs-monitor-base {
+      width: 220px;
+      height: 12px;
+      background: linear-gradient(180deg, #2e2e2e 0%, #262626 100%);
+      border-radius: 0 0 6px 6px;
+      margin: 0 auto;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+
+    /* ── Tail features (Brand section) ── */
+    .cs-features--tail {
+      padding-top: 120px;
+    }
+
     /* ── Footer ── */
     footer {
       padding: 36px 80px;
@@ -375,6 +466,9 @@
       .cs-features { padding: 0 40px 100px; gap: 80px; }
       .feature-row { gap: 48px; }
       .feature-heading { font-size: 36px; }
+      .cs-website-section { padding: 0 40px; }
+      .cs-monitor-sticky { padding: 0 40px; }
+      .cs-monitor-screen { height: 55vh; }
       footer { padding: 36px 40px; }
     }
 
@@ -399,6 +493,13 @@
       .feature-row.flip .feature-text { order: unset; }
       .feature-row.flip .feature-image { order: unset; }
       .feature-heading { font-size: 30px; }
+      .cs-website-section { padding: 0 24px; }
+      .cs-monitor-section { height: 280vh; }
+      .cs-monitor-sticky { padding: 0 24px; }
+      .cs-monitor-screen { height: 45vh; }
+      .cs-monitor-neck { width: 50px; }
+      .cs-monitor-base { width: 140px; }
+      .cs-features--tail { padding-top: 80px; }
       footer { padding: 28px 24px; }
       .footer-copy { font-size: 12px; }
     }
@@ -469,10 +570,8 @@
     </p>
   </div>
 
-  <!-- ══════════════ FEATURES ══════════════ -->
+  <!-- ══════════════ APP ══════════════ -->
   <section class="cs-features">
-
-    <!-- The App -->
     <div class="feature-row reveal">
       <div class="feature-text">
         <p class="feature-label">The App</p>
@@ -485,22 +584,35 @@
         <img src="cipher-app-hand.png" alt="Cipher app screens spread across an iPhone in hand" />
       </div>
     </div>
+  </section>
 
-    <!-- The Website -->
-    <div class="feature-row flip reveal">
-      <div class="feature-text">
-        <p class="feature-label">The Website</p>
-        <h2 class="feature-heading">Introducing Ci</h2>
-        <p class="feature-body">
-          Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
-        </p>
-      </div>
-      <div class="feature-image">
-        <img src="cipher-website.png" alt="Cipher website landing page" />
-      </div>
+  <!-- ══════════════ WEBSITE INTRO ══════════════ -->
+  <div class="cs-website-section">
+    <div class="cs-website-intro reveal">
+      <p class="feature-label">The Website</p>
+      <h2 class="feature-heading">Introducing Ci</h2>
+      <p class="feature-body">
+        Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
+      </p>
     </div>
+  </div>
 
-    <!-- Brand -->
+  <!-- ══════════════ MONITOR ══════════════ -->
+  <div class="cs-monitor-section">
+    <div class="cs-monitor-sticky">
+      <div class="cs-monitor">
+        <div class="cs-monitor-screen">
+          <img src="cipher-website.png" class="cs-monitor-content" alt="Cipher website landing page" />
+        </div>
+        <div class="cs-monitor-chin"></div>
+      </div>
+      <div class="cs-monitor-neck"></div>
+      <div class="cs-monitor-base"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════ BRAND ══════════════ -->
+  <section class="cs-features cs-features--tail">
     <div class="feature-row reveal">
       <div class="feature-text">
         <p class="feature-label">Brand</p>
@@ -513,7 +625,6 @@
         <img src="cipher-brand.png" alt="Cipher brand collage showing logo, typography, card, and colour palette" />
       </div>
     </div>
-
   </section>
 
 
@@ -578,23 +689,23 @@
       }
     });
 
-    /* ── Browser mockup scroll ── */
-    const browserSection = document.querySelector('.cs-browser-section');
-    const browserContent = document.querySelector('.cs-browser-content');
+    /* ── Monitor scroll ── */
+    const monitorSection = document.querySelector('.cs-monitor-section');
+    const monitorContent = document.querySelector('.cs-monitor-content');
 
-    if (browserSection && browserContent) {
-      function updateBrowserScroll() {
-        const rect = browserSection.getBoundingClientRect();
+    if (monitorSection && monitorContent) {
+      function updateMonitorScroll() {
+        const rect = monitorSection.getBoundingClientRect();
         const scrolled = -rect.top;
-        const scrollable = browserSection.offsetHeight - window.innerHeight;
+        const scrollable = monitorSection.offsetHeight - window.innerHeight;
         const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        const imgH = browserContent.offsetHeight;
-        const screenH = browserContent.parentElement.offsetHeight;
+        const imgH = monitorContent.offsetHeight;
+        const screenH = monitorContent.parentElement.offsetHeight;
         const maxY = Math.max(0, imgH - screenH);
-        browserContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
+        monitorContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
       }
-      window.addEventListener('scroll', updateBrowserScroll, { passive: true });
-      updateBrowserScroll();
+      window.addEventListener('scroll', updateMonitorScroll, { passive: true });
+      updateMonitorScroll();
     }
   </script>
 
