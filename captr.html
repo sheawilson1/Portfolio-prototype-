@@ -138,6 +138,7 @@
 
     /* ── Theme toggle ── */
     .theme-toggle {
+      display: none;
       appearance: none;
       background: none;
       border: 1.5px solid rgba(var(--text-rgb), 0.18);
@@ -585,23 +586,9 @@
       mainNav.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
 
-    /* ── Dark mode ── */
-    const themeToggle = document.getElementById('theme-toggle');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
-      document.body.classList.add('dark');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
-    });
-
-    systemPrefersDark.addEventListener('change', e => {
-      if (!localStorage.getItem('theme')) document.body.classList.toggle('dark', e.matches);
-    });
+    /* ── Dark mode — forced on (light mode disabled) ── */
+    document.body.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
   </script>
 
 </body>

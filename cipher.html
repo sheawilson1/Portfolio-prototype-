@@ -145,6 +145,7 @@
 
     /* ── Theme toggle ── */
     .theme-toggle {
+      display: none;
       appearance: none;
       background: none;
       border: 1.5px solid rgba(var(--text-rgb), 0.18);
@@ -412,7 +413,7 @@
     }
 
     .cs-browser-screen {
-      height: 44vh;
+      height: 55vh;
       overflow: hidden;
       position: relative;
     }
@@ -451,7 +452,7 @@
       .feature-row { gap: 48px; }
       .feature-heading { font-size: 36px; }
       .cs-browser-sticky { padding: 0 40px; }
-      .cs-browser-screen { height: 48vh; }
+      .cs-browser-screen { height: 52vh; }
       footer { padding: 36px 40px; }
     }
 
@@ -647,26 +648,9 @@
       mainNav.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
 
-    /* ── Dark mode (shared with index.html via localStorage) ── */
-    const themeToggle = document.getElementById('theme-toggle');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)');
-    const savedTheme = localStorage.getItem('theme');
-
-    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark.matches)) {
-      document.body.classList.add('dark');
-    }
-
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('dark');
-      const isDark = document.body.classList.contains('dark');
-      localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    });
-
-    systemPrefersDark.addEventListener('change', e => {
-      if (!localStorage.getItem('theme')) {
-        document.body.classList.toggle('dark', e.matches);
-      }
-    });
+    /* ── Dark mode — forced on (light mode disabled) ── */
+    document.body.classList.add('dark');
+    localStorage.setItem('theme', 'dark');
 
     /* ── Browser scroll ── */
     const browserSection = document.querySelector('.cs-browser-section');
