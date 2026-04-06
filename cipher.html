@@ -142,35 +142,9 @@
 
     .nav-links a:hover { color: var(--text); }
     .nav-links a:hover::after { width: 100%; }
-    /* ── Back button ── */
-    .cs-back {
-      position: sticky;
-      top: 72px; left: 0; right: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 24px 80px;
-      background: rgba(var(--bg-rgb), 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: none;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 14px;
-      color: rgba(var(--text-rgb), 0.55);
-      text-decoration: none;
-      cursor: none;
-      z-index: 999;
-      transition: color 0.2s ease, background 0.5s ease;
-    }
-
-    .cs-back:hover { color: var(--text); }
-    .cs-back svg { transition: transform 0.25s ease; }
-    .cs-back:hover svg { transform: translateX(-3px); }
-
     /* ── Case study hero ── */
     .cs-hero {
-      padding: 80px 80px 40px;
+      padding: 96px 80px 40px;
       text-align: center;
       opacity: 0;
       transform: translateY(24px);
@@ -446,8 +420,7 @@
     /* ── Responsive: Tablet ── */
     @media (max-width: 1024px) {
       nav#main-nav { padding: 0 40px; }
-      .cs-back { padding: 24px 40px; }
-      .cs-hero { padding: 60px 40px 30px; }
+      .cs-hero { padding: 76px 40px 30px; }
       .cs-title { font-size: 72px; letter-spacing: -3px; }
       .cs-spline-wrap { height: 70vh; }
       .cs-overview { padding: 0 40px; }
@@ -466,8 +439,7 @@
       .nav-right { gap: 24px; }
       .nav-links { gap: 24px; }
       .nav-links a { font-size: 13px; }
-      .cs-back { top: 64px; padding: 20px 24px; font-size: 13px; }
-      .cs-hero { padding: 40px 24px 20px; }
+      .cs-hero { padding: 60px 24px 20px; }
       .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
       .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
       .cs-subtitle { font-size: 18px; }
@@ -504,15 +476,6 @@
         <li><a href="index.html#contact">Contact</a></li>
       </ul>    </div>
   </nav>
-
-
-  <!-- ══════════════ BACK BUTTON ══════════════ -->
-  <a href="index.html#work" class="cs-back" id="case-study-close" aria-label="Back to work">
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path d="M13 4L7 10L13 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-    </svg>
-    Back to work
-  </a>
 
   <div class="cs-hero">
     <p class="cs-eyebrow">Case Study</p>
