@@ -424,6 +424,41 @@
       will-change: transform;
     }
 
+    /* ── Next project ── */
+    .cs-next {
+      padding: 80px 80px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+    }
+    .cs-next-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+    }
+    .cs-next-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 52px;
+      letter-spacing: -2.5px;
+      color: var(--text);
+      text-decoration: none;
+      transition: gap 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
+    }
+    .cs-next-link:hover { opacity: 0.6; gap: 22px; }
+    @media (max-width: 1024px) { .cs-next { padding: 60px 40px 80px; } .cs-next-link { font-size: 40px; } }
+    @media (max-width: 640px) { .cs-next { padding: 52px 24px 72px; } .cs-next-link { font-size: 32px; letter-spacing: -1.5px; } }
+
     /* ── Footer ── */
     footer {
       padding: 36px 80px;
@@ -597,7 +632,7 @@
         <p class="feature-label">Brand</p>
         <h2 class="feature-heading">The mark comes from Ci</h2>
         <p class="feature-body">
-          Stack a C and an I and you get a Psi. Raleway typeface, electric green on near-black, and a tone that's confident without being corporate.
+          Raleway typeface, electric green on navy, and a tone that's confident without being corporate.
         </p>
       </div>
       <div class="feature-image">
@@ -607,6 +642,17 @@
 
   </section>
 
+
+  <!-- ══════════════ NEXT PROJECT ══════════════ -->
+  <div class="cs-next">
+    <p class="cs-next-label">Next project</p>
+    <a href="amp.html" class="cs-next-link">
+      Amp
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
 
   <!-- ══════════════ FOOTER ══════════════ -->
   <footer>

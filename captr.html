@@ -381,6 +381,41 @@
       background: rgba(0,0,0,0.25);
     }
 
+    /* ── Next project ── */
+    .cs-next {
+      padding: 80px 80px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+    }
+    .cs-next-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+    }
+    .cs-next-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 52px;
+      letter-spacing: -2.5px;
+      color: var(--text);
+      text-decoration: none;
+      transition: gap 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
+    }
+    .cs-next-link:hover { opacity: 0.6; gap: 22px; }
+    @media (max-width: 1024px) { .cs-next { padding: 60px 40px 80px; } .cs-next-link { font-size: 40px; } }
+    @media (max-width: 640px) { .cs-next { padding: 52px 24px 72px; } .cs-next-link { font-size: 32px; letter-spacing: -1.5px; } }
+
     /* ── Footer ── */
     footer {
       padding: 36px 80px;
@@ -500,7 +535,7 @@
     <div class="cs-feature-card">
       <div class="cs-feature-number">01</div>
       <h3>Quick capture</h3>
-      <p>Jot a task any time. No categories, no setup. Just text and an optional date. Sort it later.</p>
+      <p>Add a task any time. No categories, no setup. Just text and an optional date. Sort it later.</p>
     </div>
     <div class="cs-feature-card">
       <div class="cs-feature-number">02</div>
@@ -545,6 +580,17 @@
         Low priority, if time allows
       </div>
     </div>
+  </div>
+
+  <!-- ══════════════ NEXT PROJECT ══════════════ -->
+  <div class="cs-next">
+    <p class="cs-next-label">Next project</p>
+    <a href="braindump.html" class="cs-next-link">
+      Brain Dump
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
   </div>
 
   <!-- ══════════════ FOOTER ══════════════ -->

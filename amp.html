@@ -415,6 +415,41 @@
       gap: 14px;
     }
 
+    /* ── Next project ── */
+    .cs-next {
+      padding: 80px 80px 100px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 20px;
+      border-top: 1px solid rgba(var(--text-rgb), 0.07);
+    }
+    .cs-next-label {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 12px;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      color: rgba(var(--text-rgb), 0.38);
+    }
+    .cs-next-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Spectral', serif;
+      font-weight: 400;
+      font-style: italic;
+      font-size: 52px;
+      letter-spacing: -2.5px;
+      color: var(--text);
+      text-decoration: none;
+      transition: gap 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
+    }
+    .cs-next-link:hover { opacity: 0.6; gap: 22px; }
+    @media (max-width: 1024px) { .cs-next { padding: 60px 40px 80px; } .cs-next-link { font-size: 40px; } }
+    @media (max-width: 640px) { .cs-next { padding: 52px 24px 72px; } .cs-next-link { font-size: 32px; letter-spacing: -1.5px; } }
+
     /* ── Footer ── */
     footer {
       padding: 36px 80px;
@@ -540,21 +575,19 @@
   <!-- ══════════════ FEATURE 1 — THE AMP BUTTON ══════════════ -->
   <div class="cs-feature">
     <div class="cs-feature-text">
-      <span class="cs-feature-tag">Feature 01</span>
       <h3 class="cs-feature-title">The Amp Button</h3>
       <p class="cs-feature-body">
         One control that does a lot. Swipe up or down for volume and the slider comes to your finger, not the other way round. Hold for precision. Tap once and it shows every nearby device, picking between AirPlay, Bluetooth and other wireless connections to find the best one automatically. Long hold to customise which actions live there, the same way iOS lets you rearrange Control Centre.
       </p>
     </div>
     <div class="cs-feature-media">
-      <img src="amp-button-feature.png" alt="Amp button feature — volume, device switching and customisation" />
+      <img src="Amp button.png" alt="Amp button feature — volume, device switching and customisation" />
     </div>
   </div>
 
   <!-- ══════════════ FEATURE 2 — NOW PLAYING ══════════════ -->
   <div class="cs-feature reverse">
     <div class="cs-feature-text">
-      <span class="cs-feature-tag">Feature 02</span>
       <h3 class="cs-feature-title">Now Playing</h3>
       <p class="cs-feature-body">
         Album art sits at the centre of the player as a circle, with a progress ring running around the edge. Drag the handle to scrub through the track. Glassmorphic surfaces pull colour from the artwork underneath, so each track feels a bit different. The home screen also greets you differently depending on the time of day.
@@ -568,7 +601,6 @@
   <!-- ══════════════ APP ICON ══════════════ -->
   <div class="cs-icon-section">
     <div class="cs-icon-text">
-      <span class="cs-feature-tag">Identity</span>
       <h3>Orange means something.</h3>
       <p>
         Spotify owns green. Apple Music owns a reddy pink. Orange was just sitting there. It felt confident without being loud, and it stood out on a home screen next to everything else. The icon keeps it simple: a soundwave on vivid orange.
@@ -591,6 +623,17 @@
       Open prototype
       <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
         <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
+
+  <!-- ══════════════ NEXT PROJECT ══════════════ -->
+  <div class="cs-next">
+    <p class="cs-next-label">Next project</p>
+    <a href="captr.html" class="cs-next-link">
+      Captr
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
+        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
     </a>
   </div>
