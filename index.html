@@ -126,14 +126,63 @@
     }
 
     .nav-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: flex-start;
+      max-width: 30px;
+      overflow: hidden;
       font-family: 'Spectral', serif;
       font-style: italic;
       font-weight: 400;
-      font-size: 22px;
+      font-size: 16px;
       color: var(--text);
       text-decoration: none;
-      letter-spacing: -0.5px;
-      transition: color 0.55s ease;
+      letter-spacing: -0.2px;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateY(-10px);
+      transition:
+        max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+      pointer-events: none;
+    }
+
+    .nav-logo.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+
+    .nav-logo-mark {
+      flex: 0 0 auto;
+    }
+
+    .nav-logo-full {
+      display: inline-block;
+      max-width: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition:
+        max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-logo-full span {
+      display: inline-block;
+      padding-left: 0.35em;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .nav-logo:hover {
+        max-width: 140px;
+      }
+
+      .nav-logo:hover .nav-logo-full {
+        max-width: 120px;
+        opacity: 1;
+      }
     }
 
     .nav-right {
@@ -766,7 +815,7 @@
     @media (max-width: 640px) {
 
       nav#main-nav { padding: 0 24px; height: 64px; }
-      .nav-logo { font-size: 20px; }
+      .nav-logo { font-size: 16px; max-width: 30px; }
       .nav-right { gap: 24px; }
       .nav-links { gap: 24px; }
       .nav-links a { font-size: 13px; }
@@ -811,7 +860,10 @@
 
   <!-- ══════════════ NAV ══════════════ -->
   <nav id="main-nav">
-    <a href="#hero" class="nav-logo">SW</a>
+    <a href="#hero" class="nav-logo" aria-label="Shea Wilson home">
+      <span class="nav-logo-mark">SW</span>
+      <span class="nav-logo-full" aria-hidden="true"><span>Shea Wilson</span></span>
+    </a>
     <div class="nav-right">
       <ul class="nav-links">
         <li><a href="#work">Work</a></li>
@@ -825,7 +877,7 @@
   <!-- ══════════════ HERO ══════════════ -->
   <section id="hero">
     <p class="hero-eyebrow">Digital Designer</p>
-    <h1 class="hero-name"><span class="hero-word"><span class="hero-letter" style="--i:0">S</span><span class="hero-letter" style="--i:1">h</span><span class="hero-letter" style="--i:2">e</span><span class="hero-letter" style="--i:3">a</span></span><br><span class="hero-word"><span class="hero-letter" style="--i:4">W</span><span class="hero-letter" style="--i:5">i</span><span class="hero-letter" style="--i:6">l</span><span class="hero-letter" style="--i:7">s</span><span class="hero-letter" style="--i:8">o</span><span class="hero-letter" style="--i:9">n</span></span></h1>
+    <h1 class="hero-name" id="hero-h1"><span class="hero-word"><span class="hero-letter" style="--i:0">S</span><span class="hero-letter" style="--i:1">h</span><span class="hero-letter" style="--i:2">e</span><span class="hero-letter" style="--i:3">a</span></span><br><span class="hero-word"><span class="hero-letter" style="--i:4">W</span><span class="hero-letter" style="--i:5">i</span><span class="hero-letter" style="--i:6">l</span><span class="hero-letter" style="--i:7">s</span><span class="hero-letter" style="--i:8">o</span><span class="hero-letter" style="--i:9">n</span></span></h1>
     <p class="hero-tagline">
       I design the interface and then build it.
     </p>
@@ -962,7 +1014,7 @@
       Second-year design student, open to placement opportunities. I'd love to hear from you.
     </p>
     <!-- Update the href with your actual email -->
-    <a href="mailto:hello@sheawilson.com" class="magnetic-btn reveal delay-3" id="magnetic-btn">
+    <a href="mailto:design@sheawilson.uk" class="magnetic-btn reveal delay-3" id="magnetic-btn">
       Say hello
     </a>
   </section>
@@ -1033,10 +1085,27 @@
     ───────────────────────────────────────── */
 
     const mainNav = document.getElementById('main-nav');
+    const navLogo = document.querySelector('.nav-logo');
+    const heroHeading = document.getElementById('hero-h1');
 
     window.addEventListener('scroll', () => {
       mainNav.classList.toggle('scrolled', window.scrollY > 60);
     }, { passive: true });
+
+    if (navLogo && heroHeading) {
+      const navLogoObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (!entry.isIntersecting) {
+            navLogo.classList.add('is-visible');
+            navLogoObserver.unobserve(entry.target);
+          }
+        });
+      }, {
+        threshold: 0
+      });
+
+      navLogoObserver.observe(heroHeading);
+    }
 
 
     /* ─────────────────────────────────────────
