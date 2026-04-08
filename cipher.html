@@ -366,6 +366,41 @@
       will-change: transform;
     }
 
+    /* ── Brand guidelines CTA ── */
+    .cs-guidelines {
+      padding: 0 80px 140px;
+      text-align: center;
+    }
+
+    .cs-guidelines p {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 18px;
+      color: rgba(var(--text-rgb), 0.5);
+      margin-bottom: 32px;
+    }
+
+    .cs-guidelines-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 15px;
+      color: var(--text);
+      border: 1.5px solid rgba(var(--text-rgb), 0.22);
+      padding: 14px 28px;
+      border-radius: 100px;
+      text-decoration: none;
+      transition: background 0.25s ease, border-color 0.25s ease, gap 0.3s ease, color 0.25s ease;
+    }
+
+    .cs-guidelines-link:hover {
+      gap: 14px;
+      border-color: rgba(var(--text-rgb), 0.42);
+      background: rgba(var(--text-rgb), 0.06);
+    }
+
     /* ── Next project ── */
     .cs-next {
       padding: 80px 80px 100px;
@@ -429,6 +464,7 @@
       .feature-heading { font-size: 36px; }
       .cs-browser-sticky { padding: 0 40px; }
       .cs-browser-screen { height: 52vh; }
+      .cs-guidelines { padding: 0 40px 100px; }
       footer { padding: 36px 40px; }
     }
 
@@ -455,6 +491,7 @@
       .cs-browser-sticky { padding: 0 20px; gap: 20px; }
       .cs-browser-screen { height: 36vh; }
       .cs-website-intro .feature-body { font-size: 15px; }
+      .cs-guidelines { padding: 0 24px 80px; }
       footer { padding: 28px 24px; }
       .footer-copy { font-size: 12px; }
     }
@@ -555,6 +592,21 @@
 
   </section>
 
+  <!-- ══════════════ BRAND GUIDELINES ══════════════ -->
+  <div class="cs-guidelines">
+    <p>To view the Cipher brand guidelines, open the PDF below.</p>
+    <a
+      href="Cipher%20Brand%20Guidelines.pdf"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="cs-guidelines-link"
+    >
+      Open brand guidelines
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </a>
+  </div>
 
   <!-- ══════════════ NEXT PROJECT ══════════════ -->
   <div class="cs-next">
