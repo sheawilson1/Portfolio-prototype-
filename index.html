@@ -127,10 +127,10 @@
 
     .nav-logo {
       position: relative;
-      display: inline-flex;
+      display: inline-grid;
       align-items: center;
-      justify-content: flex-start;
-      max-width: 34px;
+      justify-items: start;
+      width: 34px;
       overflow: hidden;
       font-family: 'Spectral', serif;
       font-style: italic;
@@ -143,7 +143,7 @@
       opacity: 0;
       transform: translateY(-10px);
       transition:
-        max-width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+        width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -157,16 +157,14 @@
     }
 
     .nav-logo-mark {
+      grid-area: 1 / 1;
       display: inline-block;
       opacity: 1;
       transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .nav-logo-full {
-      position: absolute;
-      left: 0;
-      top: 50%;
-      transform: translateY(-50%);
+      grid-area: 1 / 1;
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -174,7 +172,7 @@
 
     @media (hover: hover) and (pointer: fine) {
       .nav-logo:hover {
-        max-width: 142px;
+        width: 142px;
       }
 
       .nav-logo:hover .nav-logo-mark {
@@ -816,7 +814,7 @@
     @media (max-width: 640px) {
 
       nav#main-nav { padding: 0 24px; height: 64px; }
-      .nav-logo { max-width: 34px; font-size: 20px; }
+      .nav-logo { width: 34px; font-size: 20px; }
       .nav-right { gap: 24px; }
       .nav-links { gap: 24px; }
       .nav-links a { font-size: 13px; }
