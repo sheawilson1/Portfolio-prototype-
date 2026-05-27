@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Smoking Wrapped User Journey</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:opsz,wght@9..40,500;9..40,700;9..40,900&family=Oswald:wght@600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --black: #000000;
+        --white: #ffffff;
+        --pink: #ed1652;
+        --grey: #333333;
+        --cream: #f8f4e8;
+        --yellow: #f5f8a3;
+        --green: #06fb06;
+        --blue: #006fef;
+        --cyan: #00a7fa;
+        --orange: #ffb22c;
+        --line: rgba(0, 0, 0, 0.16);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+        overflow-x: hidden;
+      }
+
+      body {
+        margin: 0;
+        color: var(--black);
+        background: var(--white);
+        font-family: "DM Sans", system-ui, sans-serif;
+        line-height: 1.38;
+        overflow-x: hidden;
+      }
+
+      img {
+        display: block;
+        max-width: 100%;
+      }
+
+      p {
+        margin: 0;
+      }
+
+      .wrap {
+        width: min(1160px, calc(100% - 36px));
+        margin: 0 auto;
+      }
+
+      .topbar {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 14px 0;
+        background: var(--black);
+        border-bottom: 4px solid var(--pink);
+      }
+
+      .brand-stack {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+
+      .seh-logo {
+        width: 78px;
+        height: 78px;
+      }
+
+      .nhs-logo {
+        width: 226px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      .inf-logo {
+        width: 132px;
+      }
+
+      h1,
+      h2,
+      h3 {
+        margin: 0;
+        font-family: "Archivo Black", Impact, sans-serif;
+        letter-spacing: 0;
+      }
+
+      h1 {
+        max-width: 1000px;
+        font-size: clamp(3.4rem, 8vw, 8.3rem);
+        line-height: 0.92;
+      }
+
+      h1 em {
+        display: block;
+        color: var(--pink);
+        font-style: normal;
+      }
+
+      h2 {
+        font-size: clamp(2.15rem, 4.4vw, 4.8rem);
+        line-height: 0.96;
+      }
+
+      h3 {
+        font-size: clamp(1.35rem, 2.1vw, 2rem);
+        line-height: 1;
+      }
+
+      .hero {
+        position: relative;
+        padding: clamp(48px, 7vw, 88px) 0 clamp(44px, 6vw, 72px);
+        background: var(--white);
+        border-bottom: 2px solid var(--black);
+      }
+
+      .hero-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(260px, 0.42fr);
+        gap: clamp(28px, 5vw, 64px);
+        align-items: end;
+      }
+
+      .hero-note {
+        padding: 22px;
+        color: var(--black);
+        background-color: #f8f4e8;
+        background-image: linear-gradient(#f8f4e8, #f8f4e8);
+        border: 3px solid var(--black);
+        box-shadow: 10px 10px 0 var(--pink);
+        font-size: clamp(1.06rem, 1.55vw, 1.35rem);
+        font-weight: 900;
+      }
+
+      section {
+        padding: clamp(48px, 7vw, 92px) 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .section-head {
+        margin-bottom: 28px;
+      }
+
+      .journey {
+        position: relative;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(136px, 1fr));
+        gap: 18px;
+        padding-top: 68px;
+        --step-width: calc((100% - 72px) / 5);
+      }
+
+      .journey::before {
+        content: "";
+        position: absolute;
+        top: 22px;
+        left: 45px;
+        right: calc(var(--step-width) - 45px);
+        height: 14px;
+        background: var(--black);
+        border-radius: 999px;
+      }
+
+      .step {
+        position: relative;
+        display: grid;
+        gap: 12px;
+        min-height: 214px;
+        padding: 26px 20px 22px;
+        background: var(--white);
+        border: 3px solid var(--black);
+      }
+
+      .step b,
+      .route-list b {
+        display: grid;
+        place-items: center;
+        font-family: "Archivo Black", Impact, sans-serif;
+        line-height: 1;
+      }
+
+      .step b {
+        position: absolute;
+        top: -66px;
+        left: 18px;
+        color: var(--white);
+        background: var(--pink);
+        border: 3px solid var(--black);
+        border-radius: 999px;
+        width: 54px;
+        height: 54px;
+        font-size: 1.25rem;
+      }
+
+      .step:nth-child(5) b {
+        background: var(--green);
+      }
+
+      .step h3 {
+        margin-top: 22px;
+      }
+
+      .step p,
+      .route-list li,
+      .stat p,
+      .phone-card p {
+        font-weight: 900;
+      }
+
+      .routes {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 22px;
+      }
+
+      .panel {
+        padding: clamp(24px, 4vw, 34px);
+        background: var(--white);
+        border: 3px solid var(--black);
+      }
+
+      .panel.social {
+        color: var(--black);
+      }
+
+      .panel.light {
+        color: var(--black);
+      }
+
+      .panel h3 {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+        color: inherit;
+      }
+
+      .panel h3 span {
+        font-family: "DM Sans", system-ui, sans-serif;
+        font-size: 1.28rem;
+        font-weight: 900;
+      }
+
+      .panel h3 i {
+        width: 8px;
+        height: 8px;
+        background: var(--pink);
+        border-radius: 50%;
+      }
+
+      .route-list {
+        display: grid;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        border-top: 2px solid var(--black);
+      }
+
+      .route-list li {
+        display: grid;
+        grid-template-columns: 36px 1fr;
+        gap: 14px;
+        align-items: center;
+        min-height: 64px;
+        padding: 15px 0;
+        background: transparent;
+        color: var(--black);
+        border-bottom: 2px solid var(--black);
+      }
+
+      .route-list b {
+        width: 32px;
+        height: 32px;
+        color: var(--white);
+        background: var(--black);
+        border-radius: 999px;
+        font-size: 0.88rem;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+      }
+
+      .stat {
+        min-height: 218px;
+        padding: 26px 22px;
+        color: var(--black);
+        border: 3px solid var(--black);
+        overflow: hidden;
+      }
+
+      .stat:nth-child(1) {
+        background: var(--pink);
+      }
+
+      .stat:nth-child(2) {
+        background: var(--blue);
+      }
+
+      .stat:nth-child(3) {
+        background: var(--orange);
+      }
+
+      .stat.maybe {
+        background: var(--green);
+      }
+
+      .stat strong {
+        display: block;
+        margin: 16px 0 10px;
+        color: inherit;
+        font-family: "Archivo Black", Impact, sans-serif;
+        font-size: clamp(3.15rem, 5.6vw, 5.5rem);
+        line-height: 0.9;
+      }
+
+      .stat.maybe strong {
+        font-size: clamp(2.85rem, 5vw, 4.9rem);
+      }
+
+      .stat span {
+        color: inherit;
+        font-size: 0.86rem;
+        font-weight: 900;
+        text-transform: uppercase;
+      }
+
+      .stat p {
+        font-size: clamp(1.05rem, 1.4vw, 1.28rem);
+        line-height: 1.2;
+      }
+
+      .handoff {
+        display: grid;
+        grid-template-columns: minmax(0, 0.94fr) minmax(250px, 0.42fr);
+        gap: 22px;
+        align-items: stretch;
+      }
+
+      .handoff-copy {
+        padding: clamp(28px, 5vw, 50px);
+        color: var(--black);
+        background: var(--green);
+        border: 3px solid var(--black);
+      }
+
+      .handoff-copy p {
+        max-width: 720px;
+        margin-top: 18px;
+        font-size: clamp(1.08rem, 1.8vw, 1.45rem);
+        font-weight: 900;
+      }
+
+      .phone-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        gap: 20px;
+        padding: 24px;
+        background: var(--black);
+        color: var(--white);
+        border: 3px solid var(--black);
+      }
+
+      .qr {
+        width: min(230px, 100%);
+        aspect-ratio: 1;
+        margin: 0 auto;
+        padding: 10px;
+        background: var(--white);
+        border: 4px solid var(--pink);
+      }
+
+      .qr img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+
+      .phone-card p {
+        text-align: center;
+        font-size: 1.04rem;
+      }
+
+      footer {
+        padding: 28px 0;
+        background: var(--black);
+      }
+
+      footer .wrap {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 18px;
+      }
+
+      footer p {
+        color: rgba(255, 255, 255, 0.76);
+        font-size: 0.9rem;
+        font-weight: 800;
+      }
+
+      @media (max-width: 980px) {
+        .hero-grid,
+        .routes,
+        .handoff {
+          grid-template-columns: 1fr;
+        }
+
+        .journey,
+        .stats {
+          grid-template-columns: 1fr;
+        }
+
+        .journey {
+          gap: 16px;
+          padding-top: 0;
+          padding-left: 44px;
+        }
+
+        .journey::before {
+          top: 28px;
+          bottom: 28px;
+          left: 27px;
+          right: auto;
+          width: 12px;
+          height: auto;
+        }
+
+        .step {
+          min-height: auto;
+          padding-left: 58px;
+        }
+
+        .step b {
+          top: 20px;
+          left: -40px;
+        }
+      }
+
+      @media (max-width: 680px) {
+        .wrap {
+          width: min(100% - 28px, 1160px);
+        }
+
+        footer .wrap {
+          align-items: flex-start;
+          flex-direction: column;
+          justify-content: flex-start;
+        }
+
+        .brand-stack {
+          align-items: center;
+          justify-content: space-between;
+        }
+
+        .seh-logo {
+          width: 70px;
+          height: 70px;
+        }
+
+        .nhs-logo {
+          width: 170px;
+        }
+
+        h1 {
+          font-size: clamp(3.05rem, 16vw, 5rem);
+        }
+
+        .hero-note {
+          box-shadow: 7px 7px 0 var(--pink);
+        }
+
+        .route-list li {
+          grid-template-columns: 34px 1fr;
+          padding: 14px 0;
+        }
+
+        .route-list b {
+          width: 30px;
+          height: 30px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="topbar">
+      <div class="wrap brand-stack" aria-label="Campaign partners">
+        <img class="seh-logo" src="../assets/brand/smoking-ends-here-logo.png" alt="Smoking Ends Here" />
+        <img class="nhs-logo" src="../assets/brand/nhs-logo.png" alt="NHS Cheshire and Merseyside" />
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap hero-grid">
+          <div>
+            <h1>Smoking Wrapped <em>user journey</em></h1>
+          </div>
+          <div class="hero-note">
+            <p>The app shows the user's smoking pattern back to them, then points them toward local support.</p>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="section-head">
+            <h2>The journey</h2>
+          </div>
+
+          <div class="journey" aria-label="Five step user journey">
+            <article class="step">
+              <b>01</b>
+              <h3>Profile</h3>
+              <p>Capture simple age, gender, and agreed context fields.</p>
+            </article>
+            <article class="step">
+              <b>02</b>
+              <h3>Split</h3>
+              <p>Ask whether their smoking is mostly social or more regular.</p>
+            </article>
+            <article class="step">
+              <b>03</b>
+              <h3>Questions</h3>
+              <p>Three route-specific inputs calculate their yearly pattern.</p>
+            </article>
+            <article class="step">
+              <b>04</b>
+              <h3>Wrapped</h3>
+              <p>Show cigarettes, packs, time, and a possible cost stat.</p>
+            </article>
+            <article class="step">
+              <b>05</b>
+              <h3>Support</h3>
+              <p>Link the result to a reason to stop and a clear next step.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Two routes</h2>
+          </div>
+
+          <div class="routes">
+            <article class="panel social">
+              <h3><span>1</span><i aria-hidden="true"></i>Social smoker</h3>
+              <ul class="route-list">
+                <li><b>1</b><span>Cigarettes on a typical night out</span></li>
+                <li><b>2</b><span>Nights out per month</span></li>
+                <li><b>3</b><span>Main trigger or moment</span></li>
+              </ul>
+            </article>
+
+            <article class="panel light">
+              <h3><span>2</span><i aria-hidden="true"></i>Light smoker</h3>
+              <ul class="route-list">
+                <li><b>1</b><span>Cigarettes on a day they smoke</span></li>
+                <li><b>2</b><span>Days per week they smoke</span></li>
+                <li><b>3</b><span>Main trigger or routine</span></li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="section-head">
+            <h2>Output</h2>
+          </div>
+
+          <div class="stats">
+            <article class="stat">
+              <span>Core stat</span>
+              <strong>274</strong>
+              <p>Total cigarettes smoked in a year.</p>
+            </article>
+            <article class="stat">
+              <span>Core stat</span>
+              <strong>14</strong>
+              <p>Packs smoked across the year.</p>
+            </article>
+            <article class="stat">
+              <span>Core stat</span>
+              <strong>23h</strong>
+              <p>Time spent smoking.</p>
+            </article>
+            <article class="stat maybe">
+              <span>Potential stat</span>
+              <strong>£210</strong>
+              <p>Estimated cost, if useful for the final message.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap handoff">
+          <article class="handoff-copy">
+            <h2>From result to action</h2>
+            <p>
+              The final screen can connect the user's result to what they care about most: skin, fitness,
+              money, or feeling in control. On venue iPads, a QR code gives them a private way to continue
+              on their own phone.
+            </p>
+          </article>
+          <aside class="phone-card" aria-label="Illustrative QR code handoff">
+            <div class="qr">
+              <img
+                src="../assets/generated/smoking-wrapped-live-qr.png"
+                alt="QR code linking to the Smoking Wrapped prototype"
+              />
+            </div>
+            <p>Scan here to try Smoking Wrapped.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="wrap">
+        <p>Smoking Wrapped concept journey</p>
+        <img class="inf-logo" src="../assets/brand/influential-logo-white.png" alt="Influential" />
+      </div>
+    </footer>
+  </body>
+</html>
