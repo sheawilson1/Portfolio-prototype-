@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Operating Layer Deck</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #201747;
+      color: white;
+    }
+    main {
+      max-width: 520px;
+      padding: 32px;
+      text-align: center;
+    }
+    a {
+      color: #2af22f;
+      font-weight: 700;
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Opening AI Operating Layer</h1>
+    <p>If it does not open automatically, <a id="manual" href="#">open the deck manually</a>.</p>
+  </main>
+  <script>
+    const payload = {
+      v: 3,
+      tool: "deck-studio",
+      id: "ai-operating-layer-test-2026-07-06",
+      name: "AI Operating Layer",
+      sector: "digital",
+      style: "gradient",
+      active: 0,
+      slides: [
+        { layout: "cover", logo: "main", bgStyle: "circles", kicker: "INTERNAL PITCH · JULY 2026", title: "AI Operating Layer", subtitle: "A practical way to make agency work faster, sharper and easier to repeat." },
+        { layout: "agenda", logo: "main", kicker: "WHAT WE WILL COVER", title: "The story in ten minutes", body: "Why AI needs an operating layer\nWhere agency work slows down\nWhat the layer actually does\nHow teams use it day to day\nWhat we pilot first" },
+        { layout: "section", logo: "ring", bgStyle: "gradient", kicker: "01", title: "The shift is not more tools", subtitle: "The real value is a shared way of working." },
+        { layout: "bullets", logo: "main", kicker: "CURRENT REALITY", title: "AI is useful, but still too individual", body: "Everyone finds their own prompts, files and shortcuts.\nGood outputs get trapped in one chat or one person's folder.\nQuality depends on who happens to know the tool best.\nRepeatable agency knowledge is still scattered across decks, docs and memory." },
+        { layout: "stat", logo: "main", bgStyle: "circles", title: "The pressure is already visible", body: "70%, of teams are expected to use AI in daily knowledge work\n3x, faster first drafts when context is already structured\n1, shared system beats ten disconnected experiments" },
+        { layout: "comparison", logo: "main", kicker: "THE GAP", title: "Tool use is not the same as workflow change", colA: "Ad hoc AI\nFast in the moment\nHard to review\nContext disappears\nOutput quality varies\nNo shared memory", colB: "Operating layer\nShared briefs and sources\nReusable workflows\nQuality checks built in\nOutputs saved where teams work\nLearning compounds" },
+        { layout: "columns", logo: "main", title: "The operating layer sits between people, tools and knowledge", colA: "What teams bring\nClient context, judgement, taste, constraints, relationships and the commercial point of the work.", colB: "What AI handles\nDrafting, summarising, formatting, pattern spotting, variant generation and first-pass assembly." },
+        { layout: "chart", logo: "main", bgStyle: "gradient", kicker: "IMPACT AREAS", title: "The strongest early wins are repeatable work", body: "Brief synthesis | 85\nFirst draft assembly | 78\nResearch summaries | 72\nDeck production | 64\nReporting narratives | 58" },
+        { layout: "table", logo: "main", kicker: "FIRST 30 DAYS", title: "Pilot the layer on work people already do", body: "Workflow | Owner | Output | Success signal\nNew brief intake | Strategy | One-page brief | Faster alignment\nResearch scan | Insights | Source-backed summary | Fewer blank starts\nDeck build | Creative ops | Draft narrative deck | Less formatting churn\nCampaign recap | PR + Digital | Performance story | Clearer client updates" },
+        { layout: "closing", logo: "main", bgStyle: "gradient", kicker: "RECOMMENDATION", title: "Start with one shared workflow, then make it boringly repeatable.", body: "Build the first pilot around brief intake and deck production.\nUse real work, real constraints and visible outputs.\nReview after 30 days, then decide what becomes standard.\nhello@thisisinfluential.com" }
+      ]
+    };
+
+    function b64urlEncode(obj) {
+      return btoa(unescape(encodeURIComponent(JSON.stringify(obj))))
+        .replace(/\+/g, "-")
+        .replace(/\//g, "_")
+        .replace(/=+$/, "");
+    }
+
+    const target = "https://deck-studio-snowy.vercel.app/index.html?d=ai-operating-layer#d=" + b64urlEncode(payload);
+    document.getElementById("manual").href = target;
+    window.location.replace(target);
+  </script>
+</body>
+</html>
