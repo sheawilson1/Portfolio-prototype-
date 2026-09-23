@@ -32,6 +32,8 @@
   --disc: #ffffff;
   --pale-a: #fde9cf;
   --pale-b: #e3ebff;
+  --nav-glass: rgba(255, 255, 255, .5);
+  --nav-edge: rgba(255, 255, 255, .55);
 
   --ease: cubic-bezier(.2, .9, .25, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
@@ -64,12 +66,14 @@
   --disc: #030409;
   --pale-a: #3a2a22;
   --pale-b: #1c2436;
+  --nav-glass: rgba(16, 18, 24, .45);
+  --nav-edge: rgba(255, 255, 255, .06);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 :is(.card, .t-small .media, .screen) { corner-shape: squircle; }
-html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; background: var(--bg); }
-body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; overflow-x: hidden; transition: background-color .6s var(--ease), color .6s var(--ease); }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; background: var(--bg); overflow-x: clip; }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; overflow-x: clip; transition: background-color .6s var(--ease), color .6s var(--ease); }
 a { color: inherit; text-decoration: none; }
 img, video { display: block; max-width: 100%; height: auto; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
@@ -97,16 +101,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .nav { position: fixed; inset: 0 0 auto; z-index: 50; padding: 18px var(--gutter); pointer-events: none; }
 .nav-inner { position: relative; pointer-events: auto; margin: 0 auto; max-width: 1380px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .nav-pill { position: absolute; left: 50%; top: 0; bottom: 0; width: 100%; translate: -50% 0; border-radius: 999px; pointer-events: none; opacity: 0;
-  background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: 0 10px 40px rgba(0, 0, 0, .08);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
+  background: var(--nav-glass); border: 1px solid var(--nav-edge); box-shadow: 0 8px 32px rgba(0, 0, 0, .06);
+  -webkit-backdrop-filter: blur(24px) saturate(1.8); backdrop-filter: blur(24px) saturate(1.8);
   transition: width .8s var(--ease), opacity .45s var(--ease); }
 .nav.is-scrolled .nav-pill { width: var(--pill-w, 460px); opacity: 1; }
-@property --sweep { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
-.nav-pill::before { content: ""; position: absolute; inset: -1px; border-radius: inherit; padding: 1.5px; opacity: 0; pointer-events: none;
-  background: conic-gradient(from var(--sweep), #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-.nav.is-handoff .nav-pill::before { animation: handoff 1.6s var(--ease-io) forwards; }
-@keyframes handoff { 0% { opacity: 0; --sweep: 0deg; } 25% { opacity: 1; } 100% { opacity: 0; --sweep: 360deg; } }
 .logo, .links { position: relative; z-index: 1; transition: transform .8s var(--ease); }
 .nav.is-scrolled .logo { transform: translate3d(var(--logo-shift, 0px), 0, 0); }
 .nav.is-scrolled .links { transform: translate3d(calc(-1 * var(--links-shift, 0px)), 0, 0); }
@@ -175,8 +173,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .recent .st { color: var(--whisper); }
 
 /* ───────── Work ───────── */
-.work { position: relative; z-index: 6; padding: 40px var(--gutter) 110px; max-width: 1380px; margin: calc(-1 * var(--overlap, 16svh)) auto 0; }
-[data-scroll="2"] .work { --overlap: 38svh; }
+.work { position: relative; z-index: 6; padding: 40px var(--gutter) 110px; max-width: 1380px; margin: calc(-1 * var(--overlap, 80svh)) auto 0; }
+
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
 .item { position: relative; isolation: isolate; }
 .item > .card { height: 100%; }
@@ -189,38 +187,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .blob { position: absolute; border-radius: 50%; aspect-ratio: var(--ar, 1.5); will-change: transform;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 78%, transparent) 0%, color-mix(in srgb, var(--c) 54%, transparent) 26%,
     color-mix(in srgb, var(--c) 30%, transparent) 48%, color-mix(in srgb, var(--c) 12%, transparent) 70%, color-mix(in srgb, var(--c) 3%, transparent) 88%, transparent 100%); }
-/* Glow option 2: aurora. Long bands of light sweeping across the pane instead of soft pools. */
-[data-glow="2"] .blob { aspect-ratio: 4.2; width: 92% !important; left: 4% !important; scale: 1 1;
-  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 92%, transparent), color-mix(in srgb, var(--c) 55%, transparent) 38%, color-mix(in srgb, var(--c) 14%, transparent) 74%, transparent); }
-[data-glow="2"] .blob:nth-child(1) { top: 16% !important; rotate: -16deg !important; }
-[data-glow="2"] .blob:nth-child(2) { top: 40% !important; rotate: -8deg !important; }
-[data-glow="2"] .blob:nth-child(3) { top: 62% !important; rotate: 6deg !important; }
-[data-glow="2"] .bleed::before { opacity: .2; }
-[data-glow="2"] .bleed { opacity: calc(var(--bleed-rest) + .1); }
-[data-glow="2"] .item.is-hot .bleed { opacity: var(--bleed-hover); }
-/* Glow option 3: spotlight. One defined pool of light behind the work, the rest of the pane stays quiet. */
-[data-glow="3"] .blob { display: none; }
-[data-glow="3"] .bleed::before { opacity: .12; }
-[data-glow="3"] .bleed::after { content: ""; position: absolute; inset: 0;
-  background: radial-gradient(50% 62% at var(--spot, 60% 55%), color-mix(in srgb, var(--b, #999) 100%, transparent) 0%, color-mix(in srgb, var(--b, #999) 80%, var(--a, #999)) 22%, color-mix(in srgb, var(--a, #999) 55%, transparent) 46%, color-mix(in srgb, var(--a, #999) 14%, transparent) 76%, transparent 100%); }
-[data-glow="3"] .bleed { opacity: calc(var(--bleed-rest) + .2); }
-[data-glow="3"] .item.is-hot .bleed { opacity: 1; }
 .blob-img { position: absolute; border-radius: 40px; will-change: transform; background-size: cover; background-position: center; filter: blur(42px) saturate(var(--sat, 1.9)); opacity: var(--spill, 1); }
 
-/* Glass without backdrop blur: the light behind is already soft, so the pane needs tint, grain and an edge */
-.card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius);
-  background: var(--glass); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-rest);
-  transition: box-shadow .9s var(--ease), background-color .6s var(--ease), border-color .6s var(--ease); }
-.item.is-hot .card { box-shadow: var(--shadow-hover); }
-/* The border catches light near the pointer. The overlay draws a real border (the same primitive as the
-   card's own border, so the corners always match) and a plain radial mask shows only the part near the cursor. */
-.item { --rim: color-mix(in srgb, var(--b, #8a93a8) 75%, transparent); }
-[data-theme="dark"] .item { --rim: rgba(255, 255, 255, .6); }
-.item::after { content: ""; position: absolute; inset: 0; z-index: 2; border: 1px solid var(--rim); border-radius: var(--radius); corner-shape: squircle; pointer-events: none;
-  opacity: 0; transition: opacity .7s var(--ease);
-  -webkit-mask-image: radial-gradient(260px circle at var(--rx, 50%) var(--ry, 0%), #000, transparent 72%);
-          mask-image: radial-gradient(260px circle at var(--rx, 50%) var(--ry, 0%), #000, transparent 72%); }
-.item.is-hot::after { opacity: 1; }
+/* The card draws its own lit border: an opaque base clipped to the inside, and the light clipped to the
+   border ring, on one element with one corner shape. The colour and the glass tint sit inside as layers. */
+@property --rimc { syntax: '<color>'; inherits: true; initial-value: transparent; }
+.card { position: relative; isolation: isolate; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius);
+  border: 1px solid transparent; --rimc: var(--glass-edge);
+  background: linear-gradient(var(--bg), var(--bg)) padding-box,
+    radial-gradient(260px circle at var(--rx, 50%) var(--ry, -400px), var(--rimc), var(--glass-edge) 72%) border-box;
+  box-shadow: var(--shadow-rest);
+  transition: box-shadow .9s var(--ease), --rimc .6s var(--ease); }
+.card::after { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--glass); pointer-events: none; transition: background-color .6s var(--ease); }
+.item { --rim: color-mix(in srgb, var(--b, #8a93a8) 75%, white); }
+[data-theme="dark"] .item { --rim: rgba(255, 255, 255, .7); }
+.item.is-hot .card { box-shadow: var(--shadow-hover); --rimc: var(--rim); }
 
 .card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 30px 34px 0; }
 .card-copy { position: relative; z-index: 2; padding: 16px 34px 0; }
@@ -283,7 +264,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Brain Dump: the app's own screens */
 .t-brain { grid-column: span 5; }
 .t-brain .card { min-height: 620px; }
-.t-brain .media { display: grid; place-items: end center; padding-top: 30px; overflow: hidden; }
+.t-brain .media { display: grid; place-items: end center; padding-top: 30px; }
 .shots { position: relative; width: min(250px, 60%); aspect-ratio: 520 / 1077; margin-bottom: -70px; filter: drop-shadow(0 36px 50px rgba(50, 0, 110, .3)); }
 .shots img { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; transform: translateY(10px) scale(.985); transition: opacity .9s var(--ease), transform 1.2s var(--ease); }
 .shots img.is-on { opacity: 1; transform: none; }
@@ -321,7 +302,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ───────── Contact ───────── */
 .contact { position: relative; text-align: center; padding: 170px var(--gutter) 150px; overflow-x: clip; }
-.contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(50px, 7.4vw, 116px); line-height: 1; letter-spacing: -.02em; }
+.contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(64px, 10vw, 150px); line-height: .95; letter-spacing: -.024em; }
 .contact h2 em { font-style: italic; }
 .contact .sub { margin-top: 20px; font-size: 18px; color: var(--ink-2); }
 /* One clear action: email. Copy sits beside it; LinkedIn is a quiet link underneath. */
@@ -331,6 +312,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   box-shadow: 0 8px 22px rgba(10, 10, 10, .16); will-change: transform;
   transition: box-shadow .6s var(--ease), background-color .6s var(--ease), color .6s var(--ease); }
 .email:hover { box-shadow: 0 16px 44px rgba(10, 10, 10, .26); }
+@property --sweep { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.email::before { content: ""; position: absolute; inset: -3px; border-radius: 999px; padding: 2px; opacity: 0; pointer-events: none;
+  background: conic-gradient(from var(--sweep), #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.cta.in .email::before { animation: sweep 1.8s var(--ease-io) .5s both; }
+.cta.in .email:hover::before { animation: orbit 2.6s linear infinite; opacity: .95; }
+@keyframes sweep { 0% { opacity: 0; --sweep: 0deg; } 25% { opacity: 1; } 100% { opacity: 0; --sweep: 360deg; } }
+@keyframes orbit { to { --sweep: 360deg; } }
 [data-theme="dark"] .email { box-shadow: 0 10px 30px rgba(0, 0, 0, .55); }
 [data-theme="dark"] .email:hover { box-shadow: 0 16px 44px rgba(0, 0, 0, .7); }
 .email-icon { width: 18px; height: 18px; flex: none; }
@@ -399,6 +388,7 @@ footer a:hover { color: var(--ink); }
   footer { flex-direction: column; gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
+  .cta.in .email::before, .cta.in .email:hover::before { animation: none; opacity: 0; }
   .scene { height: auto; }
   .hero { position: relative; }
   .corona, .live::before { animation: none; }

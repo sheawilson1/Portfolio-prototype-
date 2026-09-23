@@ -44,7 +44,6 @@
   const eclipse = hero.querySelector('.eclipse');
   const disc = hero.querySelector('.disc');
   const corona = hero.querySelector('.corona');
-  const variant = root.dataset.scroll || '1';
   const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
   const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1 };
   new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
@@ -75,18 +74,14 @@
   measure(); addEventListener('resize', () => { measure(); onScroll(); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
 
-  let pill = false, handoff = 0;
+  let pill = false;
   function onScroll() {
     hs.target = reduced ? 0 : clamp((scrollY - geo.sceneTop) / geo.sceneLen, 0, 1);
     wake();
   }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  const setPill = (on) => {
-    if (on === pill) return;
-    pill = on; nav.classList.toggle('is-scrolled', on);
-    if (on && variant === '3') { nav.classList.add('is-handoff'); clearTimeout(handoff); handoff = setTimeout(() => nav.classList.remove('is-handoff'), 1700); }
-  };
+  const setPill = (on) => { if (on !== pill) { pill = on; nav.classList.toggle('is-scrolled', on); } };
 
   function heroFrame() {
     let moving = false;
@@ -111,10 +106,9 @@
     disc.style.scale = sc.toFixed(4);
     corona.style.translate = `${(px * 6 * drift).toFixed(2)}px ${(y + py * 4 * drift).toFixed(2)}px`;
     corona.style.scale = sc.toFixed(4);
-    if (variant === '2') {
-      copy.style.transform = `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
-      copy.style.opacity = String(1 - .55 * e);
-    }
+    // The words ease back as the disc arrives.
+    copy.style.transform = `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
+    copy.style.opacity = String(1 - .55 * e);
     return moving;
   }
 
@@ -162,6 +156,11 @@
   }
 
   /* ── Glass cards: tilt with depth between layers, light behind the glass, lit border ── */
+  // The card paints an opaque base (so it can light its own border), so its colour layer lives inside it too.
+  document.querySelectorAll('.item').forEach((el) => {
+    const bleed = el.querySelector(':scope > .bleed'), card = el.querySelector('.card');
+    if (bleed && card) card.prepend(bleed.cloneNode(true));
+  });
   const items = [...document.querySelectorAll('.item')].map((el) => ({
     el, card: el.querySelector('.card'), media: el.querySelector('.media'),
     blobs: [...el.querySelectorAll('.blob, .blob-img')],
@@ -180,10 +179,6 @@
       it.el.style.setProperty('--ry', `${(e.clientY - r.top).toFixed(0)}px`);
     });
   });
-  if (!fine) {
-    const mid = new IntersectionObserver((en) => en.forEach((e) => e.target.classList.toggle('is-hot', e.isIntersecting)), { rootMargin: '-40% 0px -40% 0px' });
-    items.forEach((it) => mid.observe(it.el));
-  }
 
   function cardsFrame() {
     let moving = false;

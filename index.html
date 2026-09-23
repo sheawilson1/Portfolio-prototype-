@@ -7,13 +7,8 @@
 <meta name="description" content="Shea Wilson is a design engineer. He takes complicated things, makes them easy to read at a glance, then builds and ships them.">
 <meta name="theme-color" content="#ffffff">
 <script>
-  (function () {
-    var d = document.documentElement, q = new URLSearchParams(location.search);
-    d.classList.add('js');
-    d.dataset.scroll = /^[123]$/.test(q.get('scroll')) ? q.get('scroll') : '1';
-    d.dataset.glow = /^[123]$/.test(q.get('glow')) ? q.get('glow') : '1';
-    try { if (localStorage.getItem('theme') === 'dark') d.dataset.theme = 'dark'; } catch (e) {}
-  })();
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,7 +55,7 @@
 <main class="work" id="work">
   <div class="grid">
 
-    <article class="item t-snapshot reveal" id="snapshot" data-cursor="Open live site" style="--spot:72% 46%; --a:#3a17e0; --b:#ed1652; --c:#ff6a1a">
+    <article class="item t-snapshot reveal" id="snapshot" data-cursor="Open live site" style="--a:#3a17e0; --b:#ed1652; --c:#ff6a1a">
       <div class="bleed" aria-hidden="true">
         <span class="blob" style="--c:#3a17e0; width:56%; left:44%; top:4%; rotate:-18deg"></span>
         <span class="blob" style="--c:#ed1652; width:44%; left:60%; top:36%; rotate:24deg; --ar:1.8"></span>
@@ -84,7 +79,7 @@
       </a>
     </article>
 
-    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon" style="--spot:30% 56%; --a:#4fae86; --b:#8fd4b4; --c:#0b5c45">
+    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon" style="--a:#4fae86; --b:#8fd4b4; --c:#0b5c45">
       <div class="bleed" aria-hidden="true">
         <span class="blob" style="--c:#4fae86; width:56%; left:2%; top:10%; rotate:-14deg"></span>
         <span class="blob" style="--c:#8fd4b4; width:44%; left:22%; top:44%; rotate:18deg; --ar:1.7"></span>
@@ -115,7 +110,7 @@
       </div>
     </article>
 
-    <article class="item t-heart reveal" id="heart" data-cursor="Open live site" style="--spot:70% 72%; --a:#43d9ff; --b:#ed1652; --c:#08717d">
+    <article class="item t-heart reveal" id="heart" data-cursor="Open live site" style="--a:#43d9ff; --b:#ed1652; --c:#08717d">
       <div class="bleed" aria-hidden="true">
         <span class="blob" style="--c:#43d9ff; width:64%; left:38%; top:32%; rotate:-22deg"></span>
         <span class="blob" style="--c:#ed1652; width:36%; left:54%; top:46%; rotate:16deg; --ar:1.4"></span>
@@ -131,7 +126,7 @@
       </a>
     </article>
 
-    <article class="item t-brain reveal" id="brain" data-cursor="View case study" style="--spot:50% 74%; --d:.06s; --a:#8a3cff; --b:#5b2bff; --c:#c77dff">
+    <article class="item t-brain reveal" id="brain" data-cursor="View case study" style="--d:.06s; --a:#8a3cff; --b:#5b2bff; --c:#c77dff">
       <div class="bleed" aria-hidden="true">
         <span class="blob" style="--c:#8a3cff; width:72%; left:14%; top:34%; rotate:-12deg"></span>
         <span class="blob" style="--c:#5b2bff; width:44%; left:6%; top:58%; rotate:20deg; --ar:1.8"></span>
@@ -188,7 +183,7 @@
 <section class="about" id="about">
   <div class="reveal">
     <p class="label">About</p>
-    <h2>I design it, <em>then build it with AI.</em></h2>
+    <h2>Always building <em>something.</em></h2>
     <p class="about-meta">Design engineer at Influential<br>Studying Digital Design at Ulster University</p>
   </div>
   <div class="about-body reveal" style="--d:.08s">
@@ -221,8 +216,8 @@
 
 <section class="contact" id="contact">
   <div class="contact-glow" aria-hidden="true"></div>
-  <h2 class="reveal">Have an idea? <em>Let’s build it.</em></h2>
-  <p class="sub reveal" style="--d:.05s">Email is the quickest way to reach me.</p>
+  <h2 class="reveal">Let’s <em>talk.</em></h2>
+  <p class="sub reveal" style="--d:.05s">Got a project or an idea? Email is the quickest way to reach me.</p>
   <div class="cta reveal" style="--d:.1s">
     <a class="email" href="mailto:design@sheawilson.uk">
       <svg class="email-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg>
