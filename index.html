@@ -1,1300 +1,230 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shea Wilson, Product Designer</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-    html { scroll-behavior: smooth; }
-
-
-    /* ══════════════════════════════════════
-       THEME VARIABLES
-    ══════════════════════════════════════ */
-
-    :root {
-      --bg: #ffffff;
-      --bg-rgb: 255, 255, 255;
-      --text: #0a0a0a;
-      --text-rgb: 10, 10, 10;
-      --card-bg: #f5f5f5;
-      --surface: rgba(10, 10, 10, 0.03);
-      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.13);
-    }
-
-    body.dark {
-      --bg: #000000;
-      --bg-rgb: 0, 0, 0;
-      --text: #f0f0f0;
-      --text-rgb: 240, 240, 240;
-      --card-bg: #111111;
-      --surface: rgba(240, 240, 240, 0.04);
-      --shadow-hover: 0 24px 64px rgba(0, 0, 0, 0.6);
-    }
-
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      cursor: none;
-      overflow-x: hidden;
-      transition:
-        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
-        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    @media (hover: none) {
-      body { cursor: auto; }
-      #cursor-dot, #cursor-ring { display: none; }
-    }
-
-
-    /* ══════════════════════════════════════
-       CUSTOM CURSOR
-    ══════════════════════════════════════ */
-
-    #cursor-dot {
-      position: fixed;
-      width: 6px;
-      height: 6px;
-      background: var(--text);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease, background 0.55s ease;
-      will-change: left, top;
-    }
-
-    #cursor-ring {
-      position: fixed;
-      width: 30px;
-      height: 30px;
-      border: 1.5px solid rgba(var(--text-rgb), 0.32);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition:
-        width  0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        border-color 0.3s ease,
-        opacity 0.3s ease;
-      will-change: left, top, width, height;
-    }
-
-    body.cursor-hover #cursor-ring {
-      width: 52px;
-      height: 52px;
-      border-color: rgba(var(--text-rgb), 0.16);
-    }
-
-
-    /* ══════════════════════════════════════
-       NAV
-    ══════════════════════════════════════ */
-
-    nav#main-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 72px;
-      padding: 0 80px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 1000;
-      transition: background 0.5s ease, backdrop-filter 0.5s ease;
-    }
-
-    nav#main-nav.scrolled {
-      background: rgba(var(--bg-rgb), 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .nav-logo {
-      position: relative;
-      display: inline-grid;
-      align-items: center;
-      justify-items: start;
-      width: 34px;
-      overflow: hidden;
-      font-family: 'Spectral', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 22px;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-      white-space: nowrap;
-      opacity: 0;
-      transform: translateY(-10px);
-      transition:
-        width 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      pointer-events: none;
-    }
-
-    .nav-logo.is-visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: auto;
-    }
-
-    .nav-logo-mark {
-      grid-area: 1 / 1;
-      display: inline-block;
-      opacity: 1;
-      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .nav-logo-full {
-      grid-area: 1 / 1;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    @media (hover: hover) and (pointer: fine) {
-      .nav-logo:hover {
-        width: 142px;
-      }
-
-      .nav-logo:hover .nav-logo-mark {
-        opacity: 0;
-      }
-
-      .nav-logo:hover .nav-logo-full {
-        opacity: 1;
-      }
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 44px;
-      list-style: none;
-    }
-
-    .nav-links a {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 15px;
-      color: rgba(var(--text-rgb), 0.6);
-      text-decoration: none;
-      position: relative;
-      transition: color 0.25s ease;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px;
-      left: 0;
-      width: 0;
-      height: 1px;
-      background: var(--text);
-      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
-    }
-
-    .nav-links a:hover        { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-
-
-    /* ══════════════════════════════════════
-       SCROLL REVEAL
-    ══════════════════════════════════════ */
-
-    .reveal {
-      opacity: 0;
-      transform: translateY(26px);
-      transition:
-        opacity   0.9s cubic-bezier(0.23, 1, 0.32, 1),
-        transform 0.9s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    .reveal.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .delay-1 { transition-delay: 0.10s; }
-    .delay-2 { transition-delay: 0.20s; }
-    .delay-3 { transition-delay: 0.30s; }
-    .delay-4 { transition-delay: 0.40s; }
-
-
-    /* ══════════════════════════════════════
-       HERO
-    ══════════════════════════════════════ */
-
-    #hero {
-      position: relative;
-      min-height: 100vh;
-      padding: 72px 80px 100px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(22px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-
-    .hero-eyebrow {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 13px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.45);
-      margin-bottom: 20px;
-      opacity: 0;
-      animation: fadeUp 0.9s cubic-bezier(0.23, 1, 0.32, 1) 0.15s forwards;
-    }
-
-    .hero-name {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-size: 130px;
-      letter-spacing: -7px;
-      line-height: 0.92;
-      color: var(--text);
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.3s forwards;
-      transition: color 0.55s ease;
-    }
-
-    .hero-word { display: inline-block; }
-
-    .hero-letter {
-      display: inline-block;
-      will-change: transform;
-      transition: transform 0.35s cubic-bezier(0.23, 1, 0.32, 1);
-      animation: heroFloat 4s ease-in-out calc(1.3s + var(--i) * 0.15s) infinite;
-    }
-
-    @keyframes heroFloat {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-7px); }
-    }
-
-    .hero-tagline {
-      margin-top: 44px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 22px;
-      color: rgba(var(--text-rgb), 0.58);
-      max-width: 420px;
-      line-height: 1.5;
-      opacity: 0;
-      animation: fadeUp 1s cubic-bezier(0.23, 1, 0.32, 1) 0.5s forwards;
-    }
-
-    .scroll-hint {
-      position: absolute;
-      bottom: 52px;
-      right: 80px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-      opacity: 0;
-      animation: fadeUp 0.8s ease 1.1s forwards;
-    }
-
-    .scroll-hint-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 11px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.35);
-      writing-mode: vertical-rl;
-    }
-
-    .scroll-line {
-      width: 1px;
-      height: 52px;
-      background: rgba(var(--text-rgb), 0.12);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .scroll-line::after {
-      content: '';
-      position: absolute;
-      top: -100%;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(var(--text-rgb), 0.5);
-      animation: scrollPulse 2s ease-in-out 1.5s infinite;
-    }
-
-    @keyframes scrollPulse {
-      0%   { top: -100%; }
-      100% { top:  100%; }
-    }
-
-
-    /* ══════════════════════════════════════
-       WORK SECTION
-    ══════════════════════════════════════ */
-
-    #work {
-      padding: 140px 80px;
-    }
-
-    .section-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 36px;
-      text-align: center;
-      margin-bottom: 80px;
-    }
-
-    .section-title {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-size: 130px;
-      letter-spacing: -7px;
-      line-height: 0.92;
-      color: var(--text);
-      white-space: nowrap;
-      transition: color 0.55s ease;
-    }
-
-    .section-subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 22px;
-      max-width: 420px;
-      line-height: 1.5;
-      color: rgba(var(--text-rgb), 0.58);
-      transition: color 0.55s ease;
-    }
-
-    /* ══════════════════════════════════════
-       FEATURED CARD — Brain Dump
-    ══════════════════════════════════════ */
-
-    .featured-card {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-decoration: none;
-      color: inherit;
-      background: var(--card-bg);
-      border-radius: 20px;
-      padding: 52px 52px 0;
-      margin: 0 auto 36px;
-      max-width: 1092px;
-      overflow: hidden;
-      box-shadow: none;
-      transition: box-shadow 280ms ease, background 0.55s ease;
-      will-change: transform;
-      cursor: none;
-      position: relative;
-    }
-
-    .featured-card:hover {
-      box-shadow: var(--shadow-hover);
-    }
-
-    .featured-card-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 12px;
-      margin-bottom: 48px;
-    }
-
-    .featured-eyebrow {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-    }
-
-    .featured-name {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 64px;
-      letter-spacing: -2.5px;
-      line-height: 1;
-      color: var(--text);
-      transition: color 0.55s ease;
-    }
-
-    .featured-desc {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
-      font-size: 20px;
-      letter-spacing: -0.5px;
-      color: rgba(var(--text-rgb), 0.70);
-      line-height: 1.4;
-      margin-top: 4px;
-      max-width: 480px;
-    }
-
-.featured-video-wrap {
-      border-radius: 20px 20px 0 0;
-      overflow: hidden;
-      width: 100%;
-      margin: 0 auto;
-      background: #000;
-    }
-
-    .featured-video-wrap video {
-      width: 100%;
-      display: block;
-      margin-top: -2px;
-    }
-
-    @media (max-width: 1024px) {
-      .featured-name { font-size: 48px; letter-spacing: -2px; }
-      .featured-video-wrap { max-width: 340px; }
-    }
-
-    @media (max-width: 640px) {
-      .featured-card { padding: 32px 28px 0; margin-bottom: 24px; }
-      .featured-card-inner { align-items: flex-start; text-align: left; }
-      .featured-name { font-size: 36px; }
-      .featured-desc { font-size: 17px; }
-      .featured-video-wrap { max-width: 100%; }
-    }
-
-    .cards-row {
-      display: flex;
-      gap: 36px;
-      align-items: flex-start;
-      justify-content: center;
-    }
-
-    .card {
-      background: var(--card-bg);
-      width: 340px;
-      height: 408px;
-      border-radius: 20px;
-      padding: 24px 24px 0;
-      display: flex;
-      flex-direction: column;
-      gap: 48px;
-      overflow: hidden;
-      box-shadow: none;
-      transition:
-        box-shadow 280ms ease,
-        background 0.55s ease;
-      will-change: transform;
-      cursor: none;
-    }
-
-    .card:hover {
-      box-shadow: var(--shadow-hover);
-    }
-
-    /* Cipher card is clickable */
-    .card[data-card="cipher"] {
-      position: relative;
-    }
-
-.card-titles {
-      display: flex;
-      flex-direction: column;
-      gap: 24px;
-      flex-shrink: 0;
-    }
-
-    .card-name {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 32px;
-      letter-spacing: -1.28px;
-      color: var(--text);
-      line-height: 1;
-      transition: color 0.55s ease;
-    }
-
-    .card-desc {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 400;
-      font-size: 20px;
-      letter-spacing: -0.8px;
-      color: rgba(var(--text-rgb), 0.80);
-      line-height: 1.3;
-    }
-
-    .card-image {
-      flex: 1;
-      border-radius: 10px 10px 0 0;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .card-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-      pointer-events: none;
-      border-radius: inherit;
-    }
-
-    .card-image--cipher {
-      box-shadow: -4px 4px 8px 0px rgba(0, 0, 0, 0.10);
-    }
-
-    .card-image--captr {
-      border-radius: 15px 15px 0 0;
-    }
-
-    .card-image--captr img {
-      border-radius: 15px 15px 0 0;
-      box-shadow: -4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    }
-
-    .card-image--amp {
-      border-radius: 15px 15px 0 0;
-      box-shadow: -4px 4px 4px 0px rgba(0, 0, 0, 0.25);
-    }
-
-    .card-image--amp img {
-      border-radius: 15px 15px 0 0;
-    }
-
-
-    /* ══════════════════════════════════════
-       ABOUT SECTION
-    ══════════════════════════════════════ */
-
-    #about {
-      padding: 160px 80px;
-    }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 100px;
-      align-items: center;
-      max-width: 1080px;
-      margin: 0 auto;
-    }
-
-    .about-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-      margin-bottom: 28px;
-    }
-
-    .about-heading {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-size: 60px;
-      letter-spacing: -3px;
-      line-height: 1.04;
-      color: var(--text);
-      margin-bottom: 36px;
-      transition: color 0.55s ease;
-    }
-
-    .about-heading em {
-      font-style: italic;
-    }
-
-    .about-body {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 1.75;
-      color: rgba(var(--text-rgb), 0.68);
-    }
-
-    .about-body p + p {
-      margin-top: 18px;
-    }
-
-    /* Right side: tools grid */
-    .about-tools {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-    }
-
-    .about-tools-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-      margin-bottom: 28px;
-      transition: color 0.55s ease;
-    }
-
-    .tools-grid {
-      display: flex;
-      gap: 48px;
-    }
-
-    .tools-col {
-      list-style: none;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-
-    .tools-col li {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 20px;
-      color: rgba(var(--text-rgb), 0.68);
-      transition: color 0.55s ease;
-    }
-
-    @media (max-width: 640px) {
-      .tools-col li { font-size: 17px; }
-      .tools-grid { gap: 32px; }
-    }
-
-
-    /* ══════════════════════════════════════
-       CONTACT SECTION
-    ══════════════════════════════════════ */
-
-    #contact {
-      padding: 140px 80px 120px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 40px;
-    }
-
-    .contact-heading {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-size: 100px;
-      letter-spacing: -5.5px;
-      line-height: 1;
-      color: var(--text);
-      transition: color 0.55s ease;
-    }
-
-    .contact-sub {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 19px;
-      color: rgba(var(--text-rgb), 0.5);
-      max-width: 380px;
-      line-height: 1.6;
-    }
-
-    .magnetic-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 18px 44px;
-      border: 1.5px solid rgba(var(--text-rgb), 0.28);
-      border-radius: 100px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 16px;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: 0.2px;
-      margin-top: 8px;
-      transition:
-        transform     0.5s cubic-bezier(0.23, 1, 0.32, 1),
-        border-color  0.3s ease,
-        background    0.3s ease,
-        color         0.3s ease;
-    }
-
-    .magnetic-btn:hover {
-      border-color: var(--text);
-      background: var(--text);
-      color: var(--bg);
-    }
-
-
-    /* ══════════════════════════════════════
-       FOOTER
-    ══════════════════════════════════════ */
-
-    footer {
-      padding: 36px 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-top: 1px solid rgba(var(--text-rgb), 0.07);
-    }
-
-    .footer-copy {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 13px;
-      color: rgba(var(--text-rgb), 0.3);
-    }
-
-
-    /* ══════════════════════════════════════
-       RESPONSIVE — TABLET (≤ 1024px)
-    ══════════════════════════════════════ */
-
-    @media (max-width: 1024px) {
-
-      nav#main-nav { padding: 0 40px; }
-
-      #hero { padding: 72px 40px 80px; }
-      .hero-name { font-size: 100px; letter-spacing: -5px; }
-      @keyframes heroFloat {
-        0%, 100% { transform: translateY(0); }
-        50%      { transform: translateY(-4px); }
-      }
-      .hero-tagline { font-size: 20px; max-width: 360px; }
-      .scroll-hint { right: 40px; }
-
-      #work { padding: 100px 40px; }
-      .section-title { font-size: 80px; letter-spacing: -4.8px; }
-      .section-subtitle { font-size: 26px; }
-
-      .cards-row {
-        flex-wrap: wrap;
-        justify-content: center;
-      }
-      .card { width: calc(50% - 18px); height: 380px; }
-
-      #about { padding: 100px 40px; }
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
-      .about-heading { font-size: 48px; letter-spacing: -2px; }
-
-      #contact { padding: 100px 40px 80px; }
-      .contact-heading { font-size: 72px; letter-spacing: -4px; }
-
-      footer { padding: 36px 40px; }
-    }
-
-
-    /* ══════════════════════════════════════
-       RESPONSIVE — PHONE (≤ 640px)
-    ══════════════════════════════════════ */
-
-    @media (max-width: 640px) {
-
-      nav#main-nav { padding: 0 24px; height: 64px; }
-      .nav-logo { width: 34px; font-size: 20px; }
-      .nav-right { gap: 24px; }
-      .nav-links { gap: 24px; }
-      .nav-links a { font-size: 13px; }
-#hero { padding: 64px 24px 60px; min-height: 85vh; }
-      .hero-eyebrow { font-size: 11px; letter-spacing: 2px; margin-bottom: 16px; }
-      .hero-name { font-size: 72px; letter-spacing: -3.5px; }
-      .hero-letter { animation: heroFloat 4s ease-in-out calc(1.3s + var(--i) * 0.15s) infinite; }
-      .hero-tagline { font-size: 18px; margin-top: 32px; max-width: 300px; }
-      .scroll-hint { display: none; }
-
-      #work { padding: 80px 24px; }
-      .section-header { margin-bottom: 48px; gap: 24px; }
-      .section-title { font-size: 56px; letter-spacing: -3.36px; white-space: normal; }
-      .section-subtitle { font-size: 20px; }
-
-      .cards-row { flex-direction: column; align-items: center; gap: 24px; }
-      .card { width: 100%; max-width: 400px; height: 380px; }
-
-      #about { padding: 80px 24px; }
-      .about-grid { grid-template-columns: 1fr; gap: 48px; }
-      .about-heading { font-size: 36px; letter-spacing: -1.5px; margin-bottom: 24px; }
-      .about-body { font-size: 16px; }
-      .about-visual { aspect-ratio: 1 / 1; }
-
-      #contact { padding: 80px 24px 60px; gap: 28px; }
-      .contact-heading { font-size: 48px; letter-spacing: -2.5px; }
-      .contact-sub { font-size: 17px; }
-      .magnetic-btn { padding: 16px 36px; font-size: 15px; }
-
-      footer { padding: 28px 24px; }
-      .footer-copy { font-size: 12px; }
-    }
-
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shea Wilson, design engineer</title>
+<meta name="description" content="Shea Wilson is a design engineer. He takes complicated things, makes them easy to read at a glance, then builds and ships them.">
+<meta name="theme-color" content="#ffffff">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;0,400;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/media/home/snapshot-phone.webp">
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
-
 <body>
 
-  <div id="cursor-dot"></div>
-  <div id="cursor-ring"></div>
+<div class="cursor-dot" aria-hidden="true"></div>
+<div class="cursor-ring" aria-hidden="true"><span></span></div>
 
+<header class="nav">
+  <div class="nav-inner">
+    <a class="logo" href="#top" aria-label="Shea Wilson, back to top"><span class="logo-mark">SW</span><span class="logo-full"><span>Shea Wilson</span></span></a>
+    <nav class="links" aria-label="Main">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contact</a>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span>
+      </button>
+    </nav>
+  </div>
+</header>
 
-  <!-- ══════════════ NAV ══════════════ -->
-  <nav id="main-nav">
-    <a href="#hero" class="nav-logo" aria-label="Shea Wilson home">
-      <span class="nav-logo-mark">SW</span>
-      <span class="nav-logo-full" aria-hidden="true"><span>Shea Wilson</span></span>
-    </a>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="#work">Work</a></li>
-        <li><a href="#about">About</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </div>
-  </nav>
-
-
-  <!-- ══════════════ HERO ══════════════ -->
-  <section id="hero">
-    <p class="hero-eyebrow">Digital Designer</p>
-    <h1 class="hero-name" id="hero-h1"><span class="hero-word"><span class="hero-letter" style="--i:0">S</span><span class="hero-letter" style="--i:1">h</span><span class="hero-letter" style="--i:2">e</span><span class="hero-letter" style="--i:3">a</span></span><br><span class="hero-word"><span class="hero-letter" style="--i:4">W</span><span class="hero-letter" style="--i:5">i</span><span class="hero-letter" style="--i:6">l</span><span class="hero-letter" style="--i:7">s</span><span class="hero-letter" style="--i:8">o</span><span class="hero-letter" style="--i:9">n</span></span></h1>
-    <p class="hero-tagline">
-      I design the interface and then build it.
+<section class="hero" id="top">
+  <div class="eclipse" aria-hidden="true">
+    <div class="haze"></div>
+    <div class="streamers"></div>
+    <div class="corona"></div>
+    <div class="flare"></div>
+    <div class="disc"></div>
+  </div>
+  <div class="hero-copy">
+    <a class="live" href="#heart">Heart Health is live now</a>
+    <h1 data-split>Complicated in. <em>Clear out.</em></h1>
+    <p class="intro">I’m Shea Wilson, a design engineer. I take complicated things and make them easy to read at a glance, then I build and ship them myself.</p>
+    <p class="recent">
+      <span>Recently</span>
+      <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
+      <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#2fd67b"></i>JumpStart</a>
+      <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
+      <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
     </p>
-    <div class="scroll-hint" aria-hidden="true">
-      <span class="scroll-hint-label">Scroll</span>
-      <div class="scroll-line"></div>
-    </div>
-  </section>
+  </div>
+</section>
 
+<main class="work" id="work">
+  <div class="section-head reveal">
+    <p class="label">Selected work</p>
+    <p class="label">2025–2026</p>
+  </div>
 
-  <!-- ══════════════ WORK ══════════════ -->
-  <section id="work">
-    <div class="section-header">
-      <h2 class="section-title reveal">Work</h2>
-      <p class="section-subtitle reveal delay-1">
-        Design and code, together.
-      </p>
-    </div>
+  <div class="grid">
 
-    <!-- Brain Dump featured card -->
-    <a href="braindump.html" class="featured-card reveal" data-card="braindump">
-      <div class="featured-card-inner">
-        <p class="featured-eyebrow">Featured project</p>
-        <h3 class="featured-name">Brain Dump</h3>
-        <p class="featured-desc">Type or speak freely. AI figures out the rest.</p>
+    <article class="item t-snapshot reveal" id="snapshot" data-cursor="Open live site">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#3a17e0; width:52%; left:46%; top:6%"></span>
+        <span class="blob" style="--c:#ed1652; width:40%; left:62%; top:38%"></span>
+        <span class="blob" style="--c:#ff6a1a; width:32%; left:44%; top:54%"></span>
       </div>
-      <div class="featured-video-wrap">
-        <video autoplay muted loop playsinline>
-          <source src="braindump-demo.mp4" type="video/mp4">
-        </video>
-      </div>
-    </a>
-
-
-    <div class="cards-row">
-
-      <!-- Cipher (links to case study page) -->
-      <a href="cipher.html" class="card reveal delay-1" data-card="cipher" style="text-decoration:none; color:inherit;">
-        <div class="card-titles">
-          <p class="card-name">Cipher</p>
-          <p class="card-desc">Your finances, finally made clear with AI</p>
+      <a class="card" href="https://wrapped.smokingendshere.com/" target="_blank" rel="noopener">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Smoking Ends Here · Champs and NHS</span><span class="label">2026</span></div>
+        <div class="card-copy">
+          <h2>Smoking Snapshot</h2>
+          <p class="line">A one-minute calculator that shows people what “only socially” adds up to over a year. People found it through paid social and used it on their phones or on iPads at events.</p>
+          <div class="stats">
+            <div class="stat"><span class="num" data-count="975">975</span><span class="what">snapshots completed</span></div>
+            <div class="stat"><span class="num" data-count="41904">41,904</span><span class="what">clicks from paid social</span></div>
+            <div class="stat"><span class="num" data-count="50" data-suffix="%">50%</span><span class="what">said they’d rethink how much they smoke</span></div>
+          </div>
         </div>
-        <div class="card-image card-image--cipher">
-          <img
-            src="cipher-card.jpg"
-            alt="Cipher: AI finance app on a laptop"
-          />
+        <div class="media">
+          <div class="screen screen-back snap-results"><img src="assets/media/home/snapshot-results.webp" alt="Snapshot results: 269 cigarettes smoked in the last 12 months, 13 packets" width="1400" height="1050" loading="lazy"></div>
+          <img class="device" src="assets/media/home/snapshot-phone.webp" alt="Smoking Snapshot on a phone, asking which smoking pattern sounds like you" width="720" height="1491">
         </div>
       </a>
+    </article>
 
-      <!-- Amp -->
-      <a href="amp.html" class="card reveal delay-2" data-card="amp" style="text-decoration:none; color:inherit;">
-        <div class="card-titles">
-          <p class="card-name">Amp</p>
-          <p class="card-desc">Take full control of your music with smart controls</p>
+    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#0f7a55; width:50%; left:2%; top:14%"></span>
+        <span class="blob" style="--c:#2fd67b; width:36%; left:24%; top:46%"></span>
+        <span class="blob" style="--c:#4aa3ff; width:30%; left:6%; top:52%"></span>
+      </div>
+      <div class="card">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Agency reporting product</span><span class="label">In pilot</span></div>
+        <div class="media">
+          <div class="screen screen-back"><img src="assets/media/home/jumpstart-agency.webp" alt="JumpStart agency desk: three clients, one thing needs you" width="1600" height="1044" loading="lazy"></div>
+          <div class="screen screen-front"><img src="assets/media/home/jumpstart-client.webp" alt="JumpStart client view: every pound spent brought back £2.86" width="1600" height="1075" loading="lazy"></div>
         </div>
-        <div class="card-image card-image--amp">
-          <img
-            src="amp-card.jpg"
-            alt="Amp: music control app on iPhone"
-          />
-        </div>
-      </a>
-
-      <!-- Captr -->
-      <a href="captr.html" class="card reveal delay-3" data-card="captr" style="text-decoration:none; color:inherit;">
-        <div class="card-titles">
-          <p class="card-name">Captr</p>
-          <p class="card-desc">See what matters most, at a glance</p>
-        </div>
-        <div class="card-image card-image--captr">
-          <img
-            src="Captrhome.jpg"
-            alt="Captr: Apple Watch with smart widget display"
-          />
-        </div>
-      </a>
-
-    </div>
-  </section>
-
-
-  <!-- ══════════════ ABOUT ══════════════ -->
-  <section id="about">
-    <div class="about-grid">
-
-      <div class="about-text">
-        <p class="about-label reveal">About</p>
-        <h2 class="about-heading reveal delay-1">
-          Designed to<br><em>make sense.</em>
-        </h2>
-        <div class="about-body reveal delay-2">
-          <p>
-            I'm Shea Wilson, a second-year Digital Design student at Ulster University. I design interfaces and I build them.
-          </p>
-          <p>
-            My biggest project right now is Brain Dump, a full-stack app where you type or speak freely and AI sorts everything into tasks, routines, ideas and projects. I designed it in Figma, built it with Next.js and Supabase, and it has real users in beta. It started as a personal project because I kept losing track of things across too many apps.
-          </p>
-          <p>
-            I've been using AI tools since ChatGPT first came out and more seriously for about a year. Claude Code to build, Perplexity and NotebookLM for research. I test most things when they come out. It's changed what I can get done on my own.
-          </p>
-          <p>
-            Most designers don't build. I think that's a mistake.
-          </p>
+        <div class="card-copy">
+          <h2>JumpStart</h2>
+          <p class="line">Paid media reporting that explains itself. Clients get a plain-English read of what changed, why it matters and what happens next, and the agency runs every account from one desk.</p>
+          <div class="chips"><span class="chip">Client view</span><span class="chip">Agency desk</span><span class="chip">PDF export</span></div>
+          <div class="quote">
+            <p>In pilot with the National Football Museum.</p>
+            <cite>Figures in the screens are illustrative.</cite>
+          </div>
         </div>
       </div>
+    </article>
 
-      <div class="about-tools reveal delay-2">
-        <p class="about-tools-label">Tools &amp; stack</p>
-        <div class="tools-grid">
-          <ul class="tools-col">
-            <li>Figma</li>
-            <li>Photoshop</li>
-            <li>Illustrator</li>
-            <li>Lightroom</li>
-          </ul>
-          <ul class="tools-col">
-            <li>Claude Code</li>
-            <li>Perplexity</li>
-            <li>NotebookLM</li>
-            <li>Next.js</li>
-          </ul>
-        </div>
+    <article class="item t-heart reveal" id="heart" data-cursor="Open live site">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#43d9ff; width:62%; left:40%; top:34%"></span>
+        <span class="blob" style="--c:#ed1652; width:36%; left:52%; top:48%"></span>
+        <span class="blob" style="--c:#08717d; width:44%; left:20%; top:56%"></span>
       </div>
+      <a class="card" href="https://hearthealth.smokingendshere.com/" target="_blank" rel="noopener">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Smoking Ends Here · Champs and NHS</span><span class="label live">Live now</span></div>
+        <div class="card-copy">
+          <h2>Heart Health</h2>
+          <p class="line">Tap the cigarette and watch the heart monitor react. It’s running now as paid social on Instagram, Facebook and other platforms.</p>
+        </div>
+        <div class="media"><img class="device" src="assets/media/home/heart-health-hand.webp" alt="Heart Health on an iPad held in one hand, a pulse line running under a red heart" width="1300" height="1459" loading="lazy"></div>
+      </a>
+    </article>
 
-    </div>
-  </section>
+    <article class="item t-brain reveal" id="brain" data-cursor="View case study" style="--d:.06s">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#8a3cff; width:70%; left:15%; top:36%"></span>
+        <span class="blob" style="--c:#5b2bff; width:44%; left:8%; top:58%"></span>
+        <span class="blob" style="--c:#c77dff; width:40%; left:52%; top:50%"></span>
+      </div>
+      <a class="card" href="braindump.html">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Personal project</span><span class="label">In beta</span></div>
+        <div class="card-copy">
+          <h2>Brain Dump</h2>
+          <p class="line">Type or talk, and it sorts the lot into tasks, routines, ideas and projects.</p>
+          <div class="steps" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i></div>
+        </div>
+        <div class="media">
+          <div class="phone">
+            <span class="phone-island"></span>
+            <div class="phone-screen">
+              <img class="is-on" src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1076" loading="lazy">
+              <img src="assets/media/home/brain-voice.webp" alt="" data-listen width="520" height="1076" loading="lazy">
+              <img src="assets/media/home/brain-ai-input.webp" alt="" width="520" height="1076" loading="lazy">
+              <img src="assets/media/home/brain-card-selection.webp" alt="" width="520" height="1076" loading="lazy">
+            </div>
+          </div>
+        </div>
+      </a>
+    </article>
 
+    <article class="item t-small reveal" data-cursor="View case study">
+      <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/cipher.webp); inset:22% 10% 0 10%"></span></div>
+      <a class="card" href="cipher.html">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Brand, web and app</span><span class="label">Concept</span></div>
+        <div class="card-copy"><h2>Cipher</h2><p class="line">Brand guidelines, website and app for an AI-first bank.</p></div>
+        <div class="media"><img src="assets/media/home/cipher.webp" alt="Cipher website on a laptop resting on a ribbed wooden surface" width="1400" height="1050" loading="lazy"></div>
+      </a>
+    </article>
 
-  <!-- ══════════════ CONTACT ══════════════ -->
-  <section id="contact">
-    <h2 class="contact-heading reveal delay-1">Let's make something.</h2>
-    <p class="contact-sub reveal delay-2">
-      Second-year design student, open to placement opportunities. I'd love to hear from you.
-    </p>
-    <!-- Update the href with your actual email -->
-    <a href="mailto:design@sheawilson.uk" class="magnetic-btn reveal delay-3" id="magnetic-btn">
-      Say hello
-    </a>
-  </section>
+    <article class="item t-small reveal" data-cursor="View case study" style="--d:.06s">
+      <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/amp.webp); inset:22% 10% 0 10%"></span></div>
+      <a class="card" href="amp.html">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Mobile app</span><span class="label">Concept</span></div>
+        <div class="card-copy"><h2>Amp</h2><p class="line">A music player built around smart playback and moving between devices.</p></div>
+        <div class="media"><img src="assets/media/home/amp.webp" alt="Amp music player on a phone standing on dark rock" width="1400" height="1050" loading="lazy"></div>
+      </a>
+    </article>
 
+    <article class="item t-small reveal" data-cursor="View case study" style="--d:.12s">
+      <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/captr.webp); inset:22% 10% 0 10%"></span></div>
+      <a class="card" href="captr.html">
+        <span class="sheen" aria-hidden="true"></span>
+        <div class="card-top"><span class="label">Apple Watch app</span><span class="label">Concept</span></div>
+        <div class="card-copy"><h2>Captr</h2><p class="line">Capture a task, give it a priority and tick it off from your wrist.</p></div>
+        <div class="media"><img src="assets/media/home/captr.webp" alt="Captr on an Apple Watch showing a task called Walk the Dog" width="1200" height="800" loading="lazy"></div>
+      </a>
+    </article>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer>
-    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
-  </footer>
+  </div>
+</main>
 
+<section class="about" id="about">
+  <div class="reveal">
+    <p class="label">About</p>
+    <h2>It isn’t designed<br>until it’s <em>live.</em></h2>
+  </div>
+  <div class="about-body reveal" style="--d:.08s">
+    <p>I start in Figma and move into code early, so the thing people approve is the thing that ships. I build with AI tools like Claude Code and Codex, and spend the time they save on the details that make something feel finished.</p>
+    <p>A lot of my work is about making numbers land: a year of smoking turned into one figure, a heart-attack statistic turned into a heartbeat, a month of ad data turned into a few sentences a client can act on.</p>
+  </div>
+  <div class="ways">
+    <div class="way reveal"><span class="n">01</span><h3>Prototype in the real thing</h3><p>I test ideas in the browser, on real devices and with real data, so problems show up early.</p></div>
+    <div class="way reveal" style="--d:.06s"><span class="n">02</span><h3>Design and code, one person</h3><p>Nothing gets lost in a handoff. The person who drew the details is the one who builds them.</p></div>
+    <div class="way reveal" style="--d:.12s"><span class="n">03</span><h3>Ship it, then measure it</h3><p>I add analytics before launch. On Snapshot, that’s how we knew 53% of people went on to answer the follow-up questions.</p></div>
+  </div>
+  <p class="toolkit reveal"><span class="label">Toolkit</span><span>Figma</span><span>Photoshop</span><span>Illustrator</span><span>HTML, CSS and JavaScript</span><span>Next.js</span><span>Supabase</span><span>Vercel</span><span>Claude Code</span><span>Codex</span></p>
+</section>
 
-  <!-- ══════════════════════════════════════════
-       SCRIPTS
-  ══════════════════════════════════════════ -->
-  <script>
+<section class="contact" id="contact">
+  <div class="contact-glow" aria-hidden="true"></div>
+  <h2 class="reveal">Got something <em>complicated?</em></h2>
+  <p class="sub reveal" style="--d:.05s">Send it over.</p>
+  <button class="email reveal" type="button" data-email="design@sheawilson.uk" style="--d:.1s">
+    <span>design@sheawilson.uk</span><span class="act" aria-live="polite">Copy</span>
+  </button>
+  <span class="alt reveal" style="--d:.14s">or <a href="mailto:design@sheawilson.uk">open it in your mail app</a></span>
+</section>
 
-    /* ─────────────────────────────────────────
-       INTERACTION 1: CUSTOM CURSOR
-    ───────────────────────────────────────── */
+<footer>
+  <span>© 2026 Shea Wilson</span>
+  <a href="#top">Back to top</a>
+</footer>
 
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-
-    let mouseX = window.innerWidth  / 2;
-    let mouseY = window.innerHeight / 2;
-    let ringX  = mouseX;
-    let ringY  = mouseY;
-
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX;
-      mouseY = e.clientY;
-      dot.style.left = mouseX + 'px';
-      dot.style.top  = mouseY + 'px';
-    });
-
-    (function animateRing() {
-      ringX += (mouseX - ringX) * 0.13;
-      ringY += (mouseY - ringY) * 0.13;
-      ring.style.left = ringX + 'px';
-      ring.style.top  = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    })();
-
-    /* Event delegation for cursor hover -- works with all elements including case study */
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest('a, button, [data-card], .magnetic-btn')) {
-        document.body.classList.add('cursor-hover');
-      }
-    });
-    document.addEventListener('mouseout', e => {
-      if (e.target.closest('a, button, [data-card], .magnetic-btn')) {
-        document.body.classList.remove('cursor-hover');
-      }
-    });
-
-    document.addEventListener('mouseleave', () => {
-      dot.style.opacity  = '0';
-      ring.style.opacity = '0';
-    });
-    document.addEventListener('mouseenter', () => {
-      dot.style.opacity  = '1';
-      ring.style.opacity = '1';
-    });
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 2: NAV -- FROSTED GLASS
-    ───────────────────────────────────────── */
-
-    const mainNav = document.getElementById('main-nav');
-    const navLogo = document.querySelector('.nav-logo');
-    const heroHeading = document.getElementById('hero-h1');
-
-    window.addEventListener('scroll', () => {
-      mainNav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    if (navLogo && heroHeading) {
-      const navLogoObserver = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) {
-            navLogo.classList.add('is-visible');
-            navLogoObserver.unobserve(entry.target);
-          }
-        });
-      }, {
-        threshold: 0
-      });
-
-      navLogoObserver.observe(heroHeading);
-    }
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 3: SCROLL REVEAL
-    ───────────────────────────────────────── */
-
-    const revealObserver = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
-          revealObserver.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12 });
-
-    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 4: GLOBAL CARD TILT
-       Desktop: follows mouse cursor.
-       Mobile: uses device gyroscope.
-    ───────────────────────────────────────── */
-
-    const PERSPECTIVE  = 1200;
-    const TILT_LERP    = 0.09;
-
-    /* Per-card max tilt: featured card is larger so needs less rotation
-       for the same perceptual effect as the smaller three cards */
-    const TILT_MAX = { braindump: 5, cipher: 10, amp: 10, captr: 10 };
-
-    const cards = Array.from(document.querySelectorAll('[data-card]'));
-    /* Per-card lerp state */
-    const cardState = new Map();
-    cards.forEach(c => cardState.set(c, { cRX: 0, cRY: 0 }));
-
-    let tNX = 0, tNY = 0; /* normalised -1..1 */
-    const isTouchDevice = matchMedia('(hover: none)').matches;
-
-    /* ── Desktop: mouse-driven tilt ── */
-    if (!isTouchDevice) {
-      document.addEventListener('mousemove', e => {
-        tNX = (e.clientX / window.innerWidth)  * 2 - 1;
-        tNY = (e.clientY / window.innerHeight) * 2 - 1;
-      });
-      document.addEventListener('mouseleave', () => { tNX = 0; tNY = 0; });
-    }
-
-    /* ── Mobile: gyroscope-driven tilt + touch fallback ── */
-    if (isTouchDevice) {
-
-      let gyroActive = false;
-
-      function handleOrientation(e) {
-        if (e.beta === null && e.gamma === null) return;
-        gyroActive = true;
-        const beta  = e.beta  || 0;
-        const gamma = e.gamma || 0;
-        /* Normalise: phone held upright (~45° beta) is neutral */
-        tNX = Math.max(-1, Math.min(1, gamma * 0.025));
-        tNY = Math.max(-1, Math.min(1, (beta - 45) * 0.025));
-      }
-
-      function enableGyro() {
-        window.addEventListener('deviceorientation', handleOrientation, { passive: true });
-      }
-
-      /* Try to activate gyroscope */
-      if (window.DeviceOrientationEvent) {
-        if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-          /* iOS 13+: request permission on first touch interaction */
-          document.addEventListener('touchend', function requestGyro() {
-            DeviceOrientationEvent.requestPermission()
-              .then(state => { if (state === 'granted') enableGyro(); })
-              .catch(() => {});
-            document.removeEventListener('touchend', requestGyro);
-          }, { once: true });
-        } else {
-          /* Android & older iOS: no permission needed */
-          enableGyro();
-        }
-      }
-
-      /* Touch fallback: if gyro isn't available/permitted,
-         dragging a finger across the cards area tilts them */
-      const cardsRow = document.querySelector('.cards-row');
-      if (cardsRow) {
-        cardsRow.addEventListener('touchmove', e => {
-          if (gyroActive) return; /* gyro takes priority */
-          const touch = e.touches[0];
-          const rect  = cardsRow.getBoundingClientRect();
-          tNX = ((touch.clientX - rect.left) / rect.width)  * 2 - 1;
-          tNY = ((touch.clientY - rect.top)  / rect.height) * 2 - 1;
-        }, { passive: true });
-
-        cardsRow.addEventListener('touchend', () => {
-          if (!gyroActive) { tNX = 0; tNY = 0; }
-        }, { passive: true });
-      }
-    }
-
-    /* ── Shared animation loop — per-card max tilt ── */
-    (function tiltTick() {
-      cards.forEach(c => {
-        const max = TILT_MAX[c.dataset.card] || 8;
-        const tRX = -tNY * max;
-        const tRY =  tNX * max;
-        const s = cardState.get(c);
-        s.cRX += (tRX - s.cRX) * TILT_LERP;
-        s.cRY += (tRY - s.cRY) * TILT_LERP;
-        c.style.transform = `perspective(${PERSPECTIVE}px) rotateX(${s.cRX.toFixed(3)}deg) rotateY(${s.cRY.toFixed(3)}deg)`;
-      });
-      requestAnimationFrame(tiltTick);
-    })();
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 5: MAGNETIC BUTTON
-    ───────────────────────────────────────── */
-
-    const magneticBtn = document.getElementById('magnetic-btn');
-    const STRENGTH    = 0.34;
-
-    magneticBtn.addEventListener('mousemove', e => {
-      const r  = magneticBtn.getBoundingClientRect();
-      const cx = r.left + r.width  / 2;
-      const cy = r.top  + r.height / 2;
-      const dx = (e.clientX - cx) * STRENGTH;
-      const dy = (e.clientY - cy) * STRENGTH;
-      magneticBtn.style.transform = `translate(${dx}px, ${dy}px)`;
-    });
-
-    magneticBtn.addEventListener('mouseleave', () => {
-      magneticBtn.style.transform = 'translate(0, 0)';
-    });
-
-
-    /* ─────────────────────────────────────────
-       INTERACTION 8: KINETIC HERO TYPOGRAPHY
-       Desktop: letters repel from cursor.
-       Mobile: letters drift with gyroscope tilt.
-    ───────────────────────────────────────── */
-
-    const heroLetters = Array.from(document.querySelectorAll('.hero-letter'));
-    const heroSection = document.getElementById('hero');
-    const REPEL_RADIUS = 250;     // px — how close cursor needs to be
-    const REPEL_STRENGTH = 45;    // px — max displacement
-
-    if (!isTouchDevice && heroLetters.length) {
-      // Desktop: magnetic repulsion from cursor — always active, inline style
-      // prevents CSS heroFloat animation from taking over between cursor passes
-      heroLetters.forEach(l => { l.style.animation = 'none'; });
-
-      (function kineticTick() {
-        const heroRect = heroSection.getBoundingClientRect();
-        const heroInView = heroRect.bottom > 0 && heroRect.top < window.innerHeight;
-
-        if (heroInView) {
-          heroLetters.forEach(letter => {
-            const rect = letter.getBoundingClientRect();
-            const lx = rect.left + rect.width / 2;
-            const ly = rect.top + rect.height / 2;
-            const dx = lx - mouseX;
-            const dy = ly - mouseY;
-            const dist = Math.sqrt(dx * dx + dy * dy);
-
-            if (dist < REPEL_RADIUS) {
-              const force = (1 - dist / REPEL_RADIUS) * REPEL_STRENGTH;
-              const angle = Math.atan2(dy, dx);
-              const tx = Math.cos(angle) * force;
-              const ty = Math.sin(angle) * force;
-              letter.style.transform = `translate(${tx.toFixed(1)}px, ${ty.toFixed(1)}px)`;
-            } else {
-              letter.style.transform = 'translate(0px, 0px)';
-            }
-          });
-        }
-        requestAnimationFrame(kineticTick);
-      })();
-    }
-    // Touch devices: CSS heroFloat animation handles the up/down movement
-
-
-    /* ─────────────────────────────────────────
-       DARK MODE — forced on (light mode disabled)
-    ───────────────────────────────────────── */
-    document.body.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-
-  </script>
-
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>
