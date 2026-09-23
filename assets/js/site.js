@@ -11,7 +11,7 @@
   const pointer = { x: innerWidth / 2, y: innerHeight / 2, seen: false };
   addEventListener('pointermove', (e) => { pointer.x = e.clientX; pointer.y = e.clientY; pointer.seen = true; wake(); }, { passive: true });
 
-  /* ── Theme: the umbra spreads out from the toggle ── */
+  /* ── Theme: a soft umbra spreads from the toggle over a page that has already finished changing ── */
   const toggle = document.querySelector('.theme-toggle');
   const metaTheme = document.querySelector('meta[name="theme-color"]');
   const syncToggle = () => {
@@ -31,15 +31,18 @@
     const r = toggle.getBoundingClientRect();
     root.style.setProperty('--vx', `${e.clientX || r.left + r.width / 2}px`);
     root.style.setProperty('--vy', `${e.clientY || r.top + r.height / 2}px`);
-    if (document.startViewTransition && !reduced) document.startViewTransition(apply); else apply();
+    if (!document.startViewTransition || reduced) { apply(); return; }
+    root.classList.add('theme-switching');
+    const vt = document.startViewTransition(apply);
+    vt.finished.finally(() => root.classList.remove('theme-switching'));
   });
 
-  /* ── Nav turns into a glass pill once you leave the top ── */
+  /* ── Nav: full name at the top, folds to SW inside the glass pill ── */
   const nav = document.querySelector('.nav');
   const onScroll = () => { nav.classList.toggle('is-scrolled', scrollY > 90); wake(); };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
-  /* ── Reveal ── */
+  /* ── Reveal and count-up ── */
   const io = new IntersectionObserver((entries) => entries.forEach((en) => {
     if (!en.isIntersecting) return;
     en.target.classList.add('in'); io.unobserve(en.target);
@@ -61,63 +64,39 @@
     el.textContent = fmt(0); requestAnimationFrame(step);
   }
 
-  /* ── Cursor ── */
-  const dot = document.querySelector('.cursor-dot');
-  const ring = document.querySelector('.cursor-ring');
-  const ringLabel = ring.querySelector('span');
-  const cur = { x: pointer.x, y: pointer.y };
+  /* ── Project tip: rides above the cursor, says where a click goes ── */
+  const tip = document.querySelector('.tip');
+  const tipText = tip.querySelector('.tip-text');
+  const tipPos = { x: pointer.x, y: pointer.y, on: false };
   if (fine && !reduced) {
-    document.body.classList.add('has-cursor');
     document.addEventListener('pointerover', (e) => {
       const item = e.target.closest('[data-cursor]');
-      const link = e.target.closest('a, button');
-      document.body.classList.toggle('cursor-card', !!item);
-      document.body.classList.toggle('cursor-link', !item && !!link);
-      if (item) ringLabel.textContent = item.dataset.cursor;
+      if (!item) { tip.classList.remove('is-on'); tipPos.on = false; return; }
+      const link = item.matches('a') ? item : item.querySelector('a.card');
+      const kind = !link ? 'soon' : link.target === '_blank' ? 'out' : 'in';
+      tipText.textContent = item.dataset.cursor;
+      tip.dataset.kind = kind;
+      tip.querySelector('i').style.display = kind === 'soon' ? '' : 'none';
+      tip.querySelector('.tip-arrow').style.display = kind === 'soon' ? 'none' : '';
+      tip.querySelector('.tip-arrow').style.rotate = kind === 'in' ? '45deg' : '0deg';
+      if (!tipPos.on) { tipPos.x = pointer.x; tipPos.y = pointer.y; }
+      tipPos.on = true; tip.classList.add('is-on'); wake();
     });
-    document.addEventListener('pointerleave', () => { dot.style.opacity = ring.style.opacity = '0'; });
-    document.addEventListener('pointerenter', () => { dot.style.opacity = ring.style.opacity = ''; });
+    document.addEventListener('pointerleave', () => { tip.classList.remove('is-on'); tipPos.on = false; });
   }
 
-  /* ── Hero: letters, flare, parallax, palette ── */
+  /* ── Hero ── */
   const hero = document.querySelector('.hero');
+  const copy = hero.querySelector('.hero-copy');
   const eclipse = hero.querySelector('.eclipse');
   const disc = hero.querySelector('.disc');
   const corona = hero.querySelector('.corona');
-  const flare = hero.querySelector('.flare');
-  const copy = hero.querySelector('.hero-copy');
-  const h1 = hero.querySelector('[data-split]');
-
-  // Split the headline into letters, keeping words together and the italic intact.
-  const letters = [];
-  (function split(node) {
-    [...node.childNodes].forEach((child) => {
-      if (child.nodeType === 3) {
-        const frag = document.createDocumentFragment();
-        child.textContent.split(/(\s+)/).forEach((part) => {
-          if (!part) return;
-          if (/^\s+$/.test(part)) { frag.appendChild(document.createTextNode(' ')); return; }
-          const w = document.createElement('span'); w.className = 'w';
-          [...part].forEach((ch) => { const s = document.createElement('span'); s.className = 'ch'; s.textContent = ch; w.appendChild(s); letters.push({ el: s, x: 0, y: 0, cx: 0, cy: 0 }); });
-          frag.appendChild(w);
-        });
-        child.replaceWith(frag);
-      } else if (child.nodeType === 1) split(child);
-    });
-  })(h1);
-  h1.setAttribute('aria-label', h1.textContent.replace(/\s+/g, ' ').trim());
-  [...h1.children].forEach((c) => c.setAttribute('aria-hidden', 'true'));
-
-  const measure = () => {
-    letters.forEach((l) => { l.el.style.transform = 'none'; });
-    letters.forEach((l) => { const r = l.el.getBoundingClientRect(); l.cx = r.left + r.width / 2; l.cy = r.top + r.height / 2 + scrollY; });
-    const er = eclipse.getBoundingClientRect(); geo.r = er.width / 2; geo.cx = er.left + er.width / 2; geo.cy = er.top + er.height / 2 + scrollY;
-  };
-  const geo = { r: 400, cx: 0, cy: 0 };
-  (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
-  addEventListener('resize', () => { measure(); wake(); });
-
-  const hs = { angle: -40, par: 0, parY: 0, exit: 0, inView: true, t: 0 };
+  const slab = hero.querySelector('.slab');
+  const lights = hero.querySelector('.lights');
+  const floaters = [...hero.querySelectorAll('.fv')].map((el) => ({ el, depth: +el.dataset.depth || .6, side: 1 }));
+  const measureSides = () => floaters.forEach((f) => { const r = f.el.getBoundingClientRect(); f.side = r.width && (r.left + r.width / 2) < innerWidth / 2 ? -1 : 1; });
+  addEventListener('resize', measureSides);
+  const hs = { px: 0, py: 0, exit: 0, inView: true };
   new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
   hero.querySelectorAll('[data-palette]').forEach((a) => {
@@ -130,49 +109,42 @@
   function heroFrame() {
     if (!hs.inView) return false;
     let moving = false;
-    const h = hero.offsetHeight;
-    const exitT = clamp(scrollY / (h * .9), 0, 1);
+    const mode = root.dataset.hero;
+    const exitT = clamp(scrollY / (hero.offsetHeight * .9), 0, 1);
     hs.exit = lerp(hs.exit, exitT, .18);
-
-    // Flare angle: follow the pointer around the rim, or orbit slowly when there is no pointer.
-    const py = pointer.y + scrollY;
-    let target;
-    if (fine && pointer.seen) target = Math.atan2(py - geo.cy, pointer.x - geo.cx) * 180 / Math.PI;
-    else { hs.t += .12; target = -40 + hs.t; }
-    let d = ((target - hs.angle + 540) % 360) - 180;
-    hs.angle += d * (reduced ? 1 : .07);
-    if (Math.abs(d) > .05) moving = true;
-
-    // Parallax: the moon drifts against the light, so the bright side follows you.
-    const nx = fine ? clamp((pointer.x - geo.cx) / (innerWidth / 2), -1, 1) : 0;
-    const ny = fine ? clamp((py - geo.cy) / (innerHeight / 2), -1, 1) : 0;
-    const px = lerp(hs.par, nx, .06), pyy = lerp(hs.parY, ny, .06);
-    if (Math.abs(px - hs.par) + Math.abs(pyy - hs.parY) > .0005) moving = true;
-    hs.par = px; hs.parY = pyy;
-
-    const rad = hs.angle * Math.PI / 180;
-    flare.style.transform = `translate3d(${Math.cos(rad) * geo.r}px, ${Math.sin(rad) * geo.r}px, 0)`;
-    disc.style.transform = `translate3d(${-px * 14}px, ${-pyy * 14}px, 0)`;
-    corona.style.translate = `${px * 8}px ${pyy * 8}px`;
-    eclipse.style.transform = `translate3d(0, ${hs.exit * 16}vh, 0) scale(${1 - hs.exit * .08})`;
-    copy.style.transform = `translate3d(0, ${hs.exit * -70}px, 0)`;
-    copy.style.opacity = String(1 - hs.exit * 1.3);
     if (Math.abs(hs.exit - exitT) > .001) moving = true;
 
-    // Letters step aside from the cursor and drift back.
-    if (fine && !reduced) {
-      const R = 220, F = 40;
-      letters.forEach((l) => {
-        const dx = l.cx - pointer.x, dy = (l.cy - scrollY) - pointer.y;
-        const dist = Math.hypot(dx, dy);
-        let tx = 0, ty = 0;
-        if (dist < R && dist > .01) { const f = (1 - dist / R) ** 2 * F; tx = dx / dist * f; ty = dy / dist * f; }
-        l.x = lerp(l.x, tx, .14); l.y = lerp(l.y, ty, .14);
-        if (Math.abs(l.x - tx) + Math.abs(l.y - ty) > .05) moving = true;
-        l.el.style.transform = `translate3d(${l.x.toFixed(2)}px, ${l.y.toFixed(2)}px, 0)`;
+    const nx = fine && pointer.seen ? clamp(pointer.x / innerWidth * 2 - 1, -1, 1) : 0;
+    const ny = fine && pointer.seen ? clamp(pointer.y / innerHeight * 2 - 1, -1, 1) : 0;
+    const px = lerp(hs.px, nx, .06), py = lerp(hs.py, ny, .06);
+    if (Math.abs(px - hs.px) + Math.abs(py - hs.py) > .0005) moving = true;
+    hs.px = px; hs.py = py;
+    const ex = hs.exit;
+
+    copy.style.transform = `translate3d(0, ${ex * -70}px, 0)`;
+    copy.style.opacity = String(1 - ex * 1.3);
+
+    if (mode === 'eclipse') {
+      // The disc drifts against the pointer, so the brighter side of the ring follows you.
+      disc.style.transform = `translate3d(${-px * 12}px, ${-py * 12}px, 0)`;
+      corona.style.translate = `${px * 6}px ${py * 6}px`;
+      eclipse.style.transform = `translate3d(0, ${ex * 16}vh, 0) scale(${1 - ex * .08})`;
+    } else if (mode === 'glass') {
+      slab.style.transform = `perspective(1600px) rotateX(${(-py * 3).toFixed(2)}deg) rotateY(${(px * 4).toFixed(2)}deg) translate3d(0, ${ex * -8}vh, 0)`;
+      slab.style.opacity = String(1 - ex * .9);
+      slab.style.setProperty('--sx', `${(px * .5 + .5) * slab.offsetWidth}px`);
+      slab.style.setProperty('--sy', `${(py * .5 + .5) * slab.offsetHeight}px`);
+      lights.style.transform = `translate3d(${px * -40}px, ${py * -30 + ex * 60}px, 0)`;
+    } else if (mode === 'work') {
+      // Nearer pieces move more; on scroll they drift outward and away.
+      if (!floaters.sided) { measureSides(); floaters.sided = true; }
+      floaters.forEach((f) => {
+        const side = f.side, d = f.depth;
+        f.el.style.transform = `translate3d(${(px * -34 * d + side * ex * 160 * d).toFixed(1)}px, ${(py * -26 * d - ex * 120 * d).toFixed(1)}px, 0)`;
+        f.el.style.opacity = String(1 - ex * 1.1);
       });
     }
-    return moving || !fine;
+    return moving;
   }
 
   /* ── Glass cards: tilt, light behind the glass, sheen, rim light ── */
@@ -193,7 +165,6 @@
       it.card.style.setProperty('--rx', `${it.sx}px`); it.card.style.setProperty('--ry', `${it.sy}px`);
     });
   });
-  // Touch: light up whichever card sits in the middle of the screen.
   if (!fine) {
     const mid = new IntersectionObserver((en) => en.forEach((e) => e.target.classList.toggle('is-hot', e.isIntersecting)), { rootMargin: '-40% 0px -40% 0px' });
     items.forEach((it) => mid.observe(it.el));
@@ -217,11 +188,10 @@
   function frame() {
     const a = heroFrame(), b = cardsFrame();
     let c = false;
-    if (fine && !reduced) {
-      cur.x = lerp(cur.x, pointer.x, .2); cur.y = lerp(cur.y, pointer.y, .2);
-      dot.style.transform = `translate3d(${pointer.x}px, ${pointer.y}px, 0)`;
-      ring.style.transform = `translate3d(${cur.x}px, ${cur.y}px, 0)`;
-      c = Math.abs(cur.x - pointer.x) + Math.abs(cur.y - pointer.y) > .1;
+    if (tipPos.on) {
+      tipPos.x = lerp(tipPos.x, pointer.x, .22); tipPos.y = lerp(tipPos.y, pointer.y, .22);
+      tip.style.transform = `translate3d(${(tipPos.x + 16).toFixed(1)}px, ${(tipPos.y - 46).toFixed(1)}px, 0)`;
+      c = Math.abs(tipPos.x - pointer.x) + Math.abs(tipPos.y - pointer.y) > .1;
     }
     if (a || b || c) requestAnimationFrame(frame); else running = false;
   }
@@ -230,7 +200,7 @@
   /* ── Brain Dump runs through the app while it is on screen ── */
   const brain = document.querySelector('.t-brain');
   if (brain) {
-    const shots = [...brain.querySelectorAll('.phone-screen img')];
+    const shots = [...brain.querySelectorAll('.shots img')];
     const steps = [...brain.querySelectorAll('.steps i')];
     let i = 0, timer = null;
     const show = (n) => {
@@ -261,4 +231,17 @@
       email.addEventListener('pointerleave', () => { email.style.transition = 'transform .8s var(--ease), box-shadow .8s var(--ease)'; email.style.transform = ''; setTimeout(() => { email.style.transition = ''; }, 800); });
     }
   }
+
+  /* ── Preview options (only shown with ?lab) ── */
+  document.querySelectorAll('.lab-set').forEach((set) => {
+    const key = set.dataset.set;
+    const buttons = [...set.querySelectorAll('button')];
+    const sync = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(root.dataset[key] === b.dataset.v)));
+    buttons.forEach((b) => b.addEventListener('click', () => {
+      root.dataset[key] = b.dataset.v; floaters.sided = false;
+      try { localStorage.setItem(key, b.dataset.v); } catch (e) {}
+      sync(); wake();
+    }));
+    sync();
+  });
 })();

@@ -7,8 +7,17 @@
 <meta name="description" content="Shea Wilson is a design engineer. He takes complicated things, makes them easy to read at a glance, then builds and ships them.">
 <meta name="theme-color" content="#ffffff">
 <script>
-  document.documentElement.classList.add('js');
-  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+  (function () {
+    var d = document.documentElement, q = new URLSearchParams(location.search);
+    d.classList.add('js');
+    try {
+      if (q.has('lab')) localStorage.setItem('lab', '1');
+      if (localStorage.getItem('theme') === 'dark') d.dataset.theme = 'dark';
+      d.dataset.hero = localStorage.getItem('hero') || 'eclipse';
+      d.dataset.corners = localStorage.getItem('corners') || 'round';
+      if (localStorage.getItem('lab') === '1') d.classList.add('has-lab');
+    } catch (e) { d.dataset.hero = 'eclipse'; d.dataset.corners = 'round'; }
+  })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,12 +27,11 @@
 </head>
 <body>
 
-<div class="cursor-dot" aria-hidden="true"></div>
-<div class="cursor-ring" aria-hidden="true"><span></span></div>
+<div class="tip" aria-hidden="true"><i></i><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="logo" href="#top" aria-label="Shea Wilson, back to top"><span class="logo-mark">SW</span><span class="logo-full"><span>Shea Wilson</span></span></a>
+    <a class="logo" href="#top" aria-label="Shea Wilson, back to top">S<span class="fold"><span>hea&nbsp;</span></span>W<span class="fold"><span>ilson</span></span></a>
     <nav class="links" aria-label="Main">
       <a href="#work">Work</a>
       <a href="#about">About</a>
@@ -36,21 +44,37 @@
 </header>
 
 <section class="hero" id="top">
-  <div class="eclipse" aria-hidden="true">
-    <div class="haze"></div>
-    <div class="streamers"></div>
-    <div class="corona"></div>
-    <div class="flare"></div>
-    <div class="disc"></div>
+  <!-- A: the eclipse -->
+  <div class="hv hv-eclipse" aria-hidden="true">
+    <div class="eclipse"><div class="haze"></div><div class="corona"></div><div class="disc"></div></div>
   </div>
+  <!-- B: a pane of glass lit from behind by the work -->
+  <div class="hv hv-glass" aria-hidden="true">
+    <div class="lights">
+      <span class="light" data-for="snapshot" style="--c:#ed1652; left:4%; top:10%; --dx:5vw; --dy:7vh; --dur:21s"></span>
+      <span class="light" data-for="snapshot" style="--c:#4b21e8; left:18%; top:44%; --dx:-4vw; --dy:-5vh; --dur:25s"></span>
+      <span class="light" data-for="jumpstart" style="--c:#4fae86; right:2%; top:2%; --dx:-6vw; --dy:6vh; --dur:23s"></span>
+      <span class="light" data-for="heart" style="--c:#43d9ff; right:8%; bottom:0%; --dx:-5vw; --dy:-6vh; --dur:19s"></span>
+      <span class="light" data-for="brain" style="--c:#9b4dff; left:34%; bottom:-6%; --dx:6vw; --dy:-4vh; --dur:27s"></span>
+    </div>
+    <div class="slab"></div>
+  </div>
+  <!-- C: the work floating around the headline -->
+  <div class="hv hv-work" aria-hidden="true">
+    <a class="fv fv-snap" href="#snapshot" tabindex="-1" data-depth="1" data-cursor="Smoking Snapshot"><div class="fv-in"><span class="glow" style="--c:#ed1652"></span><img src="assets/media/home/snapshot-phone.webp" alt="" width="720" height="1491"></div></a>
+    <a class="fv fv-js" href="#jumpstart" tabindex="-1" data-depth=".55" data-cursor="JumpStart"><div class="fv-in"><span class="glow" style="--c:#4fae86"></span><img src="assets/media/home/jumpstart-client.webp" alt="" width="1600" height="1000"></div></a>
+    <a class="fv fv-heart" href="#heart" tabindex="-1" data-depth=".85" data-cursor="Heart Health"><div class="fv-in"><span class="glow" style="--c:#43d9ff"></span><img src="assets/media/home/heart-health-hand.webp" alt="" width="1300" height="1459"></div></a>
+    <a class="fv fv-brain" href="#brain" tabindex="-1" data-depth=".45" data-cursor="Brain Dump"><div class="fv-in"><span class="glow" style="--c:#9b4dff"></span><img src="assets/media/home/brain-voice.webp" alt="" width="520" height="1077"></div></a>
+  </div>
+
   <div class="hero-copy">
     <a class="live" href="#heart">Heart Health is live now</a>
-    <h1 data-split>Complicated in. <em>Clear out.</em></h1>
+    <h1>Complicated in. <em>Clear out.</em></h1>
     <p class="intro">I’m Shea Wilson, a design engineer. I take complicated things and make them easy to read at a glance, then I build and ship them myself.</p>
     <p class="recent">
       <span>Recently</span>
       <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
-      <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#2fd67b"></i>JumpStart</a>
+      <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
       <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
       <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
     </p>
@@ -58,18 +82,13 @@
 </section>
 
 <main class="work" id="work">
-  <div class="section-head reveal">
-    <p class="label">Selected work</p>
-    <p class="label">2025–2026</p>
-  </div>
-
   <div class="grid">
 
-    <article class="item t-snapshot reveal" id="snapshot" data-cursor="Open live site">
+    <article class="item t-snapshot reveal" id="snapshot" data-cursor="Open live site" style="--a:#3a17e0; --b:#ed1652; --c:#ff6a1a">
       <div class="bleed" aria-hidden="true">
-        <span class="blob" style="--c:#3a17e0; width:52%; left:46%; top:6%"></span>
-        <span class="blob" style="--c:#ed1652; width:40%; left:62%; top:38%"></span>
-        <span class="blob" style="--c:#ff6a1a; width:32%; left:44%; top:54%"></span>
+        <span class="blob" style="--c:#3a17e0; width:56%; left:44%; top:4%; rotate:-18deg"></span>
+        <span class="blob" style="--c:#ed1652; width:44%; left:60%; top:36%; rotate:24deg; --ar:1.8"></span>
+        <span class="blob" style="--c:#ff6a1a; width:36%; left:42%; top:54%; rotate:-8deg; --ar:1.3"></span>
       </div>
       <a class="card" href="https://wrapped.smokingendshere.com/" target="_blank" rel="noopener">
         <span class="sheen" aria-hidden="true"></span>
@@ -84,42 +103,49 @@
           </div>
         </div>
         <div class="media">
-          <div class="screen screen-back snap-results"><img src="assets/media/home/snapshot-results.webp" alt="Snapshot results: 269 cigarettes smoked in the last 12 months, 13 packets" width="1400" height="1050" loading="lazy"></div>
+          <div class="screen snap-results"><img src="assets/media/home/snapshot-results.webp" alt="Snapshot results: 269 cigarettes smoked in the last 12 months, 13 packets" width="1400" height="1050" loading="lazy"></div>
           <img class="device" src="assets/media/home/snapshot-phone.webp" alt="Smoking Snapshot on a phone, asking which smoking pattern sounds like you" width="720" height="1491">
         </div>
       </a>
     </article>
 
-    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon">
+    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon" style="--a:#0b5c45; --b:#4fae86; --c:#8fd4b4">
       <div class="bleed" aria-hidden="true">
-        <span class="blob" style="--c:#0f7a55; width:50%; left:2%; top:14%"></span>
-        <span class="blob" style="--c:#2fd67b; width:36%; left:24%; top:46%"></span>
-        <span class="blob" style="--c:#4aa3ff; width:30%; left:6%; top:52%"></span>
+        <span class="blob" style="--c:#0b5c45; width:54%; left:0%; top:12%; rotate:-14deg"></span>
+        <span class="blob" style="--c:#4fae86; width:42%; left:22%; top:44%; rotate:18deg; --ar:1.7"></span>
+        <span class="blob" style="--c:#8fd4b4; width:34%; left:6%; top:52%; rotate:-6deg; --ar:1.3"></span>
       </div>
       <div class="card">
         <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Agency reporting product</span><span class="label">In pilot</span></div>
         <div class="media">
-          <div class="screen screen-back"><img src="assets/media/home/jumpstart-agency.webp" alt="JumpStart agency desk: three clients, one thing needs you" width="1600" height="1044" loading="lazy"></div>
-          <div class="screen screen-front"><img src="assets/media/home/jumpstart-client.webp" alt="JumpStart client view: every pound spent brought back £2.86" width="1600" height="1075" loading="lazy"></div>
+          <div class="screen screen-back"><img class="img-light" src="assets/media/home/jumpstart-desk.webp" alt="JumpStart agency desk: 1 connection down, and 1 other thing for a person" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-desk-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
+          <div class="screen screen-front"><img class="img-light" src="assets/media/home/jumpstart-client.webp" alt="JumpStart client report: every pound spent brought back £2.86" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-client-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
+          <div class="screen screen-export"><img class="img-light" src="assets/media/home/jumpstart-export.webp" alt="JumpStart export dialog with a slide preview and a PowerPoint deck button" width="1200" height="869" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-export-dark.webp" alt="" width="1200" height="869" loading="lazy"></div>
         </div>
         <div class="card-copy">
           <h2>JumpStart</h2>
-          <p class="line">Paid media reporting that explains itself. Clients get a plain-English read of what changed, why it matters and what happens next, and the agency runs every account from one desk.</p>
-          <div class="chips"><span class="chip">Client view</span><span class="chip">Agency desk</span><span class="chip">PDF export</span></div>
-          <div class="quote">
-            <p>In pilot with the National Football Museum.</p>
-            <cite>Figures in the screens are illustrative.</cite>
+          <p class="line">Paid media reporting that explains itself. Clients get a plain-English read of what changed, why it matters and what happens next. The agency runs every account from one desk.</p>
+          <div class="exports">
+            <span class="label">Every report goes out the way the client likes it</span>
+            <ul>
+              <li><b>PPT</b>PowerPoint deck</li>
+              <li><b>PDF</b>PDF of the deck</li>
+              <li><b>A4</b>Full A4 report</li>
+              <li><b>@</b>Copy as email</li>
+            </ul>
+            <p class="styles">Three export styles, House, Night and Dawn, remembered for each client.</p>
           </div>
+          <p class="pilot">In pilot with the National Football Museum, and the early feedback has been really positive.</p>
         </div>
       </div>
     </article>
 
-    <article class="item t-heart reveal" id="heart" data-cursor="Open live site">
+    <article class="item t-heart reveal" id="heart" data-cursor="Open live site" style="--a:#43d9ff; --b:#ed1652; --c:#08717d">
       <div class="bleed" aria-hidden="true">
-        <span class="blob" style="--c:#43d9ff; width:62%; left:40%; top:34%"></span>
-        <span class="blob" style="--c:#ed1652; width:36%; left:52%; top:48%"></span>
-        <span class="blob" style="--c:#08717d; width:44%; left:20%; top:56%"></span>
+        <span class="blob" style="--c:#43d9ff; width:64%; left:38%; top:32%; rotate:-22deg"></span>
+        <span class="blob" style="--c:#ed1652; width:36%; left:54%; top:46%; rotate:16deg; --ar:1.4"></span>
+        <span class="blob" style="--c:#08717d; width:46%; left:18%; top:56%; rotate:8deg; --ar:1.9"></span>
       </div>
       <a class="card" href="https://hearthealth.smokingendshere.com/" target="_blank" rel="noopener">
         <span class="sheen" aria-hidden="true"></span>
@@ -132,11 +158,11 @@
       </a>
     </article>
 
-    <article class="item t-brain reveal" id="brain" data-cursor="View case study" style="--d:.06s">
+    <article class="item t-brain reveal" id="brain" data-cursor="View case study" style="--d:.06s; --a:#8a3cff; --b:#5b2bff; --c:#c77dff">
       <div class="bleed" aria-hidden="true">
-        <span class="blob" style="--c:#8a3cff; width:70%; left:15%; top:36%"></span>
-        <span class="blob" style="--c:#5b2bff; width:44%; left:8%; top:58%"></span>
-        <span class="blob" style="--c:#c77dff; width:40%; left:52%; top:50%"></span>
+        <span class="blob" style="--c:#8a3cff; width:72%; left:14%; top:34%; rotate:-12deg"></span>
+        <span class="blob" style="--c:#5b2bff; width:44%; left:6%; top:58%; rotate:20deg; --ar:1.8"></span>
+        <span class="blob" style="--c:#c77dff; width:40%; left:52%; top:50%; rotate:-24deg; --ar:1.3"></span>
       </div>
       <a class="card" href="braindump.html">
         <span class="sheen" aria-hidden="true"></span>
@@ -147,21 +173,18 @@
           <div class="steps" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i></div>
         </div>
         <div class="media">
-          <div class="phone">
-            <span class="phone-island"></span>
-            <div class="phone-screen">
-              <img class="is-on" src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1076" loading="lazy">
-              <img src="assets/media/home/brain-voice.webp" alt="" data-listen width="520" height="1076" loading="lazy">
-              <img src="assets/media/home/brain-ai-input.webp" alt="" width="520" height="1076" loading="lazy">
-              <img src="assets/media/home/brain-card-selection.webp" alt="" width="520" height="1076" loading="lazy">
-            </div>
+          <div class="shots">
+            <img class="is-on" src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1077" loading="lazy">
+            <img src="assets/media/home/brain-voice.webp" alt="" data-listen width="520" height="1077" loading="lazy">
+            <img src="assets/media/home/brain-ai-input.webp" alt="" width="520" height="1077" loading="lazy">
+            <img src="assets/media/home/brain-card-selection.webp" alt="" width="520" height="1077" loading="lazy">
           </div>
         </div>
       </a>
     </article>
 
     <article class="item t-small reveal" data-cursor="View case study">
-      <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/cipher.webp); inset:22% 10% 0 10%"></span></div>
+      <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/cipher.webp); inset:22% 10% 0 10%; --sat:1.05; --spill:.75"></span></div>
       <a class="card" href="cipher.html">
         <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Brand, web and app</span><span class="label">Concept</span></div>
@@ -199,15 +222,38 @@
     <h2>It isn’t designed<br>until it’s <em>live.</em></h2>
   </div>
   <div class="about-body reveal" style="--d:.08s">
-    <p>I start in Figma and move into code early, so the thing people approve is the thing that ships. I build with AI tools like Claude Code and Codex, and spend the time they save on the details that make something feel finished.</p>
-    <p>A lot of my work is about making numbers land: a year of smoking turned into one figure, a heart-attack statistic turned into a heartbeat, a month of ad data turned into a few sentences a client can act on.</p>
+    <p>I start in tools like Figma and Paper, then move into code early. Clients get something real to click through while the design is still changing, so their feedback shapes the product before it goes live.</p>
+    <p>A lot of my work takes numbers people skim past and makes them personal. Smoking Snapshot turns “I only smoke socially” into a count for the year. JumpStart turns a month of ad data into a few plain sentences a client can act on.</p>
   </div>
   <div class="ways">
-    <div class="way reveal"><span class="n">01</span><h3>Prototype in the real thing</h3><p>I test ideas in the browser, on real devices and with real data, so problems show up early.</p></div>
+    <div class="way reveal"><span class="n">01</span><h3>Real before it’s finished</h3><p>Clients try a working version on their own devices early on, while there’s still room to change the design around what they tell me.</p></div>
     <div class="way reveal" style="--d:.06s"><span class="n">02</span><h3>Design and code, one person</h3><p>Nothing gets lost in a handoff. The person who drew the details is the one who builds them.</p></div>
-    <div class="way reveal" style="--d:.12s"><span class="n">03</span><h3>Ship it, then measure it</h3><p>I add analytics before launch. On Snapshot, that’s how we knew 53% of people went on to answer the follow-up questions.</p></div>
+    <div class="way reveal" style="--d:.12s"><span class="n">03</span><h3>Launch is the start</h3><p>I don’t ship something and leave it. On Smoking Snapshot I suspected people were dropping out before the last questions, so I added save points earlier in the journey and kept their answers even when they left partway.</p></div>
   </div>
-  <p class="toolkit reveal"><span class="label">Toolkit</span><span>Figma</span><span>Photoshop</span><span>Illustrator</span><span>HTML, CSS and JavaScript</span><span>Next.js</span><span>Supabase</span><span>Vercel</span><span>Claude Code</span><span>Codex</span></p>
+  <div class="toolkit reveal">
+    <p class="label">Toolkit</p>
+    <div class="tool-groups">
+      <div class="tool-group"><span class="label">Design</span><ul>
+        <li class="tool" style="--brand:#f24e1e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/figma.svg);mask-image:url(assets/media/tools/figma.svg)"></span>Figma</li>
+        <li class="tool" style="--brand:#6d9eea"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/paper.png);mask-image:url(assets/media/tools/paper.png)"></span>Paper</li>
+      </ul></div>
+      <div class="tool-group"><span class="label">Build</span><ul>
+        <li class="tool" style="--brand:#d97757"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/claude.svg);mask-image:url(assets/media/tools/claude.svg)"></span>Claude Code</li>
+        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/openai.svg);mask-image:url(assets/media/tools/openai.svg)"></span>Codex</li>
+        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/t3-code.png);mask-image:url(assets/media/tools/t3-code.png)"></span>T3 Code</li>
+        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/nextdotjs.svg);mask-image:url(assets/media/tools/nextdotjs.svg)"></span>Next.js</li>
+      </ul></div>
+      <div class="tool-group"><span class="label">Data and sign-in</span><ul>
+        <li class="tool" style="--brand:#ee342f"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/convex.svg);mask-image:url(assets/media/tools/convex.svg)"></span>Convex</li>
+        <li class="tool" style="--brand:#3fcf8e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/supabase.svg);mask-image:url(assets/media/tools/supabase.svg)"></span>Supabase</li>
+        <li class="tool" style="--brand:#6363f1"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/workos.png);mask-image:url(assets/media/tools/workos.png)"></span>WorkOS</li>
+      </ul></div>
+      <div class="tool-group"><span class="label">Ship and measure</span><ul>
+        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/vercel.svg);mask-image:url(assets/media/tools/vercel.svg)"></span>Vercel</li>
+        <li class="tool" style="--brand:#f54e00"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/posthog.svg);mask-image:url(assets/media/tools/posthog.svg)"></span>PostHog</li>
+      </ul></div>
+    </div>
+  </div>
 </section>
 
 <section class="contact" id="contact">
@@ -217,13 +263,21 @@
   <button class="email reveal" type="button" data-email="design@sheawilson.uk" style="--d:.1s">
     <span>design@sheawilson.uk</span><span class="act" aria-live="polite">Copy</span>
   </button>
-  <span class="alt reveal" style="--d:.14s">or <a href="mailto:design@sheawilson.uk">open it in your mail app</a></span>
+  <p class="elsewhere reveal" style="--d:.14s">
+    <a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a>
+    <a href="mailto:design@sheawilson.uk">Open in your mail app</a>
+  </p>
 </section>
 
 <footer>
   <span>© 2026 Shea Wilson</span>
-  <a href="#top">Back to top</a>
+  <nav aria-label="Footer"><a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a><a href="#top">Back to top</a></nav>
 </footer>
+
+<div class="lab" role="group" aria-label="Preview options">
+  <div class="lab-set" data-set="hero"><span>Hero</span><button type="button" data-v="eclipse">Eclipse</button><button type="button" data-v="glass">Glass</button><button type="button" data-v="work">Work</button></div>
+  <div class="lab-set" data-set="corners"><span>Corners</span><button type="button" data-v="round">Round</button><button type="button" data-v="squircle">Squircle</button></div>
+</div>
 
 <script src="assets/js/site.js" defer></script>
 </body>
