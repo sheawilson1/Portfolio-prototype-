@@ -87,18 +87,15 @@
 
   /* ── Hero ── */
   const hero = document.querySelector('.hero');
-  const copy = hero.querySelector('.hero-copy');
+  const variant = root.dataset.hero || 'a';
+  const copy = hero.querySelector(`.hero-copy[data-for="${variant}"]`);
   const eclipse = hero.querySelector('.eclipse');
   const disc = hero.querySelector('.disc');
   const corona = hero.querySelector('.corona');
-  const slab = hero.querySelector('.slab');
-  const lights = hero.querySelector('.lights');
-  const floaters = [...hero.querySelectorAll('.fv')].map((el) => ({ el, depth: +el.dataset.depth || .6, side: 1 }));
-  const measureSides = () => floaters.forEach((f) => { const r = f.el.getBoundingClientRect(); f.side = r.width && (r.left + r.width / 2) < innerWidth / 2 ? -1 : 1; });
-  addEventListener('resize', measureSides);
   const hs = { px: 0, py: 0, exit: 0, inView: true };
   new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
+  // Hovering a recent project borrows that project's colours for the ring.
   hero.querySelectorAll('[data-palette]').forEach((a) => {
     const on = () => { hero.dataset.palette = a.dataset.palette; };
     const off = () => { delete hero.dataset.palette; };
@@ -109,11 +106,9 @@
   function heroFrame() {
     if (!hs.inView) return false;
     let moving = false;
-    const mode = root.dataset.hero;
     const exitT = clamp(scrollY / (hero.offsetHeight * .9), 0, 1);
     hs.exit = lerp(hs.exit, exitT, .18);
     if (Math.abs(hs.exit - exitT) > .001) moving = true;
-
     const nx = fine && pointer.seen ? clamp(pointer.x / innerWidth * 2 - 1, -1, 1) : 0;
     const ny = fine && pointer.seen ? clamp(pointer.y / innerHeight * 2 - 1, -1, 1) : 0;
     const px = lerp(hs.px, nx, .06), py = lerp(hs.py, ny, .06);
@@ -121,28 +116,15 @@
     hs.px = px; hs.py = py;
     const ex = hs.exit;
 
-    copy.style.transform = `translate3d(0, ${ex * -70}px, 0)`;
-    copy.style.opacity = String(1 - ex * 1.3);
-
-    if (mode === 'eclipse') {
-      // The disc drifts against the pointer, so the brighter side of the ring follows you.
-      disc.style.transform = `translate3d(${-px * 12}px, ${-py * 12}px, 0)`;
-      corona.style.translate = `${px * 6}px ${py * 6}px`;
-      eclipse.style.transform = `translate3d(0, ${ex * 16}vh, 0) scale(${1 - ex * .08})`;
-    } else if (mode === 'glass') {
-      slab.style.transform = `perspective(1600px) rotateX(${(-py * 3).toFixed(2)}deg) rotateY(${(px * 4).toFixed(2)}deg) translate3d(0, ${ex * -8}vh, 0)`;
-      slab.style.opacity = String(1 - ex * .9);
-      slab.style.setProperty('--sx', `${(px * .5 + .5) * slab.offsetWidth}px`);
-      slab.style.setProperty('--sy', `${(py * .5 + .5) * slab.offsetHeight}px`);
-      lights.style.transform = `translate3d(${px * -40}px, ${py * -30 + ex * 60}px, 0)`;
-    } else if (mode === 'work') {
-      // Nearer pieces move more; on scroll they drift outward and away.
-      if (!floaters.sided) { measureSides(); floaters.sided = true; }
-      floaters.forEach((f) => {
-        const side = f.side, d = f.depth;
-        f.el.style.transform = `translate3d(${(px * -34 * d + side * ex * 160 * d).toFixed(1)}px, ${(py * -26 * d - ex * 120 * d).toFixed(1)}px, 0)`;
-        f.el.style.opacity = String(1 - ex * 1.1);
-      });
+    // The disc drifts against the pointer, so the brighter side of the ring follows you.
+    disc.style.transform = `translate3d(${(-px * 12).toFixed(2)}px, ${(-py * 12).toFixed(2)}px, 0)`;
+    corona.style.translate = `${(px * 6).toFixed(2)}px ${(py * 6).toFixed(2)}px`;
+    if (variant === 'b') eclipse.style.transform = `translate3d(0, ${(ex * -14).toFixed(2)}vh, 0)`;
+    else if (variant === 'c') eclipse.style.transform = `translate3d(${(ex * 10).toFixed(2)}vw, ${(ex * 8).toFixed(2)}vh, 0)`;
+    else eclipse.style.transform = `translate3d(0, ${(ex * 16).toFixed(2)}vh, 0) scale(${(1 - ex * .08).toFixed(4)})`;
+    if (copy) {
+      copy.style.transform = `translate3d(0, ${(ex * -70).toFixed(1)}px, 0)`;
+      copy.style.opacity = String(1 - ex * 1.3);
     }
     return moving;
   }
@@ -232,16 +214,4 @@
     }
   }
 
-  /* ── Preview options (only shown with ?lab) ── */
-  document.querySelectorAll('.lab-set').forEach((set) => {
-    const key = set.dataset.set;
-    const buttons = [...set.querySelectorAll('button')];
-    const sync = () => buttons.forEach((b) => b.setAttribute('aria-pressed', String(root.dataset[key] === b.dataset.v)));
-    buttons.forEach((b) => b.addEventListener('click', () => {
-      root.dataset[key] = b.dataset.v; floaters.sided = false;
-      try { localStorage.setItem(key, b.dataset.v); } catch (e) {}
-      sync(); wake();
-    }));
-    sync();
-  });
 })();

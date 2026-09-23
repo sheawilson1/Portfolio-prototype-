@@ -8,15 +8,10 @@
 <meta name="theme-color" content="#ffffff">
 <script>
   (function () {
-    var d = document.documentElement, q = new URLSearchParams(location.search);
+    var d = document.documentElement, h = (new URLSearchParams(location.search).get('hero') || 'a').toLowerCase();
     d.classList.add('js');
-    try {
-      if (q.has('lab')) localStorage.setItem('lab', '1');
-      if (localStorage.getItem('theme') === 'dark') d.dataset.theme = 'dark';
-      d.dataset.hero = localStorage.getItem('hero') || 'eclipse';
-      d.dataset.corners = localStorage.getItem('corners') || 'round';
-      if (localStorage.getItem('lab') === '1') d.classList.add('has-lab');
-    } catch (e) { d.dataset.hero = 'eclipse'; d.dataset.corners = 'round'; }
+    d.dataset.hero = /^[abc]$/.test(h) ? h : 'a';
+    try { if (localStorage.getItem('theme') === 'dark') d.dataset.theme = 'dark'; } catch (e) {}
   })();
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,40 +39,45 @@
 </header>
 
 <section class="hero" id="top">
-  <!-- A: the eclipse -->
-  <div class="hv hv-eclipse" aria-hidden="true">
-    <div class="eclipse"><div class="haze"></div><div class="corona"></div><div class="disc"></div></div>
-  </div>
-  <!-- B: a pane of glass lit from behind by the work -->
-  <div class="hv hv-glass" aria-hidden="true">
-    <div class="lights">
-      <span class="light" data-for="snapshot" style="--c:#ed1652; left:4%; top:10%; --dx:5vw; --dy:7vh; --dur:21s"></span>
-      <span class="light" data-for="snapshot" style="--c:#4b21e8; left:18%; top:44%; --dx:-4vw; --dy:-5vh; --dur:25s"></span>
-      <span class="light" data-for="jumpstart" style="--c:#4fae86; right:2%; top:2%; --dx:-6vw; --dy:6vh; --dur:23s"></span>
-      <span class="light" data-for="heart" style="--c:#43d9ff; right:8%; bottom:0%; --dx:-5vw; --dy:-6vh; --dur:19s"></span>
-      <span class="light" data-for="brain" style="--c:#9b4dff; left:34%; bottom:-6%; --dx:6vw; --dy:-4vh; --dur:27s"></span>
-    </div>
-    <div class="slab"></div>
-  </div>
-  <!-- C: the work floating around the headline -->
-  <div class="hv hv-work" aria-hidden="true">
-    <a class="fv fv-snap" href="#snapshot" tabindex="-1" data-depth="1" data-cursor="Smoking Snapshot"><div class="fv-in"><span class="glow" style="--c:#ed1652"></span><img src="assets/media/home/snapshot-phone.webp" alt="" width="720" height="1491"></div></a>
-    <a class="fv fv-js" href="#jumpstart" tabindex="-1" data-depth=".55" data-cursor="JumpStart"><div class="fv-in"><span class="glow" style="--c:#4fae86"></span><img src="assets/media/home/jumpstart-client.webp" alt="" width="1600" height="1000"></div></a>
-    <a class="fv fv-heart" href="#heart" tabindex="-1" data-depth=".85" data-cursor="Heart Health"><div class="fv-in"><span class="glow" style="--c:#43d9ff"></span><img src="assets/media/home/heart-health-hand.webp" alt="" width="1300" height="1459"></div></a>
-    <a class="fv fv-brain" href="#brain" tabindex="-1" data-depth=".45" data-cursor="Brain Dump"><div class="fv-in"><span class="glow" style="--c:#9b4dff"></span><img src="assets/media/home/brain-voice.webp" alt="" width="520" height="1077"></div></a>
+  <div class="eclipse" aria-hidden="true"><div class="haze"></div><div class="corona"></div><div class="disc"></div></div>
+
+  <!-- A: centred eclipse. Clear about the job. -->
+  <div class="hero-copy" data-for="a">
+    <h1>From sketch <em>to shipped.</em></h1>
+    <p class="intro">I’m Shea, a design engineer. I design products, build them in code and keep improving them once people are using them.</p>
+      <p class="recent">
+        <span>Recently</span>
+        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
+        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
+        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
+        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
+      </p>
   </div>
 
-  <div class="hero-copy">
-    <a class="live" href="#heart">Heart Health is live now</a>
-    <h1>Complicated in. <em>Clear out.</em></h1>
-    <p class="intro">I’m Shea Wilson, a design engineer. I take complicated things and make them easy to read at a glance, then I build and ship them myself.</p>
-    <p class="recent">
-      <span>Recently</span>
-      <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
-      <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
-      <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
-      <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
-    </p>
+  <!-- B: horizon. Leads with proof. -->
+  <div class="hero-copy" data-for="b">
+    <h1>Design people <em>actually use.</em></h1>
+    <p class="intro">I’m Shea, a design engineer. My Smoking Snapshot tool for the NHS was used 975 times, and the reporting product I’m building now is in pilot with the National Football Museum.</p>
+      <p class="recent">
+        <span>Recently</span>
+        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot <span class="st">975 uses</span></a>
+        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart <span class="st">in pilot</span></a>
+        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health <span class="st">live now</span></a>
+        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump <span class="st">in beta</span></a>
+      </p>
+  </div>
+
+  <!-- C: offset. Leads with a point of view. -->
+  <div class="hero-copy" data-for="c">
+    <h1>Mockups don’t <em>have users.</em></h1>
+    <p class="intro">I’m Shea, a design engineer. I get ideas into code early, so people can use the real thing while there’s still time to change it.</p>
+      <p class="recent">
+        <span>Recently</span>
+        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
+        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
+        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
+        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
+      </p>
   </div>
 </section>
 
@@ -219,40 +219,33 @@
 <section class="about" id="about">
   <div class="reveal">
     <p class="label">About</p>
-    <h2>It isn’t designed<br>until it’s <em>live.</em></h2>
+    <h2>The real thing, <em>as early as possible.</em></h2>
   </div>
   <div class="about-body reveal" style="--d:.08s">
     <p>I start in tools like Figma and Paper, then move into code early. Clients get something real to click through while the design is still changing, so their feedback shapes the product before it goes live.</p>
     <p>A lot of my work takes numbers people skim past and makes them personal. Smoking Snapshot turns “I only smoke socially” into a count for the year. JumpStart turns a month of ad data into a few plain sentences a client can act on.</p>
-  </div>
-  <div class="ways">
-    <div class="way reveal"><span class="n">01</span><h3>Real before it’s finished</h3><p>Clients try a working version on their own devices early on, while there’s still room to change the design around what they tell me.</p></div>
-    <div class="way reveal" style="--d:.06s"><span class="n">02</span><h3>Design and code, one person</h3><p>Nothing gets lost in a handoff. The person who drew the details is the one who builds them.</p></div>
-    <div class="way reveal" style="--d:.12s"><span class="n">03</span><h3>Launch is the start</h3><p>I don’t ship something and leave it. On Smoking Snapshot I suspected people were dropping out before the last questions, so I added save points earlier in the journey and kept their answers even when they left partway.</p></div>
+    <p>Launch isn’t the end of it. On Smoking Snapshot I suspected people were dropping out before the last questions, so I added save points earlier in the journey and kept their answers even when they left partway.</p>
   </div>
   <div class="toolkit reveal">
-    <p class="label">Toolkit</p>
-    <div class="tool-groups">
-      <div class="tool-group"><span class="label">Design</span><ul>
-        <li class="tool" style="--brand:#f24e1e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/figma.svg);mask-image:url(assets/media/tools/figma.svg)"></span>Figma</li>
-        <li class="tool" style="--brand:#6d9eea"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/paper.png);mask-image:url(assets/media/tools/paper.png)"></span>Paper</li>
-      </ul></div>
-      <div class="tool-group"><span class="label">Build</span><ul>
-        <li class="tool" style="--brand:#d97757"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/claude.svg);mask-image:url(assets/media/tools/claude.svg)"></span>Claude Code</li>
-        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/openai.svg);mask-image:url(assets/media/tools/openai.svg)"></span>Codex</li>
-        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/t3-code.png);mask-image:url(assets/media/tools/t3-code.png)"></span>T3 Code</li>
-        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/nextdotjs.svg);mask-image:url(assets/media/tools/nextdotjs.svg)"></span>Next.js</li>
-      </ul></div>
-      <div class="tool-group"><span class="label">Data and sign-in</span><ul>
-        <li class="tool" style="--brand:#ee342f"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/convex.svg);mask-image:url(assets/media/tools/convex.svg)"></span>Convex</li>
-        <li class="tool" style="--brand:#3fcf8e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/supabase.svg);mask-image:url(assets/media/tools/supabase.svg)"></span>Supabase</li>
-        <li class="tool" style="--brand:#6363f1"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/workos.png);mask-image:url(assets/media/tools/workos.png)"></span>WorkOS</li>
-      </ul></div>
-      <div class="tool-group"><span class="label">Ship and measure</span><ul>
-        <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/vercel.svg);mask-image:url(assets/media/tools/vercel.svg)"></span>Vercel</li>
-        <li class="tool" style="--brand:#f54e00"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/posthog.svg);mask-image:url(assets/media/tools/posthog.svg)"></span>PostHog</li>
-      </ul></div>
-    </div>
+    <p class="label">My toolkit</p>
+    <div class="tool-group"><span class="label">Design</span><ul>
+      <li class="tool" style="--brand:#f24e1e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/figma.svg);mask-image:url(assets/media/tools/figma.svg)"></span>Figma</li>
+      <li class="tool" style="--brand:#6d9eea"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/paper.png);mask-image:url(assets/media/tools/paper.png)"></span>Paper</li>
+    </ul></div>
+    <div class="tool-group"><span class="label">Build</span><ul>
+      <li class="tool" style="--brand:#d97757"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/claude.svg);mask-image:url(assets/media/tools/claude.svg)"></span>Claude Code</li>
+      <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/openai.svg);mask-image:url(assets/media/tools/openai.svg)"></span>Codex</li>
+      <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/nextdotjs.svg);mask-image:url(assets/media/tools/nextdotjs.svg)"></span>Next.js</li>
+    </ul></div>
+    <div class="tool-group"><span class="label">Backend</span><ul>
+      <li class="tool" style="--brand:#ee342f"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/convex.svg);mask-image:url(assets/media/tools/convex.svg)"></span>Convex</li>
+      <li class="tool" style="--brand:#3fcf8e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/supabase.svg);mask-image:url(assets/media/tools/supabase.svg)"></span>Supabase</li>
+      <li class="tool" style="--brand:#6363f1"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/workos.png);mask-image:url(assets/media/tools/workos.png)"></span>WorkOS</li>
+    </ul></div>
+    <div class="tool-group"><span class="label">Ship</span><ul>
+      <li class="tool"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/vercel.svg);mask-image:url(assets/media/tools/vercel.svg)"></span>Vercel</li>
+      <li class="tool" style="--brand:#f54e00"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/posthog.svg);mask-image:url(assets/media/tools/posthog.svg)"></span>PostHog</li>
+    </ul></div>
   </div>
 </section>
 
@@ -264,8 +257,8 @@
     <span>design@sheawilson.uk</span><span class="act" aria-live="polite">Copy</span>
   </button>
   <p class="elsewhere reveal" style="--d:.14s">
-    <a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a>
-    <a href="mailto:design@sheawilson.uk">Open in your mail app</a>
+    <a class="pill-link" href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/linkedin.svg);mask-image:url(assets/media/tools/linkedin.svg)"></span>LinkedIn</a>
+    <a class="pill-link" href="mailto:design@sheawilson.uk"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg>Open in your mail app</a>
   </p>
 </section>
 
@@ -274,10 +267,7 @@
   <nav aria-label="Footer"><a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a><a href="#top">Back to top</a></nav>
 </footer>
 
-<div class="lab" role="group" aria-label="Preview options">
-  <div class="lab-set" data-set="hero"><span>Hero</span><button type="button" data-v="eclipse">Eclipse</button><button type="button" data-v="glass">Glass</button><button type="button" data-v="work">Work</button></div>
-  <div class="lab-set" data-set="corners"><span>Corners</span><button type="button" data-v="round">Round</button><button type="button" data-v="squircle">Squircle</button></div>
-</div>
+
 
 <script src="assets/js/site.js" defer></script>
 </body>
