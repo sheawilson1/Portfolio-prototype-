@@ -37,12 +37,16 @@
     vt.finished.finally(() => root.classList.remove('theme-switching'));
   });
 
-  /* ── Hero ── */
+  /* ── Hero scene: the hero stays put while the disc rises and covers it ── */
+  const scene = document.querySelector('.scene');
   const hero = document.querySelector('.hero');
   const copy = hero.querySelector('.hero-copy');
+  const eclipse = hero.querySelector('.eclipse');
   const disc = hero.querySelector('.disc');
   const corona = hero.querySelector('.corona');
-  const hs = { px: 0, py: 0, inView: true };
+  const variant = root.dataset.scroll || '1';
+  const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
+  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1 };
   new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
   // Hovering a recent project borrows that project's colours for the ring.
@@ -53,50 +57,64 @@
     a.addEventListener('pointerleave', off); a.addEventListener('blur', off);
   });
 
-  /* ── Nav: turns into the pill as the disc reaches the top of the screen ── */
   const nav = document.querySelector('.nav');
   const navInner = nav.querySelector('.nav-inner');
-  const logo = nav.querySelector('.logo');
-  const geo = { discTop: 600, copyTop: 200 };
   const measure = () => {
-    const w = navInner.clientWidth, pill = Math.min(460, w);
-    nav.style.setProperty('--pill-w', `${pill}px`);
-    nav.style.setProperty('--logo-shift', `${(w - pill) / 2 + 20}px`);
-    nav.style.setProperty('--links-shift', `${(w - pill) / 2 + 8}px`);
-    const t = disc.style.transform, ct = copy.style.transform; disc.style.transform = 'none'; copy.style.transform = 'none';
-    geo.discTop = disc.getBoundingClientRect().top + scrollY;
-    geo.copyTop = copy.getBoundingClientRect().top + scrollY;
-    disc.style.transform = t; copy.style.transform = ct;
+    const w = navInner.clientWidth, pillW = Math.min(460, w);
+    nav.style.setProperty('--pill-w', `${pillW}px`);
+    nav.style.setProperty('--logo-shift', `${(w - pillW) / 2 + 20}px`);
+    nav.style.setProperty('--links-shift', `${(w - pillW) / 2 + 8}px`);
+    // Where the disc has to end up: centred on the screen and big enough to cover every corner.
+    const H = hero.offsetHeight, W = innerWidth, R = disc.offsetWidth / 2;
+    const halfDiag = Math.hypot(W / 2, H / 2) * 1.03;
+    geo.scale = Math.max(1, halfDiag / R);
+    geo.ty = H / 2 - (eclipse.offsetTop + R);
+    geo.sceneTop = scene.offsetTop;
+    geo.sceneLen = Math.max(1, scene.offsetHeight - innerHeight);
   };
-  measure(); addEventListener('resize', () => { measure(); wake(); });
+  measure(); addEventListener('resize', () => { measure(); onScroll(); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
-  let pill = false;
-  const onScroll = () => {
-    const at = geo.discTop - nav.offsetHeight * .5;
-    // A little hysteresis so the pill never flickers around the threshold
-    if (!pill && scrollY > at) { pill = true; nav.classList.add('is-scrolled'); }
-    else if (pill && scrollY < at - 60) { pill = false; nav.classList.remove('is-scrolled'); }
+
+  let pill = false, handoff = 0;
+  function onScroll() {
+    hs.target = reduced ? 0 : clamp((scrollY - geo.sceneTop) / geo.sceneLen, 0, 1);
     wake();
-  };
+  }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
 
+  const setPill = (on) => {
+    if (on === pill) return;
+    pill = on; nav.classList.toggle('is-scrolled', on);
+    if (on && variant === '3') { nav.classList.add('is-handoff'); clearTimeout(handoff); handoff = setTimeout(() => nav.classList.remove('is-handoff'), 1700); }
+  };
+
   function heroFrame() {
-    if (!hs.inView) return false;
     let moving = false;
+    const p = lerp(hs.p, hs.target, .22);
+    if (Math.abs(p - hs.target) > .0005) moving = true;
+    hs.p = Math.abs(p - hs.target) < .0005 ? hs.target : p;
+    const e = hs.p * hs.p * (3 - 2 * hs.p);
+    // The pill forms once the disc has covered the hero, and only lets go well before it uncovers.
+    if (!pill && (hs.p > .9 || scrollY > geo.sceneTop + geo.sceneLen + 10)) setPill(true);
+    else if (pill && hs.p < .78 && scrollY < geo.sceneTop + geo.sceneLen) setPill(false);
+    if (!hs.inView) return moving;
+
     const nx = fine && pointer.seen ? clamp(pointer.x / innerWidth * 2 - 1, -1, 1) : 0;
     const ny = fine && pointer.seen ? clamp(pointer.y / innerHeight * 2 - 1, -1, 1) : 0;
     const px = lerp(hs.px, nx, .06), py = lerp(hs.py, ny, .06);
     if (Math.abs(px - hs.px) + Math.abs(py - hs.py) > .0005) moving = true;
     hs.px = px; hs.py = py;
+    const drift = 1 - e;
+    const y = geo.ty * e, sc = 1 + (geo.scale - 1) * e;
     // The disc drifts against the pointer, so the brighter side of the ring follows you.
-    disc.style.transform = `translate3d(${(-px * 12).toFixed(2)}px, ${(-py * 8).toFixed(2)}px, 0)`;
-    corona.style.translate = `${(px * 6).toFixed(2)}px ${(py * 4).toFixed(2)}px`;
-    // The words trail the scroll, so the rising disc passes over them.
-    const trail = Math.min(scrollY, hero.offsetHeight) * .55;
-    if (!reduced) copy.style.transform = `translate3d(0, ${trail.toFixed(1)}px, 0)`;
-    // On narrower screens the headline would run into the full-width nav before the disc arrives, so it fades first.
-    if (innerWidth < 1100) copy.style.opacity = String(clamp((geo.copyTop - scrollY + trail - 84) / 120, 0, 1));
-    else if (copy.style.opacity) copy.style.opacity = '';
+    disc.style.translate = `${(-px * 12 * drift).toFixed(2)}px ${(y - py * 8 * drift).toFixed(2)}px`;
+    disc.style.scale = sc.toFixed(4);
+    corona.style.translate = `${(px * 6 * drift).toFixed(2)}px ${(y + py * 4 * drift).toFixed(2)}px`;
+    corona.style.scale = sc.toFixed(4);
+    if (variant === '2') {
+      copy.style.transform = `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
+      copy.style.opacity = String(1 - .55 * e);
+    }
     return moving;
   }
 
@@ -129,7 +147,7 @@
   if (fine && !reduced) {
     document.addEventListener('pointerover', (e) => {
       const item = e.target.closest('[data-cursor]');
-      if (!item) { tip.classList.remove('is-on'); tipPos.on = false; return; }
+      if (!item) { clearTimeout(tipPos.t); tip.classList.remove('is-on'); tipPos.on = false; return; }
       const link = item.matches('a') ? item : item.querySelector('a.card');
       const kind = !link ? 'soon' : link.target === '_blank' ? 'out' : 'in';
       tipText.textContent = item.dataset.cursor;
@@ -137,7 +155,8 @@
       tip.querySelector('.tip-arrow').style.display = kind === 'soon' ? 'none' : '';
       tip.querySelector('.tip-arrow').style.rotate = kind === 'in' ? '45deg' : '0deg';
       if (!tipPos.on) { tipPos.x = pointer.x; tipPos.y = pointer.y; }
-      tipPos.on = true; tip.classList.add('is-on'); wake();
+      tipPos.on = true; wake();
+      clearTimeout(tipPos.t); tipPos.t = setTimeout(() => { if (tipPos.on) tip.classList.add('is-on'); }, 220);
     });
     document.addEventListener('pointerleave', () => { tip.classList.remove('is-on'); tipPos.on = false; });
   }
@@ -186,7 +205,7 @@
     const a = heroFrame(), b = cardsFrame();
     let c = false;
     if (tipPos.on) {
-      tipPos.x = lerp(tipPos.x, pointer.x, .22); tipPos.y = lerp(tipPos.y, pointer.y, .22);
+      tipPos.x = lerp(tipPos.x, pointer.x, .16); tipPos.y = lerp(tipPos.y, pointer.y, .16);
       tip.style.transform = `translate3d(${(tipPos.x + 16).toFixed(1)}px, ${(tipPos.y - 46).toFixed(1)}px, 0)`;
       c = Math.abs(tipPos.x - pointer.x) + Math.abs(tipPos.y - pointer.y) > .1;
     }
