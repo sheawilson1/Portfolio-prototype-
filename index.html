@@ -7,12 +7,8 @@
 <meta name="description" content="Shea Wilson is a design engineer. He takes complicated things, makes them easy to read at a glance, then builds and ships them.">
 <meta name="theme-color" content="#ffffff">
 <script>
-  (function () {
-    var d = document.documentElement, h = (new URLSearchParams(location.search).get('hero') || 'a').toLowerCase();
-    d.classList.add('js');
-    d.dataset.hero = /^[abc]$/.test(h) ? h : 'a';
-    try { if (localStorage.getItem('theme') === 'dark') d.dataset.theme = 'dark'; } catch (e) {}
-  })();
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -26,6 +22,7 @@
 
 <header class="nav">
   <div class="nav-inner">
+    <span class="nav-pill" aria-hidden="true"></span>
     <a class="logo" href="#top" aria-label="Shea Wilson, back to top">S<span class="fold"><span>hea&nbsp;</span></span>W<span class="fold"><span>ilson</span></span></a>
     <nav class="links" aria-label="Main">
       <a href="#work">Work</a>
@@ -39,45 +36,17 @@
 </header>
 
 <section class="hero" id="top">
-  <div class="eclipse" aria-hidden="true"><div class="haze"></div><div class="corona"></div><div class="disc"></div></div>
-
-  <!-- A: centred eclipse. Clear about the job. -->
-  <div class="hero-copy" data-for="a">
-    <h1>From sketch <em>to shipped.</em></h1>
-    <p class="intro">I’m Shea, a design engineer. I design products, build them in code and keep improving them once people are using them.</p>
-      <p class="recent">
-        <span>Recently</span>
-        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
-        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
-        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
-        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
-      </p>
-  </div>
-
-  <!-- B: horizon. Leads with proof. -->
-  <div class="hero-copy" data-for="b">
+  <div class="eclipse" aria-hidden="true"><div class="corona"></div><div class="disc"></div></div>
+  <div class="hero-copy">
     <h1>Design people <em>actually use.</em></h1>
-    <p class="intro">I’m Shea, a design engineer. My Smoking Snapshot tool for the NHS was used 975 times, and the reporting product I’m building now is in pilot with the National Football Museum.</p>
-      <p class="recent">
-        <span>Recently</span>
-        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot <span class="st">975 uses</span></a>
-        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart <span class="st">in pilot</span></a>
-        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health <span class="st">live now</span></a>
-        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump <span class="st">in beta</span></a>
-      </p>
-  </div>
-
-  <!-- C: offset. Leads with a point of view. -->
-  <div class="hero-copy" data-for="c">
-    <h1>Mockups don’t <em>have users.</em></h1>
-    <p class="intro">I’m Shea, a design engineer. I get ideas into code early, so people can use the real thing while there’s still time to change it.</p>
-      <p class="recent">
-        <span>Recently</span>
-        <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot</a>
-        <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart</a>
-        <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health</a>
-        <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump</a>
-      </p>
+    <p class="intro">I’m Shea, a design engineer. I designed and built Smoking Snapshot for an NHS campaign, where it was used 975 times. Right now I’m building a reporting product that’s in pilot with the National Football Museum.</p>
+    <p class="recent">
+      <span>Recently</span>
+      <a href="#snapshot" data-palette="snapshot"><i style="--c:#ed1652"></i>Smoking Snapshot <span class="st">975 uses</span></a>
+      <a href="#jumpstart" data-palette="jumpstart"><i style="--c:#4fae86"></i>JumpStart <span class="st">in pilot</span></a>
+      <a href="#heart" data-palette="heart"><i style="--c:#43d9ff"></i>Heart Health <span class="st">live now</span></a>
+      <a href="#brain" data-palette="brain"><i style="--c:#8a3cff"></i>Brain Dump <span class="st">in beta</span></a>
+    </p>
   </div>
 </section>
 
@@ -91,7 +60,6 @@
         <span class="blob" style="--c:#ff6a1a; width:36%; left:42%; top:54%; rotate:-8deg; --ar:1.3"></span>
       </div>
       <a class="card" href="https://wrapped.smokingendshere.com/" target="_blank" rel="noopener">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Smoking Ends Here · Champs and NHS</span><span class="label">2026</span></div>
         <div class="card-copy">
           <h2>Smoking Snapshot</h2>
@@ -103,25 +71,24 @@
           </div>
         </div>
         <div class="media">
-          <div class="screen snap-results"><img src="assets/media/home/snapshot-results.webp" alt="Snapshot results: 269 cigarettes smoked in the last 12 months, 13 packets" width="1400" height="1050" loading="lazy"></div>
-          <img class="device" src="assets/media/home/snapshot-phone.webp" alt="Smoking Snapshot on a phone, asking which smoking pattern sounds like you" width="720" height="1491">
+          <div class="screen snap-results" data-depth="-0.9"><img src="assets/media/home/snapshot-results.webp" alt="Snapshot results: 269 cigarettes smoked in the last 12 months, 13 packets" width="1400" height="1050" loading="lazy"></div>
+          <img class="device" data-depth="1" src="assets/media/home/snapshot-phone.webp" alt="Smoking Snapshot on a phone, asking which smoking pattern sounds like you" width="720" height="1491">
         </div>
       </a>
     </article>
 
-    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon" style="--a:#0b5c45; --b:#4fae86; --c:#8fd4b4">
+    <article class="item t-jump reveal" id="jumpstart" data-cursor="Case study soon" style="--a:#4fae86; --b:#8fd4b4; --c:#0b5c45">
       <div class="bleed" aria-hidden="true">
-        <span class="blob" style="--c:#0b5c45; width:54%; left:0%; top:12%; rotate:-14deg"></span>
-        <span class="blob" style="--c:#4fae86; width:42%; left:22%; top:44%; rotate:18deg; --ar:1.7"></span>
-        <span class="blob" style="--c:#8fd4b4; width:34%; left:6%; top:52%; rotate:-6deg; --ar:1.3"></span>
+        <span class="blob" style="--c:#4fae86; width:56%; left:2%; top:10%; rotate:-14deg"></span>
+        <span class="blob" style="--c:#8fd4b4; width:44%; left:22%; top:44%; rotate:18deg; --ar:1.7"></span>
+        <span class="blob" style="--c:#0b5c45; width:30%; left:8%; top:56%; rotate:-6deg; --ar:1.3"></span>
       </div>
       <div class="card">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Agency reporting product</span><span class="label">In pilot</span></div>
         <div class="media">
-          <div class="screen screen-back"><img class="img-light" src="assets/media/home/jumpstart-desk.webp" alt="JumpStart agency desk: 1 connection down, and 1 other thing for a person" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-desk-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
-          <div class="screen screen-front"><img class="img-light" src="assets/media/home/jumpstart-client.webp" alt="JumpStart client report: every pound spent brought back £2.86" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-client-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
-          <div class="screen screen-export"><img class="img-light" src="assets/media/home/jumpstart-export.webp" alt="JumpStart export dialog with a slide preview and a PowerPoint deck button" width="1200" height="869" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-export-dark.webp" alt="" width="1200" height="869" loading="lazy"></div>
+          <div class="screen screen-back" data-depth="-0.9"><img class="img-light" src="assets/media/home/jumpstart-desk.webp" alt="JumpStart agency desk: 1 connection down, and 1 other thing for a person" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-desk-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
+          <div class="screen screen-front" data-depth="0.3"><img class="img-light" src="assets/media/home/jumpstart-client.webp" alt="JumpStart client report: every pound spent brought back £2.86" width="1600" height="1000" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-client-dark.webp" alt="" width="1600" height="1000" loading="lazy"></div>
+          <div class="screen screen-export" data-depth="1.3"><img class="img-light" src="assets/media/home/jumpstart-export.webp" alt="JumpStart export dialog with a slide preview and a PowerPoint deck button" width="1200" height="869" loading="lazy"><img class="img-dark" src="assets/media/home/jumpstart-export-dark.webp" alt="" width="1200" height="869" loading="lazy"></div>
         </div>
         <div class="card-copy">
           <h2>JumpStart</h2>
@@ -148,13 +115,12 @@
         <span class="blob" style="--c:#08717d; width:46%; left:18%; top:56%; rotate:8deg; --ar:1.9"></span>
       </div>
       <a class="card" href="https://hearthealth.smokingendshere.com/" target="_blank" rel="noopener">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Smoking Ends Here · Champs and NHS</span><span class="label live">Live now</span></div>
         <div class="card-copy">
           <h2>Heart Health</h2>
           <p class="line">Tap the cigarette and watch the heart monitor react. It’s running now as paid social on Instagram, Facebook and other platforms.</p>
         </div>
-        <div class="media"><img class="device" src="assets/media/home/heart-health-hand.webp" alt="Heart Health on an iPad held in one hand, a pulse line running under a red heart" width="1300" height="1459" loading="lazy"></div>
+        <div class="media"><img class="device" data-depth="0.8" src="assets/media/home/heart-health-hand.webp" alt="Heart Health on an iPad held in one hand, a pulse line running under a red heart" width="1300" height="1459" loading="lazy"></div>
       </a>
     </article>
 
@@ -165,7 +131,6 @@
         <span class="blob" style="--c:#c77dff; width:40%; left:52%; top:50%; rotate:-24deg; --ar:1.3"></span>
       </div>
       <a class="card" href="braindump.html">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Personal project</span><span class="label">In beta</span></div>
         <div class="card-copy">
           <h2>Brain Dump</h2>
@@ -173,7 +138,7 @@
           <div class="steps" aria-hidden="true"><i class="is-on"></i><i></i><i></i><i></i></div>
         </div>
         <div class="media">
-          <div class="shots">
+          <div class="shots" data-depth="0.7">
             <img class="is-on" src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1077" loading="lazy">
             <img src="assets/media/home/brain-voice.webp" alt="" data-listen width="520" height="1077" loading="lazy">
             <img src="assets/media/home/brain-ai-input.webp" alt="" width="520" height="1077" loading="lazy">
@@ -186,7 +151,6 @@
     <article class="item t-small reveal" data-cursor="View case study">
       <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/cipher.webp); inset:22% 10% 0 10%; --sat:1.05; --spill:.75"></span></div>
       <a class="card" href="cipher.html">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Brand, web and app</span><span class="label">Concept</span></div>
         <div class="card-copy"><h2>Cipher</h2><p class="line">Brand guidelines, website and app for an AI-first bank.</p></div>
         <div class="media"><img src="assets/media/home/cipher.webp" alt="Cipher website on a laptop resting on a ribbed wooden surface" width="1400" height="1050" loading="lazy"></div>
@@ -196,7 +160,6 @@
     <article class="item t-small reveal" data-cursor="View case study" style="--d:.06s">
       <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/amp.webp); inset:22% 10% 0 10%"></span></div>
       <a class="card" href="amp.html">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Mobile app</span><span class="label">Concept</span></div>
         <div class="card-copy"><h2>Amp</h2><p class="line">A music player built around smart playback and moving between devices.</p></div>
         <div class="media"><img src="assets/media/home/amp.webp" alt="Amp music player on a phone standing on dark rock" width="1400" height="1050" loading="lazy"></div>
@@ -206,7 +169,6 @@
     <article class="item t-small reveal" data-cursor="View case study" style="--d:.12s">
       <div class="bleed" aria-hidden="true"><span class="blob-img" style="background-image:url(assets/media/home/captr.webp); inset:22% 10% 0 10%"></span></div>
       <a class="card" href="captr.html">
-        <span class="sheen" aria-hidden="true"></span>
         <div class="card-top"><span class="label">Apple Watch app</span><span class="label">Concept</span></div>
         <div class="card-copy"><h2>Captr</h2><p class="line">Capture a task, give it a priority and tick it off from your wrist.</p></div>
         <div class="media"><img src="assets/media/home/captr.webp" alt="Captr on an Apple Watch showing a task called Walk the Dog" width="1200" height="800" loading="lazy"></div>
@@ -219,15 +181,16 @@
 <section class="about" id="about">
   <div class="reveal">
     <p class="label">About</p>
-    <h2>The real thing, <em>as early as possible.</em></h2>
+    <h2>Most designers don’t build. <em>I think that’s a mistake.</em></h2>
+    <p class="about-meta">Design engineer · Digital Design, Ulster University</p>
   </div>
   <div class="about-body reveal" style="--d:.08s">
-    <p>I start in tools like Figma and Paper, then move into code early. Clients get something real to click through while the design is still changing, so their feedback shapes the product before it goes live.</p>
-    <p>A lot of my work takes numbers people skim past and makes them personal. Smoking Snapshot turns “I only smoke socially” into a count for the year. JumpStart turns a month of ad data into a few plain sentences a client can act on.</p>
-    <p>Launch isn’t the end of it. On Smoking Snapshot I suspected people were dropping out before the last questions, so I added save points earlier in the journey and kept their answers even when they left partway.</p>
+    <p>I’m Shea. I design in Figma and Paper, then get into code early, so clients can click through something real while their feedback can still change it. I’ve used AI tools since ChatGPT first came out, and now I build with Claude Code and Codex.</p>
+    <p>At the moment I’m designing and building public health campaign tools and a reporting product for agency clients. Launch isn’t the end of it. On Smoking Snapshot I suspected people were dropping out before the last questions, so I added save points earlier in the journey and kept their answers even when they left partway.</p>
+    <p>Brain Dump, my own app, started because I kept losing track of things across too many apps.</p>
   </div>
   <div class="toolkit reveal">
-    <p class="label">My toolkit</p>
+    <h3 class="toolkit-title">My toolkit</h3>
     <div class="tool-group"><span class="label">Design</span><ul>
       <li class="tool" style="--brand:#f24e1e"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/figma.svg);mask-image:url(assets/media/tools/figma.svg)"></span>Figma</li>
       <li class="tool" style="--brand:#6d9eea"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/paper.png);mask-image:url(assets/media/tools/paper.png)"></span>Paper</li>
@@ -251,15 +214,19 @@
 
 <section class="contact" id="contact">
   <div class="contact-glow" aria-hidden="true"></div>
-  <h2 class="reveal">Got something <em>complicated?</em></h2>
-  <p class="sub reveal" style="--d:.05s">Send it over.</p>
-  <button class="email reveal" type="button" data-email="design@sheawilson.uk" style="--d:.1s">
-    <span>design@sheawilson.uk</span><span class="act" aria-live="polite">Copy</span>
-  </button>
-  <p class="elsewhere reveal" style="--d:.14s">
-    <a class="pill-link" href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/linkedin.svg);mask-image:url(assets/media/tools/linkedin.svg)"></span>LinkedIn</a>
-    <a class="pill-link" href="mailto:design@sheawilson.uk"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg>Open in your mail app</a>
-  </p>
+  <h2 class="reveal">Let’s build <em>the real thing.</em></h2>
+  <p class="sub reveal" style="--d:.05s">Email is the quickest way to reach me.</p>
+  <div class="cta reveal" style="--d:.1s">
+    <a class="email" href="mailto:design@sheawilson.uk">
+      <svg class="email-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg>
+      <span>design@sheawilson.uk</span>
+    </a>
+    <button class="copy" type="button" data-email="design@sheawilson.uk" aria-label="Copy email address">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="5.25" y="5.25" width="8.5" height="8.5" rx="2"/><path d="M10.75 5.25V4.25a2 2 0 0 0-2-2h-4.5a2 2 0 0 0-2 2v4.5a2 2 0 0 0 2 2h1"/></svg>
+      <span class="copy-label" aria-live="polite">Copy</span>
+    </button>
+  </div>
+  <a class="linkedin reveal" style="--d:.14s" href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener"><span class="mark" style="-webkit-mask-image:url(assets/media/tools/linkedin.svg);mask-image:url(assets/media/tools/linkedin.svg)"></span>Find me on LinkedIn<svg class="arr" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
 </section>
 
 <footer>

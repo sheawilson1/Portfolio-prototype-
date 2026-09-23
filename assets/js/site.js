@@ -37,10 +37,68 @@
     vt.finished.finally(() => root.classList.remove('theme-switching'));
   });
 
-  /* ── Nav: full name at the top, folds to SW inside the glass pill ── */
+  /* ── Hero ── */
+  const hero = document.querySelector('.hero');
+  const copy = hero.querySelector('.hero-copy');
+  const disc = hero.querySelector('.disc');
+  const corona = hero.querySelector('.corona');
+  const hs = { px: 0, py: 0, inView: true };
+  new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
+
+  // Hovering a recent project borrows that project's colours for the ring.
+  hero.querySelectorAll('[data-palette]').forEach((a) => {
+    const on = () => { hero.dataset.palette = a.dataset.palette; };
+    const off = () => { delete hero.dataset.palette; };
+    a.addEventListener('pointerenter', on); a.addEventListener('focus', on);
+    a.addEventListener('pointerleave', off); a.addEventListener('blur', off);
+  });
+
+  /* ── Nav: turns into the pill as the disc reaches the top of the screen ── */
   const nav = document.querySelector('.nav');
-  const onScroll = () => { nav.classList.toggle('is-scrolled', scrollY > 90); wake(); };
+  const navInner = nav.querySelector('.nav-inner');
+  const logo = nav.querySelector('.logo');
+  const geo = { discTop: 600, copyTop: 200 };
+  const measure = () => {
+    const w = navInner.clientWidth, pill = Math.min(460, w);
+    nav.style.setProperty('--pill-w', `${pill}px`);
+    nav.style.setProperty('--logo-shift', `${(w - pill) / 2 + 20}px`);
+    nav.style.setProperty('--links-shift', `${(w - pill) / 2 + 8}px`);
+    const t = disc.style.transform, ct = copy.style.transform; disc.style.transform = 'none'; copy.style.transform = 'none';
+    geo.discTop = disc.getBoundingClientRect().top + scrollY;
+    geo.copyTop = copy.getBoundingClientRect().top + scrollY;
+    disc.style.transform = t; copy.style.transform = ct;
+  };
+  measure(); addEventListener('resize', () => { measure(); wake(); });
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
+  let pill = false;
+  const onScroll = () => {
+    const at = geo.discTop - nav.offsetHeight * .5;
+    // A little hysteresis so the pill never flickers around the threshold
+    if (!pill && scrollY > at) { pill = true; nav.classList.add('is-scrolled'); }
+    else if (pill && scrollY < at - 60) { pill = false; nav.classList.remove('is-scrolled'); }
+    wake();
+  };
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  function heroFrame() {
+    if (!hs.inView) return false;
+    let moving = false;
+    const nx = fine && pointer.seen ? clamp(pointer.x / innerWidth * 2 - 1, -1, 1) : 0;
+    const ny = fine && pointer.seen ? clamp(pointer.y / innerHeight * 2 - 1, -1, 1) : 0;
+    const px = lerp(hs.px, nx, .06), py = lerp(hs.py, ny, .06);
+    if (Math.abs(px - hs.px) + Math.abs(py - hs.py) > .0005) moving = true;
+    hs.px = px; hs.py = py;
+    // The disc drifts against the pointer, so the brighter side of the ring follows you.
+    disc.style.transform = `translate3d(${(-px * 12).toFixed(2)}px, ${(-py * 8).toFixed(2)}px, 0)`;
+    corona.style.translate = `${(px * 6).toFixed(2)}px ${(py * 4).toFixed(2)}px`;
+    // The words trail the scroll, so the rising disc passes over them.
+    const trail = Math.min(scrollY, hero.offsetHeight) * .55;
+    if (!reduced) copy.style.transform = `translate3d(0, ${trail.toFixed(1)}px, 0)`;
+    // On narrower screens the headline would run into the full-width nav before the disc arrives, so it fades first.
+    if (innerWidth < 1100) copy.style.opacity = String(clamp((geo.copyTop - scrollY + trail - 84) / 120, 0, 1));
+    else if (copy.style.opacity) copy.style.opacity = '';
+    return moving;
+  }
 
   /* ── Reveal and count-up ── */
   const io = new IntersectionObserver((entries) => entries.forEach((en) => {
@@ -75,7 +133,6 @@
       const link = item.matches('a') ? item : item.querySelector('a.card');
       const kind = !link ? 'soon' : link.target === '_blank' ? 'out' : 'in';
       tipText.textContent = item.dataset.cursor;
-      tip.dataset.kind = kind;
       tip.querySelector('i').style.display = kind === 'soon' ? '' : 'none';
       tip.querySelector('.tip-arrow').style.display = kind === 'soon' ? 'none' : '';
       tip.querySelector('.tip-arrow').style.rotate = kind === 'in' ? '45deg' : '0deg';
@@ -85,66 +142,23 @@
     document.addEventListener('pointerleave', () => { tip.classList.remove('is-on'); tipPos.on = false; });
   }
 
-  /* ── Hero ── */
-  const hero = document.querySelector('.hero');
-  const variant = root.dataset.hero || 'a';
-  const copy = hero.querySelector(`.hero-copy[data-for="${variant}"]`);
-  const eclipse = hero.querySelector('.eclipse');
-  const disc = hero.querySelector('.disc');
-  const corona = hero.querySelector('.corona');
-  const hs = { px: 0, py: 0, exit: 0, inView: true };
-  new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
-
-  // Hovering a recent project borrows that project's colours for the ring.
-  hero.querySelectorAll('[data-palette]').forEach((a) => {
-    const on = () => { hero.dataset.palette = a.dataset.palette; };
-    const off = () => { delete hero.dataset.palette; };
-    a.addEventListener('pointerenter', on); a.addEventListener('focus', on);
-    a.addEventListener('pointerleave', off); a.addEventListener('blur', off);
-  });
-
-  function heroFrame() {
-    if (!hs.inView) return false;
-    let moving = false;
-    const exitT = clamp(scrollY / (hero.offsetHeight * .9), 0, 1);
-    hs.exit = lerp(hs.exit, exitT, .18);
-    if (Math.abs(hs.exit - exitT) > .001) moving = true;
-    const nx = fine && pointer.seen ? clamp(pointer.x / innerWidth * 2 - 1, -1, 1) : 0;
-    const ny = fine && pointer.seen ? clamp(pointer.y / innerHeight * 2 - 1, -1, 1) : 0;
-    const px = lerp(hs.px, nx, .06), py = lerp(hs.py, ny, .06);
-    if (Math.abs(px - hs.px) + Math.abs(py - hs.py) > .0005) moving = true;
-    hs.px = px; hs.py = py;
-    const ex = hs.exit;
-
-    // The disc drifts against the pointer, so the brighter side of the ring follows you.
-    disc.style.transform = `translate3d(${(-px * 12).toFixed(2)}px, ${(-py * 12).toFixed(2)}px, 0)`;
-    corona.style.translate = `${(px * 6).toFixed(2)}px ${(py * 6).toFixed(2)}px`;
-    if (variant === 'b') eclipse.style.transform = `translate3d(0, ${(ex * -14).toFixed(2)}vh, 0)`;
-    else if (variant === 'c') eclipse.style.transform = `translate3d(${(ex * 10).toFixed(2)}vw, ${(ex * 8).toFixed(2)}vh, 0)`;
-    else eclipse.style.transform = `translate3d(0, ${(ex * 16).toFixed(2)}vh, 0) scale(${(1 - ex * .08).toFixed(4)})`;
-    if (copy) {
-      copy.style.transform = `translate3d(0, ${(ex * -70).toFixed(1)}px, 0)`;
-      copy.style.opacity = String(1 - ex * 1.3);
-    }
-    return moving;
-  }
-
-  /* ── Glass cards: tilt, light behind the glass, sheen, rim light ── */
+  /* ── Glass cards: tilt with depth between layers, light behind the glass, lit border ── */
   const items = [...document.querySelectorAll('.item')].map((el) => ({
     el, card: el.querySelector('.card'), media: el.querySelector('.media'),
-    blobs: [...el.querySelectorAll('.blob, .blob-img')], sheen: el.querySelector('.sheen'),
-    tx: 0, ty: 0, x: 0, y: 0, sx: 0, sy: 0, hot: false,
+    blobs: [...el.querySelectorAll('.blob, .blob-img')],
+    layers: [...el.querySelectorAll('[data-depth]')].map((l) => ({ el: l, d: +l.dataset.depth })),
+    tx: 0, ty: 0, x: 0, y: 0, hot: false,
   }));
   items.forEach((it) => {
     if (!fine || reduced) return;
     it.el.addEventListener('pointerenter', () => { it.hot = true; it.el.classList.add('is-hot'); wake(); });
     it.el.addEventListener('pointerleave', () => { it.hot = false; it.el.classList.remove('is-hot'); it.tx = 0; it.ty = 0; wake(); });
     it.el.addEventListener('pointermove', (e) => {
-      const r = it.card.getBoundingClientRect();
+      const r = it.el.getBoundingClientRect();
       it.tx = clamp((e.clientX - r.left) / r.width - .5, -.5, .5);
       it.ty = clamp((e.clientY - r.top) / r.height - .5, -.5, .5);
-      it.sx = e.clientX - r.left; it.sy = e.clientY - r.top;
-      it.card.style.setProperty('--rx', `${it.sx}px`); it.card.style.setProperty('--ry', `${it.sy}px`);
+      it.el.style.setProperty('--rx', `${(e.clientX - r.left).toFixed(0)}px`);
+      it.el.style.setProperty('--ry', `${(e.clientY - r.top).toFixed(0)}px`);
     });
   });
   if (!fine) {
@@ -158,9 +172,10 @@
       const nx = lerp(it.x, it.tx, .08), ny = lerp(it.y, it.ty, .08);
       if (Math.abs(nx - it.x) + Math.abs(ny - it.y) < .0004 && !it.hot) { it.x = it.tx; it.y = it.ty; return; }
       it.x = nx; it.y = ny; moving = true;
-      if (it.media) it.media.style.transform = `perspective(1300px) rotateX(${(-it.y * 7).toFixed(2)}deg) rotateY(${(it.x * 9).toFixed(2)}deg)`;
+      if (it.media) it.media.style.transform = `perspective(1300px) rotateX(${(-it.y * 6).toFixed(2)}deg) rotateY(${(it.x * 8).toFixed(2)}deg)`;
+      // Layers slide by their depth: back layers against the pointer, front layers with it.
+      it.layers.forEach((l) => { l.el.style.translate = `${(it.x * 60 * l.d).toFixed(1)}px ${(it.y * 42 * l.d).toFixed(1)}px`; });
       it.blobs.forEach((b, i) => { const k = 50 + i * 22; b.style.transform = `translate3d(${(it.x * k).toFixed(1)}px, ${(it.y * k * .8).toFixed(1)}px, 0)`; });
-      if (it.sheen) it.sheen.style.transform = `translate3d(${it.sx}px, ${it.sy}px, 0)`;
     });
     return moving;
   }
@@ -196,22 +211,25 @@
     }, { threshold: .35 }).observe(brain);
   }
 
-  /* ── Email: copy on click, magnetic on hover ── */
-  const email = document.querySelector('.email');
-  if (email) {
-    const act = email.querySelector('.act');
-    email.addEventListener('click', async () => {
-      try { await navigator.clipboard.writeText(email.dataset.email); act.textContent = 'Copied'; email.classList.add('is-copied'); }
-      catch (e) { location.href = `mailto:${email.dataset.email}`; return; }
-      setTimeout(() => { act.textContent = 'Copy'; email.classList.remove('is-copied'); }, 2200);
+  /* ── Contact: email opens the mail app, copy copies, a gentle pull on hover ── */
+  const copyBtn = document.querySelector('.copy');
+  if (copyBtn) {
+    const label = copyBtn.querySelector('.copy-label');
+    copyBtn.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(copyBtn.dataset.email); } catch (e) { return; }
+      label.textContent = 'Copied'; copyBtn.classList.add('is-copied');
+      setTimeout(() => { label.textContent = 'Copy'; copyBtn.classList.remove('is-copied'); }, 2200);
     });
-    if (fine && !reduced) {
-      email.addEventListener('pointermove', (e) => {
-        const r = email.getBoundingClientRect();
-        email.style.transform = `translate(${(e.clientX - r.left - r.width / 2) * .18}px, ${(e.clientY - r.top - r.height / 2) * .3}px)`;
-      });
-      email.addEventListener('pointerleave', () => { email.style.transition = 'transform .8s var(--ease), box-shadow .8s var(--ease)'; email.style.transform = ''; setTimeout(() => { email.style.transition = ''; }, 800); });
-    }
   }
-
+  const email = document.querySelector('.email');
+  if (email && fine && !reduced) {
+    email.addEventListener('pointermove', (e) => {
+      const r = email.getBoundingClientRect();
+      email.style.transform = `translate(${((e.clientX - r.left - r.width / 2) * .08).toFixed(1)}px, ${((e.clientY - r.top - r.height / 2) * .14).toFixed(1)}px)`;
+    });
+    email.addEventListener('pointerleave', () => {
+      email.style.transition = 'transform .7s var(--ease), box-shadow .6s var(--ease)'; email.style.transform = '';
+      setTimeout(() => { email.style.transition = ''; }, 700);
+    });
+  }
 })();

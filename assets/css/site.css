@@ -25,13 +25,14 @@
   --glass-line: rgba(10, 10, 10, .07);
   --shadow-rest: 0 1px 2px rgba(10, 10, 10, .04), 0 12px 34px rgba(10, 10, 10, .05);
   --shadow-hover: 0 2px 6px rgba(10, 10, 10, .05), 0 24px 60px rgba(10, 10, 10, .1);
-  --bleed-rest: .42;
-  --bleed-hover: .95;
+  --bleed-rest: .55;
+  --bleed-hover: 1;
   --bleed-blend: normal;
   --sheen: rgba(255, 255, 255, .45);
   --disc: #ffffff;
   --pale-a: #fde9cf;
   --pale-b: #e3ebff;
+  --grain: url(../media/home/grain.webp);
 
   --ease: cubic-bezier(.2, .9, .25, 1);
   --ease-io: cubic-bezier(.65, 0, .35, 1);
@@ -57,17 +58,18 @@
   --glass-line: rgba(255, 255, 255, .08);
   --shadow-rest: 0 24px 60px rgba(0, 0, 0, .45);
   --shadow-hover: 0 30px 80px rgba(0, 0, 0, .55);
-  --bleed-rest: .4;
-  --bleed-hover: .85;
-  --bleed-blend: screen;
+  --bleed-rest: .62;
+  --bleed-hover: 1;
+  --bleed-blend: normal;
   --sheen: rgba(255, 255, 255, .06);
   --disc: #030409;
   --pale-a: #3a2a22;
   --pale-b: #1c2436;
+  --grain: url(../media/home/grain-dark.webp);
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
-:is(.card, .email, .t-small .media, .screen, .pill-link) { corner-shape: squircle; }
+:is(.card, .t-small .media, .screen) { corner-shape: squircle; }
 html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; background: var(--bg); }
 body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; overflow-x: hidden; transition: background-color .6s var(--ease), color .6s var(--ease); }
 a { color: inherit; text-decoration: none; }
@@ -91,16 +93,22 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .tip i { width: 7px; height: 7px; border-radius: 50%; background: #2fd67b; flex: none; }
 .tip svg { width: 12px; height: 12px; flex: none; }
 
-/* ───────── Nav ───────── */
+/* ───────── Nav ─────────
+   The pill is its own layer that changes width; the name and links glide into it with transforms,
+   so nothing in the bar reflows while it shrinks or grows. */
 .nav { position: fixed; inset: 0 0 auto; z-index: 50; padding: 18px var(--gutter); pointer-events: none; }
-.nav-inner { pointer-events: auto; margin: 0 auto; max-width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 24px;
-  padding: 8px 0; border-radius: 999px; border: 1px solid transparent;
-  transition: max-width .8s var(--ease), padding .8s var(--ease), background-color .6s var(--ease), border-color .6s var(--ease), box-shadow .6s var(--ease); }
-.nav.is-scrolled .nav-inner { max-width: 500px; padding: 7px 8px 7px 20px; background: var(--glass-strong); border-color: var(--glass-edge);
-  -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6); box-shadow: 0 10px 40px rgba(0, 0, 0, .08); }
+.nav-inner { position: relative; pointer-events: auto; margin: 0 auto; max-width: 1380px; height: 52px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.nav-pill { position: absolute; left: 50%; top: 0; bottom: 0; width: 100%; translate: -50% 0; border-radius: 999px; pointer-events: none; opacity: 0;
+  background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: 0 10px 40px rgba(0, 0, 0, .08);
+  -webkit-backdrop-filter: blur(20px) saturate(1.6); backdrop-filter: blur(20px) saturate(1.6);
+  transition: width .8s var(--ease), opacity .45s var(--ease); }
+.nav.is-scrolled .nav-pill { width: var(--pill-w, 460px); opacity: 1; }
+.logo, .links { position: relative; z-index: 1; transition: transform .8s var(--ease); }
+.nav.is-scrolled .logo { transform: translate3d(var(--logo-shift, 0px), 0, 0); }
+.nav.is-scrolled .links { transform: translate3d(calc(-1 * var(--links-shift, 0px)), 0, 0); }
 .logo { display: inline-flex; align-items: baseline; font-family: var(--serif); font-size: 22px; font-style: italic; font-weight: 400; letter-spacing: -.01em; white-space: nowrap; }
 .fold { display: inline-grid; grid-template-columns: 1fr; transition: grid-template-columns .7s var(--ease); }
-.fold > span { min-width: 0; overflow: hidden; padding-right: .08em; margin-right: -.08em; transition: opacity .5s var(--ease); }
+.fold > span { min-width: 0; overflow: hidden; padding-right: .08em; margin-right: -.08em; transition: opacity .45s var(--ease); }
 .nav.is-scrolled .fold { grid-template-columns: 0fr; }
 .nav.is-scrolled .fold > span { opacity: 0; }
 .nav.is-scrolled .logo:hover .fold, .nav.is-scrolled .logo:focus-visible .fold { grid-template-columns: 1fr; }
@@ -127,37 +135,32 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   animation: umbra 1.15s var(--ease-io) both; }
 @keyframes umbra { from { --umbra: -220px; } to { --umbra: 160vmax; } }
 
-/* ───────── Hero ───────── */
-.hero { position: relative; height: max(100svh, 780px); overflow-x: clip;
+/* ───────── Hero: the horizon ─────────
+   A huge disc rises from below and the page is its surface. The ring sits under the words and the disc
+   sits over them, so scrolling carries the disc (and the first card on it) up over the headline. */
+.hero { position: relative; height: max(100svh, 780px); overflow: clip;
   transition: --p1 1.4s var(--ease), --p2 1.4s var(--ease), --p3 1.4s var(--ease), --p4 1.4s var(--ease), --p5 1.4s var(--ease), --p6 1.4s var(--ease); }
 .hero[data-palette="snapshot"] { --p1: #ed1652; --p2: #ff6a1a; --p3: #c52bd6; --p4: #2f67ff; --p5: #3a17e0; --p6: #7a2cff; }
 .hero[data-palette="heart"] { --p1: #ed1652; --p2: #ff4d6d; --p3: #7de8ff; --p4: #43d9ff; --p5: #08717d; --p6: #1fb3c9; }
 .hero[data-palette="jumpstart"] { --p1: #0b5c45; --p2: #4fae86; --p3: #b8f0d2; --p4: #4fae86; --p5: #0b5c45; --p6: #8fd4b4; }
 .hero[data-palette="brain"] { --p1: #8a3cff; --p2: #c77dff; --p3: #e2b8ff; --p4: #5b2bff; --p5: #3a17e0; --p6: #b44bff; }
 
-.eclipse { position: absolute; left: 50%; top: 47%; width: min(86vw, 94svh, 1120px); aspect-ratio: 1; translate: -50% -50%; will-change: transform; }
-.corona, .haze { position: absolute; border-radius: 50%; will-change: transform;
+/* No transform on the wrapper: the ring and the disc need separate layers in the page's stacking order */
+.eclipse { position: absolute; left: calc(50% - 64vw); top: 66%; width: 128vw; aspect-ratio: 1; pointer-events: none; }
+.corona { position: absolute; z-index: 3; inset: -9%; border-radius: 50%; will-change: transform;
   background: conic-gradient(from 0deg, var(--p1) 0deg, var(--p2) 36deg, var(--p3) 64deg, var(--pale-a) 96deg, var(--pale-b) 140deg,
     var(--p4) 182deg, var(--pale-b) 220deg, var(--p5) 256deg, var(--pale-a) 292deg, var(--p6) 326deg, var(--p1) 360deg);
-  animation: turn 90s linear infinite; }
-/* Filled to the centre so the drifting disc never uncovers an edge; the falloff does the job a blur used to do */
-.corona { inset: -15%;
+  animation: turn 90s linear infinite;
   -webkit-mask: radial-gradient(closest-side, #000 75%, rgba(0, 0, 0, .86) 79%, rgba(0, 0, 0, .58) 84%, rgba(0, 0, 0, .3) 89%, rgba(0, 0, 0, .11) 94%, transparent 100%);
           mask: radial-gradient(closest-side, #000 75%, rgba(0, 0, 0, .86) 79%, rgba(0, 0, 0, .58) 84%, rgba(0, 0, 0, .3) 89%, rgba(0, 0, 0, .11) 94%, transparent 100%); }
-.haze { inset: -40%; opacity: .26; animation-duration: 150s; animation-direction: reverse;
-  -webkit-mask: radial-gradient(closest-side, #000 48%, rgba(0, 0, 0, .5) 66%, rgba(0, 0, 0, .16) 84%, transparent 100%);
-          mask: radial-gradient(closest-side, #000 48%, rgba(0, 0, 0, .5) 66%, rgba(0, 0, 0, .16) 84%, transparent 100%); }
-.disc { position: absolute; inset: 0; border-radius: 50%; background: var(--disc); will-change: transform; transition: background-color .8s var(--ease);
-  box-shadow: 0 0 10px 1px var(--disc); }
+.disc { position: absolute; z-index: 5; inset: 0; border-radius: 50%; background: var(--bg); will-change: transform; transition: background-color .6s var(--ease); }
 [data-theme="dark"] .corona { opacity: .92; }
-[data-theme="dark"] .haze { opacity: .2; }
 @keyframes turn { to { transform: rotate(1turn); } }
 
-.hero-copy { position: absolute; z-index: 4; left: 50%; top: 47%; width: min(90vw, 940px); translate: -50% -50%; text-align: center; will-change: transform, opacity; display: none; }
-[data-hero="a"] .hero-copy[data-for="a"], [data-hero="b"] .hero-copy[data-for="b"], [data-hero="c"] .hero-copy[data-for="c"] { display: block; }
+.hero-copy { position: absolute; z-index: 4; left: 50%; top: 36%; width: min(90vw, 940px); translate: -50% -50%; text-align: center; will-change: transform; }
 .hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(48px, 8vw, 124px); line-height: 1; letter-spacing: -.016em; text-wrap: balance; }
 .hero h1 em { font-style: italic; letter-spacing: -.01em; }
-.hero .intro { margin: 30px auto 0; max-width: 31em; font-size: clamp(17px, 1.35vw, 20px); line-height: 1.55; color: var(--ink-2); }
+.hero .intro { margin: 30px auto 0; max-width: 33em; font-size: clamp(17px, 1.35vw, 20px); line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
 .recent { margin-top: 28px; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; font-weight: 400; color: var(--ink-2); }
 .recent > span { color: var(--whisper); }
 .recent a { display: inline-flex; align-items: center; gap: 8px; transition: color .3s var(--ease); }
@@ -166,23 +169,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .recent a:hover i { box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 22%, transparent); }
 .recent .st { color: var(--whisper); }
 
-/* B: the horizon. A huge disc rises from below and the page is its surface. */
-[data-hero="b"] .hero { overflow: clip; }
-[data-hero="b"] .eclipse { top: calc(66% + 64vw); width: 128vw; }
-[data-hero="b"] .corona { inset: -9%; }
-[data-hero="b"] .haze { display: none; }
-[data-hero="b"] .disc { background: var(--bg); box-shadow: none; }
-[data-hero="b"] .hero-copy { top: 36%; }
-
-/* C: offset. The eclipse sits to the right, the words sit left like an editorial spread. */
-[data-hero="c"] .eclipse { left: 80%; top: 50%; width: min(116svh, 76vw); }
-[data-hero="c"] .hero-copy { left: var(--gutter); top: 50%; translate: 0 -50%; width: min(700px, 50vw); text-align: left; }
-[data-hero="c"] .hero .intro { margin-left: 0; }
-[data-hero="c"] .recent { justify-content: flex-start; }
-[data-hero="c"] .hero h1 { font-size: clamp(46px, 6.3vw, 100px); }
-
 /* ───────── Work ───────── */
-.work { position: relative; z-index: 1; padding: 10px var(--gutter) 110px; max-width: 1380px; margin: 0 auto; }
+.work { position: relative; z-index: 6; padding: 0 var(--gutter) 110px; max-width: 1380px; margin: -20svh auto 0; }
 .grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; }
 .item { position: relative; isolation: isolate; }
 .item > .card { height: 100%; }
@@ -197,20 +185,21 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     color-mix(in srgb, var(--c) 30%, transparent) 48%, color-mix(in srgb, var(--c) 12%, transparent) 70%, color-mix(in srgb, var(--c) 3%, transparent) 88%, transparent 100%); }
 .blob-img { position: absolute; border-radius: 40px; will-change: transform; background-size: cover; background-position: center; filter: blur(42px) saturate(var(--sat, 1.9)); opacity: var(--spill, 1); }
 
-/* Glass without backdrop blur: the light behind is already soft, so the pane only needs tint and an edge */
+/* Glass without backdrop blur: the light behind is already soft, so the pane needs tint, grain and an edge */
 .card { position: relative; display: flex; flex-direction: column; overflow: hidden; border-radius: var(--radius);
-  background: var(--glass); border: 1px solid var(--glass-edge);
+  background: var(--grain) 0 0 / 180px 180px, var(--glass); border: 1px solid var(--glass-edge);
   box-shadow: var(--shadow-rest), inset 0 1px 0 color-mix(in srgb, var(--glass-edge) 70%, transparent);
   transition: box-shadow .9s var(--ease), background-color .6s var(--ease), border-color .6s var(--ease); }
 .item.is-hot .card { box-shadow: var(--shadow-hover), inset 0 1px 0 color-mix(in srgb, var(--glass-edge) 90%, transparent); }
-.sheen { position: absolute; z-index: 3; left: 0; top: 0; width: 520px; height: 520px; margin: -260px 0 0 -260px; border-radius: 50%; pointer-events: none;
-  background: radial-gradient(closest-side, var(--sheen), transparent 70%); opacity: 0; transition: opacity .8s var(--ease); will-change: transform; }
-.item.is-hot .sheen { opacity: 1; }
-/* Dark mode: the glass edge itself catches light near the pointer. Drawn on the border, not inside it. */
-.card::after { content: ""; position: absolute; inset: -1px; border-radius: inherit; corner-shape: inherit; padding: 1px; pointer-events: none; opacity: 0; transition: opacity .8s var(--ease);
-  background: radial-gradient(360px circle at var(--rx, 50%) var(--ry, 0%), rgba(255, 255, 255, .42), transparent 65%);
+/* The border catches light near the pointer. Drawn from the wrapper, exactly over the card's border,
+   because the card clips its own edge. */
+.item { --rim: color-mix(in srgb, var(--b, #8a93a8) 70%, transparent); }
+[data-theme="dark"] .item { --rim: rgba(255, 255, 255, .55); }
+.item::after { content: ""; position: absolute; inset: 0; z-index: 2; border-radius: var(--radius); corner-shape: squircle; padding: 1px; pointer-events: none;
+  opacity: 0; transition: opacity .7s var(--ease);
+  background: radial-gradient(280px circle at var(--rx, 50%) var(--ry, 0%), var(--rim), transparent 70%);
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
-[data-theme="dark"] .item.is-hot .card::after { opacity: 1; }
+.item.is-hot::after { opacity: 1; }
 
 .card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 30px 34px 0; }
 .card-copy { position: relative; z-index: 2; padding: 16px 34px 0; }
@@ -290,18 +279,19 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ───────── About ───────── */
 .about { max-width: 1380px; margin: 0 auto; padding: 100px var(--gutter) 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 60px; }
-.about h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4.4vw, 68px); line-height: 1.04; letter-spacing: -.018em; margin-top: 14px; max-width: 12ch; }
+.about h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4.4vw, 66px); line-height: 1.05; letter-spacing: -.018em; margin-top: 14px; text-wrap: balance; }
+.about-meta { margin-top: 22px; font-size: 14px; color: var(--whisper); }
 .about h2 em { font-style: italic; }
 .about-body p { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 44ch; }
 .about-body p + p { margin-top: 18px; }
 
 /* Toolkit: one row of monochrome marks that take their brand colour on hover */
-.toolkit { grid-column: 1 / -1; margin-top: 50px; padding: 30px 6px 0; border-top: 1px solid var(--hair); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 22px 46px; }
-.toolkit > .label { padding-bottom: 1px; margin-right: 10px; color: var(--ink-2); }
-.tool-group .label { display: block; margin-bottom: 12px; }
-.tool-group ul { list-style: none; display: flex; gap: 22px; }
-.tool { display: inline-flex; align-items: center; gap: 9px; font-size: 15px; font-weight: 400; color: var(--ink-2); white-space: nowrap; transition: color .4s var(--ease); }
-.tool .mark { width: 18px; height: 18px; flex: none; background: currentColor; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; transition: background-color .4s var(--ease); }
+.toolkit { grid-column: 1 / -1; margin-top: 56px; padding: 34px 6px 0; border-top: 1px solid var(--hair); display: flex; flex-wrap: wrap; align-items: flex-end; gap: 24px 50px; }
+.toolkit-title { flex-basis: 100%; font-family: var(--serif); font-weight: 300; font-size: clamp(26px, 2.2vw, 32px); letter-spacing: -.012em; margin-bottom: 4px; }
+.tool-group .label { display: block; margin-bottom: 14px; }
+.tool-group ul { list-style: none; display: flex; gap: 24px; }
+.tool { display: inline-flex; align-items: center; gap: 10px; font-size: 17px; font-weight: 400; color: var(--ink-2); white-space: nowrap; transition: color .4s var(--ease); }
+.tool .mark { width: 20px; height: 20px; flex: none; background: currentColor; -webkit-mask-position: center; mask-position: center; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; transition: background-color .4s var(--ease); }
 .tool:hover { color: var(--ink); }
 .tool:hover .mark { background: var(--brand, currentColor); }
 
@@ -310,20 +300,25 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(50px, 7.4vw, 116px); line-height: 1; letter-spacing: -.02em; }
 .contact h2 em { font-style: italic; }
 .contact .sub { margin-top: 20px; font-size: 18px; color: var(--ink-2); }
-.email { position: relative; display: inline-flex; align-items: center; gap: 14px; margin-top: 38px; padding: 16px 18px 16px 26px; border-radius: 999px;
-  font-size: clamp(17px, 1.6vw, 22px); font-weight: 400; letter-spacing: -.01em;
-  background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: var(--shadow-rest);
-  -webkit-backdrop-filter: blur(20px) saturate(1.5); backdrop-filter: blur(20px) saturate(1.5);
-  transition: box-shadow .8s var(--ease), border-color .5s var(--ease); will-change: transform; }
-.email:hover { box-shadow: var(--shadow-hover); }
-.email .act { font-size: 13px; color: var(--whisper); padding: 6px 12px; border-radius: 999px; border: 1px solid var(--glass-line); min-width: 64px; transition: color .3s var(--ease); }
-.email.is-copied .act { color: var(--ink); }
-.elsewhere { margin-top: 16px; display: flex; justify-content: center; flex-wrap: wrap; gap: 10px; }
-.pill-link { display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px 10px 14px; border-radius: 999px; font-size: 14px; font-weight: 400; color: var(--ink-2);
-  background: var(--glass); border: 1px solid var(--glass-line); transition: color .3s var(--ease), border-color .3s var(--ease), background-color .3s var(--ease); }
-.pill-link:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 18%, transparent); background: var(--glass-strong); }
-.pill-link .mark { width: 15px; height: 15px; flex: none; background: currentColor; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
-.pill-link svg { width: 15px; height: 15px; flex: none; }
+/* One clear action: email. Copy sits beside it; LinkedIn is a quiet link underneath. */
+.cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 40px; }
+.email { position: relative; display: inline-flex; align-items: center; gap: 12px; padding: 19px 30px 19px 26px; border-radius: 999px;
+  font-size: clamp(17px, 1.5vw, 21px); font-weight: 400; letter-spacing: -.01em; color: var(--bg); background: var(--ink);
+  box-shadow: 0 14px 40px color-mix(in srgb, var(--ink) 22%, transparent); will-change: transform;
+  transition: box-shadow .6s var(--ease), background-color .6s var(--ease), color .6s var(--ease); }
+.email:hover { box-shadow: 0 20px 56px color-mix(in srgb, var(--ink) 30%, transparent); }
+.email-icon { width: 18px; height: 18px; flex: none; }
+.copy { display: inline-flex; align-items: center; gap: 8px; height: 62px; padding: 0 22px 0 20px; border-radius: 999px; font-size: 14px; font-weight: 400; color: var(--ink-2);
+  background: var(--glass-strong); border: 1px solid var(--glass-line); transition: color .3s var(--ease), border-color .3s var(--ease); }
+.copy:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 18%, transparent); }
+.copy svg { width: 16px; height: 16px; flex: none; }
+.copy.is-copied { color: var(--ink); }
+.linkedin { display: inline-flex; align-items: center; gap: 9px; margin-top: 28px; font-size: 15px; font-weight: 400; color: var(--ink-2); transition: color .3s var(--ease); }
+.linkedin .mark { width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+.linkedin .arr { width: 11px; height: 11px; transition: transform .4s var(--ease); }
+.linkedin:hover { color: var(--ink); }
+.linkedin:hover .arr { transform: translate(2px, -2px); }
+.contact .linkedin { display: flex; width: max-content; margin-left: auto; margin-right: auto; }
 .contact-glow { position: absolute; z-index: -1; left: 50%; top: 58%; width: min(900px, 110vw); aspect-ratio: 2.2; translate: -50% -50%; pointer-events: none; opacity: .35; filter: blur(60px);
   background: radial-gradient(closest-side, var(--p2), transparent), radial-gradient(closest-side at 30% 60%, var(--p5), transparent 70%), radial-gradient(closest-side at 72% 40%, var(--p4), transparent 70%);
   mix-blend-mode: var(--bleed-blend); }
@@ -349,19 +344,15 @@ footer a:hover { color: var(--ink); }
   .t-heart, .t-brain { grid-column: span 12; }
   .t-small { grid-column: span 6; }
   .about { grid-template-columns: 1fr; }
-  [data-hero="c"] .hero-copy { width: min(560px, 60vw); }
 }
 @media (max-width: 700px) {
   :root { --radius: 38px; --radius-sm: 26px; }
   .links { gap: 16px; }
   .links a:nth-child(2) { display: none; }
-  .eclipse { width: 160vw; top: 45%; }
-  .hero-copy { top: 45%; }
+  .eclipse { left: -40vw; width: 180vw; top: 70%; }
+  .hero-copy { top: 38%; }
+  .work { margin-top: -14svh; }
   .hero .intro { font-size: 16px; }
-  [data-hero="b"] .eclipse { top: calc(70% + 90vw); width: 180vw; }
-  [data-hero="b"] .hero-copy { top: 38%; }
-  [data-hero="c"] .eclipse { left: 88%; top: 20%; width: 120vw; }
-  [data-hero="c"] .hero-copy { top: auto; bottom: 7%; translate: 0 0; width: calc(100% - 2 * var(--gutter)); }
   .t-snapshot .card-top, .t-jump .card-top { padding: 28px 28px 0; }
   .t-snapshot .card-copy { padding: 20px 28px 30px; }
   .t-jump .card-copy { padding: 20px 28px 10px; }
@@ -375,11 +366,13 @@ footer a:hover { color: var(--ink); }
   .exports ul { grid-template-columns: 1fr; }
   .tool-group ul { flex-wrap: wrap; gap: 10px 20px; }
   .contact { padding: 120px var(--gutter) 110px; }
-  .email { gap: 10px; padding: 14px 14px 14px 20px; }
+  .cta { flex-direction: column; }
+  .email { padding: 17px 24px 17px 22px; }
+  .copy { height: 48px; }
   footer { flex-direction: column; gap: 10px; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .corona, .haze, .live::before { animation: none; }
+  .corona, .live::before { animation: none; }
   .js .reveal { opacity: 1; translate: none; transition: none; }
   ::view-transition-new(root) { animation: none; }
 }
