@@ -46,36 +46,7 @@
   const disc = hero && hero.querySelector('.disc');
   const corona = hero && hero.querySelector('.corona');
   const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
-  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1, stop: 0 };
-  const firstCard = hero && document.querySelector('#snapshot');
-  // Layout position, ignoring transforms, so the card's reveal offset can't move the resting place.
-  const docTop = (el) => { let t = 0; for (; el; el = el.offsetParent) t += el.offsetTop; return t; };
-
-  /* ── Scroll feel, for choosing. ?scroll=glide|quick|soft|page|free sets how the intro settles, and
-     ?travel=short|long how far you scroll through it. Glide is the default. Remove the others once chosen. ── */
-  const qs = new URLSearchParams(location.search);
-  const ease = {
-    inOut: (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2),
-    sine: (t) => -(Math.cos(Math.PI * t) - 1) / 2,
-    out: (t) => 1 - Math.pow(1 - t, 3),
-  };
-  const feels = {
-    glide: { follow: .3, mode: 'direction', dur: [600, 1000], perPx: .35, ease: ease.inOut },   // eases on the way you were going
-    quick: { follow: .45, mode: 'direction', dur: [360, 560], perPx: .18, ease: ease.out },     // snaps into place, the scene tracks tightly
-    soft: { follow: .16, mode: 'direction', dur: [900, 1400], perPx: .5, ease: ease.sine },     // slow and floaty
-    page: { follow: .3, mode: 'page', dur: [560, 900], perPx: .3, ease: ease.inOut, threshold: .22 }, // a nudge springs back, past a fifth it goes
-    free: { follow: .3, mode: 'free' },                                                         // no settling at all
-  };
-  const feelName = feels[qs.get('scroll')] ? qs.get('scroll') : 'glide';
-  const feel = feels[feelName];
-  const travel = { short: ['70svh', '50svh'], long: ['150svh', '110svh'] }[qs.get('travel')];
-  if (hero && travel) { scene.style.setProperty('--travel', travel[0]); document.querySelector('.work').style.setProperty('--overlap', travel[1]); }
-  if (hero && (qs.has('scroll') || qs.has('travel'))) {
-    const tag = document.createElement('div');
-    tag.className = 'feel-tag';
-    tag.textContent = `Scroll: ${feelName}${travel ? `, travel: ${qs.get('travel')}` : ''}`;
-    document.body.append(tag);
-  }
+  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1 };
   if (hero) new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
   // Hovering a recent project borrows that project's colours for the ring.
@@ -101,7 +72,6 @@
     geo.ty = H / 2 - (eclipse.offsetTop + R);
     geo.sceneTop = scene.offsetTop;
     geo.sceneLen = Math.max(1, scene.offsetHeight - innerHeight);
-    if (firstCard) geo.stop = Math.max(geo.sceneTop + geo.sceneLen, docTop(firstCard) - nav.offsetHeight - 36);
   };
   measure(); addEventListener('resize', () => { measure(); onScroll(); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
@@ -118,7 +88,7 @@
   function heroFrame() {
     let moving = false;
     if (!hero) { setPill(scrollY > 80); return false; }
-    const p = lerp(hs.p, hs.target, feel.follow);
+    const p = lerp(hs.p, hs.target, .3);
     if (Math.abs(p - hs.target) > .0005) moving = true;
     hs.p = Math.abs(p - hs.target) < .0005 ? hs.target : p;
     const e = hs.p * hs.p * (3 - 2 * hs.p);
@@ -145,51 +115,6 @@
     return moving;
   }
 
-  /* ── Settle: the intro has two resting places, the top and the first card under the nav.
-     Scrolling is never blocked or taken over. When a scroll comes to rest between the two, the page
-     glides on to one of them, and any wheel, touch, key or click stops the glide. ── */
-  if (!reduced && firstCard && (feel.mode === 'direction' || feel.mode === 'page')) {
-    const st = { lastY: scrollY, dir: 1, at: 0, touching: false, timer: 0, glide: 0, rest: scrollY };
-    const stopGlide = () => { if (st.glide) { cancelAnimationFrame(st.glide); st.glide = 0; } };
-    const glide = (to) => {
-      const from = scrollY, dist = to - from, t0 = performance.now();
-      const dur = clamp(feel.dur[0] + Math.abs(dist) * feel.perPx, feel.dur[0], feel.dur[1]);
-      const step = (t) => {
-        const k = clamp((t - t0) / dur, 0, 1);
-        window.scrollTo({ top: from + dist * feel.ease(k), behavior: 'instant' });
-        st.glide = k < 1 ? requestAnimationFrame(step) : 0;
-      };
-      stopGlide(); st.glide = requestAnimationFrame(step);
-    };
-    const settle = () => {
-      const s = geo.stop, y = scrollY;
-      if (st.glide || st.touching) return;
-      if (y <= 1 || y >= s - 1) { st.rest = y; return; }
-      // Direction: carry on the way you were going. Page: go on only if you moved far enough from where you started.
-      let to = st.dir < 0 ? 0 : s;
-      if (feel.mode === 'page' && (st.rest <= 1 || Math.abs(st.rest - s) <= 1)) {
-        const fromTop = st.rest <= 1, moved = fromTop ? y : s - y;
-        to = moved > s * feel.threshold ? (fromTop ? s : 0) : (fromTop ? 0 : s);
-      }
-      glide(to);
-    };
-    const hasEnd = 'onscrollend' in window;
-    addEventListener('scroll', () => {
-      const y = scrollY;
-      if (Math.abs(y - st.lastY) > .5) st.dir = Math.sign(y - st.lastY);
-      st.lastY = y; st.at = performance.now();
-      // Browsers without scrollend: treat a short quiet spell as the end of the scroll.
-      if (!hasEnd) { clearTimeout(st.timer); st.timer = setTimeout(settle, 140); }
-    }, { passive: true });
-    if (hasEnd) addEventListener('scrollend', settle);
-    ['wheel', 'keydown', 'mousedown'].forEach((ev) => addEventListener(ev, stopGlide, { passive: true }));
-    addEventListener('touchstart', () => { st.touching = true; stopGlide(); }, { passive: true });
-    addEventListener('touchend', () => {
-      st.touching = false;
-      // A lift with no fling produces no further scroll, so check once it has had a moment to start.
-      setTimeout(() => { if (performance.now() - st.at > 120) settle(); }, 160);
-    }, { passive: true });
-  }
   /* ── Videos loop only while they are on screen; with reduced motion they wait for a press ── */
   document.querySelectorAll('video[data-inview]').forEach((v) => {
     // Decorative loops (data-inview="ambient") just stay on their first frame.
