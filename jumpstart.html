@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>JumpStart, by Shea Wilson</title>
+<meta name="description" content="How I designed and built JumpStart, paid media reporting that explains itself, from a rough prototype to a pilot on a real client’s campaign.">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://sheawilson-portfolio.vercel.app/jumpstart.html">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Shea Wilson">
+<meta property="og:locale" content="en_GB">
+<meta property="og:url" content="https://sheawilson-portfolio.vercel.app/jumpstart.html">
+<meta property="og:title" content="JumpStart, by Shea Wilson">
+<meta property="og:description" content="How I designed and built JumpStart, paid media reporting that explains itself, from a rough prototype to a pilot on a real client’s campaign.">
+<meta property="og:image" content="https://sheawilson-portfolio.vercel.app/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shea Wilson, design engineer. Design people actually use.">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<script src="assets/js/lab.js"></script>
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/case.css">
+<link rel="stylesheet" href="assets/css/jumpstart.css">
+</head>
+<body class="case js-case" style="--tone:#4fae86">
+
+<div class="tip" aria-hidden="true"><i></i><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>
+
+<header class="nav">
+  <div class="nav-inner">
+    <span class="nav-pill" aria-hidden="true"></span>
+    <a class="logo" href="index.html" aria-label="Shea Wilson, home">S<span class="fold"><span>hea&nbsp;</span></span>W<span class="fold"><span>ilson</span></span></a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <header class="cs-hero" id="top">
+    <h1 class="reveal">JumpStart</h1>
+    <div class="js-hero-copy reveal" style="--d:.06s">
+      <p class="lede">Paid media reporting that explains itself. I designed and built it at Influential, from a rough prototype to a pilot on a real client’s campaign.</p>
+      <div class="js-actions">
+        <a class="js-pill is-primary" href="#story">Read the story<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2.5v7M2.5 6L6 9.5 9.5 6"/></svg></a>
+        <!-- When the public site exists: make this an <a href> to it, drop aria-disabled and .is-soon, and say "Open JumpStart". -->
+        <span class="js-pill is-soon" aria-disabled="true" data-cursor="Live site coming soon"><i></i>Live site coming soon</span>
+      </div>
+    </div>
+    <dl class="facts reveal" style="--d:.12s">
+      <div><dt>Role</dt><dd>Product design and build</dd></div>
+      <div><dt>Timeline</dt><dd>June 2026 to now</dd></div>
+      <div><dt>Team</dt><dd>With James on product and Alex on paid media, at Influential</dd></div>
+      <div><dt>Status</dt><dd>In pilot with the National Football Museum</dd></div>
+      <div><dt>Built with</dt><dd>Claude Code, Codex, Next.js, WorkOS, Vercel, PostHog and the Meta Marketing API</dd></div>
+    </dl>
+  </header>
+
+  <article class="item js-stage reveal" style="--d:.16s; --tone:#4fae86; --a:#4fae86; --b:#8fd4b4; --c:#0b5c45">
+    <div class="bleed" aria-hidden="true">
+      <span class="blob" style="--c:#4fae86; width:50%; left:4%; top:14%; rotate:-14deg"></span>
+      <span class="blob" style="--c:#8fd4b4; width:42%; left:50%; top:34%; rotate:20deg; --ar:1.8"></span>
+      <span class="blob" style="--c:#0b5c45; width:34%; left:28%; top:54%; rotate:-6deg; --ar:1.3"></span>
+    </div>
+    <div class="card">
+      <div class="media">
+        <div class="screen js-stage-desk" data-depth="-0.5"><img class="img-light" src="assets/media/jumpstart/brief-light.webp" alt="The JumpStart client briefing: every £1 you spent brought back £2.86, with ticket sales week by week" width="2000" height="1250" decoding="async"><img class="img-dark" src="assets/media/jumpstart/brief-dark.webp" alt="" width="2000" height="1250" decoding="async" loading="lazy"></div>
+        <div class="screen js-stage-phone" data-depth="1.1"><img class="img-light" src="assets/media/jumpstart/brief-phone-light.webp" alt="The same briefing on a phone" width="660" height="1428" decoding="async"><img class="img-dark" src="assets/media/jumpstart/brief-phone-dark.webp" alt="" width="660" height="1428" decoding="async" loading="lazy"></div>
+      </div>
+    </div>
+  </article>
+  <p class="js-note reveal">I’ve scaled the figures in the National Football Museum screens, so no real campaign numbers appear on this page.</p>
+
+  <section class="cs-intro reveal">
+    <p class="label">The read</p>
+    <p>Clients don’t want a dashboard. They want to know someone good is watching their money. So every JumpStart report answers four questions: what changed, why it matters, what the agency is doing next, and whether you need to decide anything.</p>
+  </section>
+
+  <section class="js-answers" aria-label="In short">
+    <div class="point reveal">
+      <h3>What it is</h3>
+      <p>A reporting product for Influential’s paid media clients and the team that runs their accounts. Clients get a briefing in plain English. The agency runs every account from one desk, and any report can go out as a deck, a PDF, an A4 report or an email.</p>
+    </div>
+    <div class="point reveal" style="--d:.06s">
+      <h3>What I did</h3>
+      <p>Everything from the audit on: research, product thinking, interface, tone of voice and the build. I designed in the browser and built with Claude Code and Codex, so James and Alex were always reviewing something they could click.</p>
+    </div>
+    <div class="point reveal" style="--d:.12s">
+      <h3>Where it is now</h3>
+      <p>The National Football Museum pilot ran on live Meta data behind a client password until the campaign ended on 31 August. The agency desk is built behind a work sign-in and still runs on sample accounts. A public site is on the way.</p>
+    </div>
+  </section>
+
+  <section class="js-stats reveal" aria-label="In numbers">
+    <div class="stats">
+      <div class="stat"><span class="num" data-count="100">100</span><span class="what">prototypes and design labs</span></div>
+      <div class="stat"><span class="num" data-count="9">9</span><span class="what">weeks from the handover to a live client page</span></div>
+      <div class="stat"><span class="num" data-count="4">4</span><span class="what">ways to send a report</span></div>
+    </div>
+  </section>
+
+  <section class="js-versions" aria-labelledby="versions-title">
+    <div class="js-versions-head reveal">
+      <div>
+        <h2 id="versions-title">The report, version by version</h2>
+        <p>From James’s prototype in June to the export dialog in September.</p>
+      </div>
+      <div class="js-strip-nav">
+        <button class="js-arrow" type="button" data-dir="-1" aria-label="Earlier versions"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg></button>
+        <button class="js-arrow" type="button" data-dir="1" aria-label="Later versions"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
+      </div>
+    </div>
+    <ol class="js-strip reveal" style="--d:.06s" tabindex="0" aria-label="Versions, oldest first">
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-01.webp" alt="James’s prototype: an agency cockpit listing client health" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">9 June</p><h3>James’s prototype</h3><p>Where I started. An agency cockpit and a client portal.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-02.webp" alt="Version 2: a green client dashboard with a trend chart" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">20 June</p><h3>V2</h3><p>My first pass. A green identity and a trend chart you can explore.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-03.webp" alt="Version 3: the same dashboard with more panels" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">23 June</p><h3>V3</h3><p>Everything the team asked for, on one screen.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-04.webp" alt="Version 4: Good week, Priya, in large type above the numbers" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">24 June</p><h3>V4</h3><p>The read gets a voice. “Good week, Priya.”</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-05.webp" alt="Version 5: the approved client view" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">25 June</p><h3>V5</h3><p>Signed off by James and Alex. It became the reference.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-06.webp" alt="Daylight: a white editorial version of the client view" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">3 July</p><h3>Daylight</h3><p>A white editorial version. Lovely, and no clearer.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-07.webp" alt="Version 10: Good morning, Priya, revenue is growing" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">9 July</p><h3>V10</h3><p>A morning briefing, with the numbers underneath.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-08.webp" alt="The client language layer: the campaign in one sentence, then how it did" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">12 July</p><h3>Language layer</h3><p>The client’s questions first, the maths behind them.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-09.webp" alt="The first report on the National Football Museum campaign" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">13 August</p><h3>First real campaign</h3><p>The National Football Museum, on live Meta data.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-10.webp" alt="A calmer briefing with one verdict at the top" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">21 August</p><h3>A calmer read</h3><p>One verdict at the top, checked by a person.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-11.webp" alt="The briefing as the client sees it today" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">26 August</p><h3>The briefing</h3><p>Personality where the news is good. This is what the client sees.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-12.webp" alt="The agency desk: 1 connection down, and 4 other things for a person" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">28 August</p><h3>The agency desk</h3><p>What needs a person, broken things first.</p></li>
+      <li class="js-v"><div class="shot"><img src="assets/media/jumpstart/v-13.webp" alt="The export dialog with a slide preview" width="1000" height="625" loading="lazy" decoding="async"></div><p class="js-v-when">9 September</p><h3>Export</h3><p>Any two dates, previewed before it goes.</p></li>
+    </ol>
+  </section>
+
+  <div class="js-story" id="story">
+    <nav class="js-rail" aria-label="Chapters">
+      <p class="label">This case study</p>
+      <ol>
+        <li><a href="#handover">The handover <span>9 Jun</span></a></li>
+        <li><a href="#research">Research <span>Jun</span></a></li>
+        <li><a href="#soul">Finding the soul <span>Jun</span></a></li>
+        <li><a href="#v5">V5 <span>25 Jun</span></a></li>
+        <li><a href="#hierarchy">Order first <span>Jul</span></a></li>
+        <li><a href="#real-data">Real data <span>Jul–Aug</span></a></li>
+        <li><a href="#briefing">The briefing <span>Aug</span></a></li>
+        <li><a href="#desk">The agency desk <span>Aug–Sep</span></a></li>
+        <li><a href="#sending">Sending it <span>Sep</span></a></li>
+        <li><a href="#feedback">Feedback</a></li>
+        <li><a href="#learned">What I learned</a></li>
+      </ol>
+    </nav>
+
+    <div class="js-chapters">
+
+      <section class="js-ch" id="handover" aria-labelledby="handover-title">
+        <div class="js-head reveal">
+          <p class="js-when">9 June</p>
+          <h2 id="handover-title">A rough prototype and a good instinct</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>James handed me a prototype and a name on 9 June. His pitch was paid media reporting with a friendlier front door. The tools agencies use felt clunky and heavy on data, and he wanted something closer to Monzo or Slack.</p>
+          <p>My audit said the instinct was right and the product was still a concept. The AI summary had nobody behind it. The client’s question box went nowhere. The login was a role picker. A second brief, drafted with AI, described client onboarding instead of reporting, so I went with what James had said in the room and made reporting the first job.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/james-agency.webp" alt="James’s prototype: an agency cockpit with client health, monthly spend and data issues" width="1800" height="1125" loading="lazy" decoding="async"></div>
+          <figcaption>James’s prototype on 9 June. An agency cockpit with a client health list.</figcaption>
+        </figure>
+        <div class="js-callout reveal">
+          <p class="label">The insight that became the brief</p>
+          <p class="js-callout-line">The email was the product.</p>
+          <p>Every month an account lead would read the platform numbers, work out what happened and rewrite it as an email the client could use. The email was always better than the dashboard, because it had a verdict, a reason and a next step.</p>
+        </div>
+      </section>
+
+      <section class="js-ch" id="research" aria-labelledby="research-title">
+        <div class="js-head reveal">
+          <p class="js-when">June</p>
+          <h2 id="research-title">Everyone sells the data. Nobody writes the read.</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>I went through the tools agencies already pay for, including Funnel, Supermetrics, AgencyAnalytics, Whatagraph, DashThis, Databox and Looker Studio. They’re strong on connectors, templates and scheduled reports. Every one of them assumes the reader already knows what CPA means.</p>
+          <p>The person reading a JumpStart report doesn’t. She’s a marketing lead with a budget to defend and a finance director who asks every month whether the ads are working. The night before that meeting she feels a small, familiar dread, because she can’t tell.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <ul class="js-comp" aria-label="Competitor home pages">
+            <li><img src="assets/media/jumpstart/c-agencyanalytics.webp" alt="AgencyAnalytics" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-dashthis.webp" alt="DashThis" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-databox.webp" alt="Databox" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-funnel.webp" alt="Funnel" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-looker.webp" alt="Looker Studio report gallery" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-monday.webp" alt="monday.com dashboards" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-supermetrics.webp" alt="Supermetrics" width="720" height="450" loading="lazy" decoding="async"></li>
+            <li><img src="assets/media/jumpstart/c-whatagraph.webp" alt="Whatagraph" width="720" height="450" loading="lazy" decoding="async"></li>
+          </ul>
+          <figcaption>Eight of the tools I reviewed. They all sell access to the data.</figcaption>
+        </figure>
+      </section>
+
+      <section class="js-ch" id="soul" aria-labelledby="soul-title">
+        <div class="js-head reveal">
+          <p class="js-when">10 to 24 June</p>
+          <h2 id="soul-title">Good-looking, but soulless</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>The early versions came quickly. By 20 June there was a working build with real sign-in and separate client views, plus a line of static prototypes I could change in minutes. Each version added what the team asked for: sign-off, a cheat sheet, benchmarks, a funnel, a channel comparison.</p>
+          <p>Then I looked at V3 and felt it was good-looking but soulless. That happens when you build before discovery has finished. So I went back to the start and ran the process properly. I set up three AI agents with one job each: a researcher for the client’s real worries, a designer for tone and feeling, and an editor for what to cut. Then I pulled what they found into one direction.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/design-process.webp" alt="The design process we skipped, run properly: three roles working in parallel, the researcher, the soul and the editor" width="1800" height="1008" loading="lazy" decoding="async"></div>
+          <figcaption>The page I made to run the process again, with the three roles and what each one found.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>Six principles came out of it, and they still hold.</p>
+        </div>
+        <ol class="js-principles">
+          <li class="reveal"><h3>Verdict before evidence</h3><p>Every screen opens with a plain sentence, then the numbers that prove it.</p></li>
+          <li class="reveal" style="--d:.05s"><h3>Show the watching</h3><p>“We noticed Tuesday, we acted Wednesday” does more for trust than a green number.</p></li>
+          <li class="reveal"><h3>Calm scales with stakes</h3><p>The more money at risk, the plainer the page. A bad number is never cute.</p></li>
+          <li class="reveal" style="--d:.05s"><h3>Soul is a gradient</h3><p>Personality lives at the top of the page and fades to nothing in the tables.</p></li>
+          <li class="reveal"><h3>Features earn depth, not height</h3><p>The first screen is a fixed length. New things go behind a click.</p></li>
+          <li class="reveal" style="--d:.05s"><h3>One colour, one job</h3><p>Each colour means one thing, and nothing else borrows it. Red is for broken.</p></li>
+        </ol>
+        <div class="js-warmth reveal" role="group" aria-label="Where the personality lives">
+          <p class="label">Where the personality lives</p>
+          <div class="js-warmth-rows">
+            <div class="js-warmth-row"><h3>The read</h3><p class="js-level">Warm</p><p>A greeting, the verdict in one sentence, numbers that count up. This is where the voice lives.</p></div>
+            <div class="js-warmth-row"><h3>The evidence</h3><p class="js-level">Neutral</p><p>The trend, the comparison, what we’re doing next. Human, but tighter. Colour carries meaning here.</p></div>
+            <div class="js-warmth-row"><h3>The detail</h3><p class="js-level">Silent</p><p>Campaign tables. A fast, quiet, normal dashboard. A finance lead should never have to fight the personality to read a figure.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="js-ch" id="v5" aria-labelledby="v5-title">
+        <div class="js-head reveal">
+          <p class="js-when">25 June</p>
+          <h2 id="v5-title">The version the team signed off</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>V5 brought it together. The read sat at the top, a “needs you today” list held anything waiting for sign-off, client questions reached a real person, and the report exported to A4. James and Alex reviewed it on 25 June.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/v5-client.webp" alt="V5 client view: Good week, Priya, revenue is up 5% and you’re clearing your 3.5x return target" width="2000" height="1250" loading="lazy" decoding="async"></div>
+          <figcaption>V5, the client view. The ring on the right is one of the things the review took out. Every client in the prototype is made up.</figcaption>
+        </figure>
+        <div class="js-list reveal">
+          <p class="label">What the review changed</p>
+          <ul>
+            <li><b>Benchmarks.</b> Compare against the industry, not our own client list, which could make us look bad against the wrong sector.</li>
+            <li><b>Colour.</b> Red only for things that are broken, like a failed sync. Green and amber follow strict rules.</li>
+            <li><b>Rings.</b> The circular performance rings went. They looked like progress without saying anything.</li>
+            <li><b>Kept.</b> The onboarding flow, the sign-off section and the conversational language.</li>
+          </ul>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/v5-agency.webp" alt="V5 agency cockpit: Good afternoon, Alex, 2 things worth your attention before the reporting calls" width="1800" height="1125" loading="lazy" decoding="async"></div>
+          <figcaption>The agency side of V5.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>They also wanted help justifying budgets in first meetings. I built a planner that works both ways. Start from the spend, or start from the goal and work back to the spend it needs. V5 became the approved reference at jump-start.app/approved, and later the first version to run on a real client’s data.</p>
+        </div>
+        <div class="js-pair">
+          <figure class="js-fig reveal"><div class="shot"><img src="assets/media/jumpstart/goals.webp" alt="Different goals, different numbers: pick what you are trying to achieve" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>The goal picker. One answer shapes every number the client sees.</figcaption></figure>
+          <figure class="js-fig reveal" style="--d:.06s"><div class="shot"><img src="assets/media/jumpstart/budget.webp" alt="What could this budget do? The budget planner" width="1200" height="750" loading="lazy" decoding="async"></div><figcaption>The budget planner, for first meetings.</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="js-ch" id="hierarchy" aria-labelledby="hierarchy-title">
+        <div class="js-head reveal">
+          <p class="js-when">July</p>
+          <h2 id="hierarchy-title">I stopped generating looks</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>July was for visual direction. I tried a white editorial version, warm paper, a navy and orange brand, a lime bolt, a museum painting behind the numbers and a pixel pattern. Some were beautiful. None of them fixed the real problem, which was the order things appear in.</p>
+        </div>
+        <ul class="js-wall" aria-label="Visual explorations from July">
+          <li class="reveal"><div class="shot"><img src="assets/media/jumpstart/x-daylight.webp" alt="Daylight, a white editorial client view" width="800" height="500" loading="lazy" decoding="async"></div><p>Daylight</p></li>
+          <li class="reveal" style="--d:.04s"><div class="shot"><img src="assets/media/jumpstart/x-dia.webp" alt="A dashboard with a still life painting beside the numbers" width="800" height="500" loading="lazy" decoding="async"></div><p>Painting</p></li>
+          <li class="reveal" style="--d:.08s"><div class="shot"><img src="assets/media/jumpstart/x-bounce.webp" alt="A brand with a pulse, not just a palette: navy and orange" width="800" height="500" loading="lazy" decoding="async"></div><p>Bounce</p></li>
+          <li class="reveal" style="--d:.12s"><div class="shot"><img src="assets/media/jumpstart/x-highlight.webp" alt="JumpStart marks what matters, with a lime highlight" width="800" height="500" loading="lazy" decoding="async"></div><p>Highlight</p></li>
+          <li class="reveal"><div class="shot"><img src="assets/media/jumpstart/x-bolt.webp" alt="The lime bolt identity: media spend, made clear" width="800" height="500" loading="lazy" decoding="async"></div><p>Bolt</p></li>
+          <li class="reveal" style="--d:.04s"><div class="shot"><img src="assets/media/jumpstart/x-routes.webp" alt="A pixel pattern behind the strongest month of the year" width="800" height="500" loading="lazy" decoding="async"></div><p>Pixel</p></li>
+          <li class="reveal" style="--d:.08s"><div class="shot"><img src="assets/media/jumpstart/x-cover.webp" alt="The campaign does the visual work, JumpStart gives it meaning" width="800" height="500" loading="lazy" decoding="async"></div><p>Campaign cover</p></li>
+          <li class="reveal" style="--d:.12s"><div class="shot"><img src="assets/media/jumpstart/x-coral.webp" alt="Here’s what happened, and what’s next, in coral and charcoal" width="800" height="500" loading="lazy" decoding="async"></div><p>Coral</p></li>
+          <li class="reveal"><div class="shot"><img src="assets/media/jumpstart/x-identity.webp" alt="Find the behaviour before the brand" width="800" height="500" loading="lazy" decoding="async"></div><p>Behaviour first</p></li>
+          <li class="reveal" style="--d:.04s"><div class="shot"><img src="assets/media/jumpstart/x-directions.webp" alt="Three ways this dashboard could feel useful fast" width="800" height="500" loading="lazy" decoding="async"></div><p>Three directions</p></li>
+          <li class="reveal" style="--d:.08s"><div class="shot"><img src="assets/media/jumpstart/x-brandlab.webp" alt="The brand lab, with type, colour and component controls" width="800" height="500" loading="lazy" decoding="async"></div><p>Brand lab</p></li>
+          <li class="reveal" style="--d:.12s"><div class="shot"><img src="assets/media/jumpstart/x-readout.webp" alt="A monthly readout drawn as a dotted landscape" width="800" height="500" loading="lazy" decoding="async"></div><p>Monthly readout</p></li>
+        </ul>
+        <div class="js-prose reveal">
+          <p>On 11 July I stopped and went back to first principles. A report should make a claim, show the evidence, then let you inspect it. Most dashboards do it the other way round and leave the client to find the story.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/first-principles.webp" alt="Data is evidence, not the page structure: claim, evidence, inspection" width="1400" height="875" loading="lazy" decoding="async"></div>
+          <figcaption>The first principles study, 11 July.</figcaption>
+        </figure>
+        <div class="js-rewrite reveal" role="group" aria-labelledby="rewrite-title">
+          <p class="label" id="rewrite-title">The same week, said two ways</p>
+          <div class="js-rewrite-row">
+            <p class="js-said"><span>A dashboard says</span>CPA increased 18% week on week and CTR decreased 7% across Meta prospecting campaigns.</p>
+            <p class="js-read"><span>JumpStart says</span>Prospecting got more expensive this week. Weaker click quality on Meta is the cause, so we are cutting the lowest-performing ad set and testing new creative before touching the budget.</p>
+          </div>
+          <div class="js-rewrite-row">
+            <p class="js-said"><span>A dashboard says</span>Meta API sync failed.</p>
+            <p class="js-read"><span>JumpStart says</span>Meta data is delayed, so this week’s view is incomplete. Google and Shopify are up to date. We will refresh the Meta figures before this report is shared.</p>
+          </div>
+          <div class="js-rewrite-row">
+            <p class="js-said"><span>A dashboard says</span>All KPIs within expected parameters. No anomalies detected.</p>
+            <p class="js-read"><span>JumpStart says</span>No action needed. Everything is on track and we are leaving the account alone this week.</p>
+          </div>
+        </div>
+        <div class="js-prose reveal">
+          <p>“No action needed” became one of the most important states in the product. A short report is proof that someone looked.</p>
+        </div>
+      </section>
+
+      <section class="js-ch" id="real-data" aria-labelledby="real-title">
+        <div class="js-head reveal">
+          <p class="js-when">21 July to 13 August</p>
+          <h2 id="real-title">Real numbers change the design</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>On 21 July I connected the National Football Museum’s Meta account to V5. A real campaign in the approved design taught me more than any mockup had. It also showed what we couldn’t honestly say yet. I took out the demo targets, benchmarks, funnel claims and invented action plans, and kept only what Meta reported.</p>
+        </div>
+        <div class="js-list reveal">
+          <p class="label">Rules for numbers a client can trust</p>
+          <ul>
+            <li>Scope by campaign ID, never by name, because names change.</li>
+            <li>Use the account’s own attribution windows, so totals match Ads Manager.</li>
+            <li>Map each purchase label by hand, so nothing is counted twice.</li>
+            <li>Count link clicks, not every click, and never add reach across platforms.</li>
+            <li>Say when a number isn’t available. Never guess it.</li>
+          </ul>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/nfm-design.webp" alt="The first National Football Museum report: every £1 of spend brought back £2.23 in sales" width="1800" height="1125" loading="lazy" decoding="async"></div>
+          <figcaption>The first report on the National Football Museum campaign, 13 August.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>On 13 August the client page went behind a password at jump-start.app/nfm. It got its own release branch, so my design work couldn’t change what the client saw by accident.</p>
+        </div>
+      </section>
+
+      <section class="js-ch" id="briefing" aria-labelledby="briefing-title">
+        <div class="js-head reveal">
+          <p class="js-when">20 to 26 August</p>
+          <h2 id="briefing-title">A budget holder doesn’t want a dashboard</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>In late August the report became a briefing. It opens with one sentence, “Every £1 you spent brought back £2.86”, says whether anything needs you, and the account lead checks it before it reaches you. The numbers are there to back up the sentence.</p>
+          <p>Alex said it still looked complicated next to the Monzo and Slack feel James wanted. My first move was to cut, and I took out the week on week section. That was wrong. The page got emptier and no clearer. I put it back and redesigned it with paired bars, a plain line under each and changes written out, like “Down 8%, getting cheaper”.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/brief-week.webp" alt="Week on week in the briefing, with paired bars and a plain line under each" width="1800" height="1125" loading="lazy" decoding="async"></div>
+          <figcaption>Week on week, rebuilt instead of removed.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>Then I worked on the tone. The briefing was correct but cold, so I built the same report at four temperatures, from plain to handwritten, and judged each one against the last.</p>
+        </div>
+        <ol class="js-temps" aria-label="Four temperatures of personality">
+          <li class="reveal"><div class="shot"><img src="assets/media/jumpstart/temp-1.webp" alt="Option 1, emoji seasoning" width="900" height="750" loading="lazy" decoding="async"></div><p><b>1</b>Emoji as seasoning</p></li>
+          <li class="reveal is-picked" style="--d:.05s"><div class="shot"><img src="assets/media/jumpstart/temp-2.webp" alt="Option 2, the human voice: best week of the campaign, and it wasn’t close" width="900" height="900" loading="lazy" decoding="async"></div><p><b>2</b>A human voice <span>Shipped</span></p></li>
+          <li class="reveal" style="--d:.1s"><div class="shot"><img src="assets/media/jumpstart/temp-3.webp" alt="Option 3, celebration motion" width="900" height="808" loading="lazy" decoding="async"></div><p><b>3</b>Celebration motion</p></li>
+          <li class="reveal" style="--d:.15s"><div class="shot"><img src="assets/media/jumpstart/temp-4.webp" alt="Option 4, annotated by hand" width="900" height="850" loading="lazy" decoding="async"></div><p><b>4</b>Annotated by hand</p></li>
+        </ol>
+        <div class="js-prose reveal">
+          <p>The second one shipped, with the counter from the third. Most of the warmth lived in the words: a greeting, a verdict, a sign-off. These are the rules I kept.</p>
+        </div>
+        <div class="js-list reveal">
+          <ul>
+            <li>Personality goes on the good news itself, never on buttons or chrome.</li>
+            <li>The page goes quiet when something needs a decision.</li>
+            <li>Confetti, badges and a musical sound all got cut. They read as the product celebrating itself.</li>
+            <li>Numbers roll in like a counter, one at a time, left to right.</li>
+          </ul>
+        </div>
+        <div class="js-pair">
+          <figure class="js-fig reveal"><div class="shot"><img src="assets/media/jumpstart/brief-good.webp" alt="A good week: every £1 you spent brought back £2.86" width="1800" height="1125" loading="lazy" decoding="async"></div><figcaption>A good week.</figcaption></figure>
+          <figure class="js-fig reveal" style="--d:.06s"><div class="shot"><img src="assets/media/jumpstart/brief-bad.webp" alt="A losing week: every £1 brought back 76p, and one decision for you, pause or change the offer" width="1800" height="1125" loading="lazy" decoding="async"></div><figcaption>A losing one. The celebration goes, and one clear decision takes its place.</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="js-ch" id="desk" aria-labelledby="desk-title">
+        <div class="js-head reveal">
+          <p class="js-when">27 August to 4 September</p>
+          <h2 id="desk-title">One desk for every account</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>The agency needed its own view. The desk opens with what needs a person: broken things first, then decisions, then reports waiting to be signed. “1 connection down, and 4 other things for a person.” Anything that’s fine stays out of the way.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img class="img-light" src="assets/media/jumpstart/desk.webp" alt="The agency desk: 1 connection down, and 4 other things for a person, with a week calendar and the cards that need someone" width="2000" height="1250" loading="lazy" decoding="async"><img class="img-dark" src="assets/media/jumpstart/desk-dark.webp" alt="" width="2000" height="1250" loading="lazy" decoding="async"></div>
+          <figcaption>The agency desk, with sample accounts.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>Two details show how I work. I tried eight sounds for the desk and kept three. The three I kept had measurable things in common: quiet peaks, a low body under the click, nothing high for long. So I wrote those down as rules, and a test now checks every new sound against them.</p>
+          <p>The logo lockup got the same treatment. A mark next to the JumpStart wordmark is aligned from two numbers measured off its own file, instead of being nudged until it looks right.</p>
+        </div>
+      </section>
+
+      <section class="js-ch" id="sending" aria-labelledby="sending-title">
+        <div class="js-head reveal">
+          <p class="js-when">September</p>
+          <h2 id="sending-title">Every report goes out the way the client likes it</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>Clients forward reports to their boss, so the export matters as much as the page. One dialog serves the client and the agency. Pick any two dates, see the deck before it goes, then send it as a PowerPoint deck, a PDF of the deck, a full A4 report or an email. It remembers each client’s style: House, Night or Dawn. Until a person signs a report off, JumpStart stamps it as a draft.</p>
+        </div>
+        <figure class="js-fig reveal">
+          <div class="shot"><img src="assets/media/jumpstart/export.webp" alt="The export dialog: a slide preview, the date range, the House style and a PowerPoint deck button" width="2000" height="1250" loading="lazy" decoding="async"></div>
+          <figcaption>The export dialog, previewing the first slide.</figcaption>
+        </figure>
+        <div class="js-prose reveal">
+          <p>First use got the same care. The agency sets a client up in seven steps. The client gets a short welcome that explains the briefing before they see their numbers.</p>
+        </div>
+        <div class="js-pair">
+          <figure class="js-fig reveal"><div class="shot"><img src="assets/media/jumpstart/new-client.webp" alt="New client setup: who are we setting up?" width="1400" height="875" loading="lazy" decoding="async"></div><figcaption>Setup, on the agency side.</figcaption></figure>
+          <figure class="js-fig reveal" style="--d:.06s"><div class="shot"><img src="assets/media/jumpstart/welcome.webp" alt="Welcome: your paid media, read for you" width="1400" height="875" loading="lazy" decoding="async"></div><figcaption>The client’s welcome.</figcaption></figure>
+        </div>
+      </section>
+
+      <section class="js-ch" id="feedback" aria-labelledby="feedback-title">
+        <div class="js-head reveal">
+          <h2 id="feedback-title">What people said, and what I changed</h2>
+        </div>
+        <div class="js-prose reveal">
+          <p>Most of the feedback came from James and Alex, in reviews and on Slack. I’ve paraphrased it from my notes.</p>
+        </div>
+        <!-- Quotes go here once James and Alex have approved the wording. Use their exact words, never a paraphrase.
+        <blockquote class="js-quote reveal"><p>…</p><footer>James Summerscales, Influential</footer></blockquote>
+        -->
+        <ol class="js-fb">
+          <li class="reveal"><p class="js-fb-who">9 June<span>James</span></p><p class="js-fb-said">Reporting tools are clunky and too heavy on data. It should feel like Monzo or Slack.</p><p class="js-fb-did">A plain-English read at the top of every report.</p></li>
+          <li class="reveal"><p class="js-fb-who">June<span>Alex</span></p><p class="js-fb-said">The client should never need a call to understand their report.</p><p class="js-fb-did">Explainers on every number, “what we’re doing next”, and client questions that reach a person.</p></li>
+          <li class="reveal"><p class="js-fb-who">25 June<span>James and Alex</span></p><p class="js-fb-said">Our own benchmarks could make us look bad against the wrong sector. Red should mean broken.</p><p class="js-fb-did">Industry benchmarks, strict colour rules and no rings.</p></li>
+          <li class="reveal"><p class="js-fb-who">6 August<span>Alex</span></p><p class="js-fb-said">I need purchases, revenue and return on spend for this one campaign.</p><p class="js-fb-did">Reporting scoped by campaign ID, with every Meta label mapped by hand.</p></li>
+          <li class="reveal"><p class="js-fb-who">13 August<span>Alex</span></p><p class="js-fb-said">Hide the plumbing from the client.</p><p class="js-fb-did">Campaign IDs, the live-data pill and the mock chat came out.</p></li>
+          <li class="reveal"><p class="js-fb-who">25 August<span>Alex</span></p><p class="js-fb-said">It still looks complicated.</p><p class="js-fb-did">I cut too much at first, then rebuilt week on week properly.</p></li>
+          <li class="reveal"><p class="js-fb-who">28 August<span>Alex</span></p><p class="js-fb-said">“Tickets sold” should say “Purchases”.</p><p class="js-fb-did">Renamed, with a note on order value.</p></li>
+        </ol>
+      </section>
+
+      <section class="js-ch" id="learned" aria-labelledby="learned-title">
+        <div class="js-head reveal">
+          <h2 id="learned-title">What I’d tell myself in June</h2>
+        </div>
+        <div class="js-learned">
+          <div class="point reveal"><h3>Order beats cutting</h3><p>When a page looks complicated, the fix is usually the order and the wording. Taking things away just made it emptier.</p></div>
+          <div class="point reveal" style="--d:.05s"><h3>Real data is a design tool</h3><p>The first live campaign removed more bad ideas than any review did.</p></div>
+          <div class="point reveal"><h3>Write taste down</h3><p>Principles, sound rules and measured lockups meant the next version argued from a rule instead of from adjectives.</p></div>
+          <div class="point reveal" style="--d:.05s"><h3>Choosing is the job</h3><p>With AI I could build a whole direction in an afternoon and throw it away. Knowing which one was right was still on me.</p></div>
+        </div>
+        <div class="js-next reveal">
+          <p class="label">What’s next</p>
+          <p>JumpStart is still in development, so these screens will change. Next, it keeps a record of every decision: what JumpStart suggested, how the account lead changed it, what the client said and what happened after. The ad platforms don’t have that, and it’s what will make the suggestions better. The name might change too.</p>
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <section class="cs-cta">
+    <h2 class="reveal">Paid media, <em>already looked at.</em></h2>
+    <div class="cta reveal" style="--d:.08s">
+      <!-- When the public site exists: make "Open JumpStart" the solid button linking to it, and move the walkthrough into the quiet one. -->
+      <a class="email" href="mailto:design@sheawilson.uk?subject=JumpStart%20walkthrough"><span>Ask me for a walkthrough</span><svg class="email-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg></a>
+      <span class="copy is-soon" aria-disabled="true" data-cursor="Live site coming soon"><i></i>Live site coming soon</span>
+    </div>
+  </section>
+
+  <section class="cs-next" aria-label="Next project">
+    <p class="label">Next project</p>
+    <article class="item t-small t-next reveal" data-cursor="View case study" style="--tone:#8a3cff; --a:#8a3cff; --b:#5b2bff; --c:#c77dff">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#8a3cff; width:56%; left:40%; top:12%; rotate:-12deg"></span>
+        <span class="blob" style="--c:#5b2bff; width:36%; left:62%; top:44%; rotate:18deg; --ar:1.7"></span>
+        <span class="blob" style="--c:#c77dff; width:30%; left:30%; top:52%; rotate:-20deg; --ar:1.3"></span>
+      </div>
+      <a class="card" href="braindump.html">
+        <div class="card-top"><span class="label">Personal project</span><span class="label">In beta</span></div>
+        <div class="card-copy"><h2>Brain Dump</h2><p class="line">Type or talk, and it sorts the lot into tasks, routines, ideas and projects.</p></div>
+        <div class="media is-phones">
+          <img src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1077" loading="lazy" decoding="async">
+          <img src="assets/media/home/brain-ai-input.webp" alt="" width="520" height="1077" loading="lazy" decoding="async">
+        </div>
+      </a>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <span>© 2026 Shea Wilson</span>
+  <nav aria-label="Footer"><a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a><a href="#top">Back to top</a></nav>
+</footer>
+
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/case.js" defer></script>
+<script src="assets/js/jumpstart.js" defer></script>
+</body>
+</html>

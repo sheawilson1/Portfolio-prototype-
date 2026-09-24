@@ -198,7 +198,7 @@
     document.addEventListener('pointerover', (e) => {
       const item = e.target.closest('[data-cursor]');
       if (!item) { clearTimeout(tipPos.t); tip.classList.remove('is-on'); tipPos.on = false; return; }
-      const link = item.matches('a') ? item : item.querySelector('a.card');
+      const link = item.matches('a') ? item : item.querySelector('a.card, a.card-link');
       const kind = !link ? 'soon' : link.target === '_blank' ? 'out' : 'in';
       tipText.textContent = item.dataset.cursor;
       tip.querySelector('i').style.display = kind === 'soon' ? '' : 'none';

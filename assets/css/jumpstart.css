@@ -1,0 +1,212 @@
+/* JumpStart case study. Loaded after site.css and case.css.
+   Concept: the page reads like a JumpStart briefing. The answer first, then the evidence, then the detail.
+   Two signature pieces: the version strip, and the chapter rail, which borrows the product's own "This report" rail.
+   Everything else is quiet text and screens. */
+
+.js-case { --green: #0b5c45; --green-soft: rgba(11, 92, 69, .12); }
+[data-theme="dark"] .js-case { --green: #4fae86; --green-soft: rgba(79, 174, 134, .16); }
+
+/* ───────── Hero ───────── */
+.js-hero-copy { grid-column: 1 / span 6; }
+.js-hero-copy .lede { grid-column: auto; }
+.js-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.js-pill { display: inline-flex; align-items: center; gap: 9px; height: 46px; padding: 0 20px; border-radius: 999px; font-size: 15px; font-weight: 400; white-space: nowrap;
+  color: var(--ink-2); background: var(--glass-strong); border: 1px solid var(--glass-line); transition: color .3s var(--ease), border-color .3s var(--ease), box-shadow .5s var(--ease); }
+.js-pill svg { width: 12px; height: 12px; flex: none; }
+.js-pill.is-primary { color: var(--bg); background: var(--ink); border-color: transparent; box-shadow: 0 8px 22px rgba(10, 10, 10, .14); }
+.js-pill.is-primary:hover { box-shadow: 0 14px 36px rgba(10, 10, 10, .22); }
+.js-pill.is-primary:hover svg { transform: translateY(2px); }
+.js-pill.is-primary svg { transition: transform .4s var(--ease); }
+.js-pill.is-soon { cursor: default; }
+:is(.js-pill, .copy).is-soon i { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--tone); animation: pulse-js 2.4s var(--ease) infinite; }
+@keyframes pulse-js { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--tone) 50%, transparent); } 70%, 100% { box-shadow: 0 0 0 8px transparent; } }
+
+/* ───────── Stage: the briefing on a desk screen with the phone in front ───────── */
+.js-stage .card { aspect-ratio: 16 / 10; max-height: 88svh; }
+.js-stage .media { position: absolute; inset: 0; }
+.js-stage-desk { width: 80%; left: 5%; top: 9%; transform: rotate(-1.5deg); }
+.js-stage-phone { width: 19%; left: 76%; top: 20%; border-radius: 26px; transform: rotate(3deg); }
+.item.is-hot .js-stage-desk { transform: rotate(-2.5deg) translate3d(-2%, -2%, 0); }
+.item.is-hot .js-stage-phone { transform: rotate(4.5deg) translate3d(4%, 3%, 0); }
+.js-note { margin: 18px auto 0; max-width: 60ch; text-align: center; font-size: 13px; line-height: 1.5; color: var(--whisper); }
+
+/* ───────── The answer, then the numbers ───────── */
+.js-answers { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px 32px; margin-top: clamp(70px, 8vw, 110px); }
+.js-answers .point p, .js-learned .point p { max-width: 38ch; }
+.js-stats { margin-top: clamp(60px, 7vw, 96px); }
+.js-stats .stats { margin-top: 0; padding-top: 0; }
+
+/* ───────── Version strip ───────── */
+.js-versions { margin-top: clamp(120px, 14vw, 200px); }
+.js-versions-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; }
+.js-versions-head h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(34px, 3.4vw, 52px); line-height: 1.06; letter-spacing: var(--track-heading); text-wrap: balance; }
+.js-versions-head p { margin-top: 12px; font-size: 17px; line-height: 1.55; color: var(--ink-2); }
+.js-strip-nav { display: flex; gap: 8px; }
+.js-arrow { width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); background: var(--glass-strong); border: 1px solid var(--glass-line); transition: color .3s var(--ease), opacity .3s var(--ease), border-color .3s var(--ease); }
+.js-arrow:hover { color: var(--ink); border-color: color-mix(in srgb, var(--ink) 18%, transparent); }
+.js-arrow:disabled { opacity: .35; cursor: default; }
+.js-arrow svg { width: 16px; height: 16px; }
+/* The strip runs to the edges of the window while its first card lines up with the page */
+.js-strip { --inset: max(var(--gutter), calc(50vw - 690px + var(--gutter))); list-style: none; display: flex; gap: 22px; margin: 34px calc(50% - 50vw) 0; padding: 8px var(--inset) 30px;
+  overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--inset); scrollbar-width: none; overscroll-behavior-x: contain; }
+.js-strip::-webkit-scrollbar { display: none; }
+.js-strip:focus-visible { outline: none; }
+.js-strip.is-dragging { scroll-snap-type: none; cursor: grabbing; }
+.js-strip.is-dragging * { pointer-events: none; }
+.js-v { flex: 0 0 clamp(270px, 30vw, 440px); scroll-snap-align: start; }
+.js-v .shot { border-radius: 22px; }
+.js-v .shot img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; user-select: none; -webkit-user-drag: none; }
+.js-v-when { margin-top: 18px; font-size: 13px; font-weight: 400; color: var(--whisper); }
+.js-v h3 { margin-top: 4px; font-size: 17px; font-weight: 400; line-height: 1.35; }
+.js-v h3 + p { margin-top: 4px; font-size: 15px; line-height: 1.5; color: var(--ink-2); max-width: 34ch; }
+@media (hover: hover) and (pointer: fine) { .js-strip { cursor: grab; } }
+
+/* ───────── The story: a rail like the product's, beside the chapters ───────── */
+.js-story { display: grid; grid-template-columns: 196px minmax(0, 1fr); gap: 0 clamp(40px, 6vw, 100px); margin-top: clamp(130px, 15vw, 210px); scroll-margin-top: 90px; }
+.js-rail { position: sticky; top: 104px; align-self: start; }
+.js-rail .label { margin-bottom: 14px; }
+.js-rail ol { list-style: none; }
+.js-rail a { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0 7px 14px; border-left: 1px solid var(--hair); font-size: 14px; font-weight: 400; line-height: 1.35;
+  color: var(--whisper); transition: color .3s var(--ease), border-color .3s var(--ease); }
+.js-rail a span { font-size: 12px; white-space: nowrap; opacity: .8; }
+.js-rail a:hover { color: var(--ink-2); }
+.js-rail a.is-on { color: var(--ink); border-left: 2px solid var(--green); padding-left: 13px; }
+
+.js-chapters { min-width: 0; }
+.js-ch { scroll-margin-top: 100px; }
+.js-ch + .js-ch { margin-top: clamp(120px, 13vw, 190px); }
+.js-when { font-size: 13px; font-weight: 400; color: var(--whisper); margin-bottom: 14px; }
+.js-head h2 { max-width: 20ch; font-family: var(--serif); font-weight: 300; font-size: clamp(38px, 4vw, 62px); line-height: 1.04; letter-spacing: var(--track-heading); text-wrap: balance; }
+.js-prose { margin-top: 30px; }
+.js-prose p { max-width: 62ch; font-size: 18px; line-height: 1.65; color: var(--ink-2); text-wrap: pretty; }
+.js-prose p + p { margin-top: 18px; }
+.js-fig { margin: 50px 0 0; }
+.js-fig + .js-prose, .js-pair + .js-prose, .js-wall + .js-prose, .js-temps + .js-prose, .js-principles + .js-warmth, .js-list + .js-fig { margin-top: 50px; }
+.js-fig figcaption { margin-top: 14px; font-size: 13px; line-height: 1.5; color: var(--whisper); max-width: 70ch; }
+.js-fig .shot img { display: block; }
+.js-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 50px; }
+.js-pair .js-fig { margin-top: 0; }
+
+/* The insight, set like the product's read */
+.js-callout { margin-top: 56px; padding: 34px 0 0 30px; border-left: 2px solid var(--green); }
+.js-callout .label { margin-bottom: 10px; }
+.js-callout-line { font-family: var(--serif); font-weight: 300; font-size: clamp(32px, 3.4vw, 50px); line-height: 1.08; letter-spacing: var(--track-heading); }
+.js-callout p:last-child { margin-top: 16px; max-width: 56ch; font-size: 17px; line-height: 1.62; color: var(--ink-2); }
+
+/* Competitors sit in grey. The only colour on this page belongs to the work. */
+.js-comp { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.js-comp li { overflow: hidden; border-radius: 14px; background: var(--surface); box-shadow: 0 0 0 1px var(--hair); }
+.js-comp img { width: 100%; aspect-ratio: 16 / 10; object-fit: cover; object-position: top; filter: grayscale(1); opacity: .78; transition: filter .6s var(--ease), opacity .6s var(--ease); }
+@media (hover: hover) { .js-comp li:hover img { filter: none; opacity: 1; } }
+
+/* Principles */
+.js-principles { list-style: none; counter-reset: p; display: grid; grid-template-columns: 1fr 1fr; gap: 30px 40px; margin-top: 34px; }
+.js-principles li { counter-increment: p; padding-top: 20px; border-top: 1px solid var(--hair); }
+.js-principles h3::before { content: counter(p); display: block; margin-bottom: 10px; font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 26px; line-height: 1; color: var(--green); }
+.js-principles h3 { font-size: 18px; font-weight: 400; line-height: 1.35; }
+.js-principles p { margin-top: 8px; font-size: 16px; line-height: 1.55; color: var(--ink-2); max-width: 40ch; }
+
+/* Soul is a gradient: the colour fades down the rows as the personality does */
+.js-warmth .label { margin-bottom: 18px; }
+.js-warmth-rows { position: relative; padding-left: 30px; }
+.js-warmth-rows::before { content: ""; position: absolute; left: 0; top: 4px; bottom: 4px; width: 4px; border-radius: 4px;
+  background: linear-gradient(var(--green), color-mix(in srgb, var(--green) 45%, transparent) 50%, transparent); }
+.js-warmth-row { display: grid; grid-template-columns: 160px 90px minmax(0, 1fr); gap: 6px 24px; align-items: baseline; padding: 20px 0; border-top: 1px solid var(--hair); }
+.js-warmth-row:first-child { border-top: 0; padding-top: 0; }
+.js-warmth-row h3 { font-family: var(--serif); font-weight: 300; font-size: 26px; letter-spacing: var(--track-title); }
+.js-level { font-size: 13px; font-weight: 400; color: var(--green); }
+.js-warmth-row:nth-child(2) .js-level { color: var(--ink-2); }
+.js-warmth-row:nth-child(3) .js-level { color: var(--whisper); }
+.js-warmth-row p:last-child { font-size: 16px; line-height: 1.55; color: var(--ink-2); max-width: 52ch; }
+
+/* Lists of rules and decisions */
+.js-list { margin-top: 44px; }
+.js-list .label { margin-bottom: 14px; }
+.js-list ul { list-style: none; display: grid; gap: 0; }
+.js-list li { position: relative; padding: 15px 0 15px 26px; border-top: 1px solid var(--hair); font-size: 17px; line-height: 1.55; color: var(--ink-2); max-width: 70ch; }
+.js-list li:last-child { border-bottom: 1px solid var(--hair); }
+.js-list li::before { content: ""; position: absolute; left: 2px; top: 1.4em; width: 7px; height: 7px; border-radius: 50%; background: var(--green); }
+.js-list b { font-weight: 500; color: var(--ink); }
+
+/* The explorations wall */
+.js-wall { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 16px; margin-top: 44px; }
+.js-wall .shot { border-radius: 16px; }
+.js-wall img { aspect-ratio: 16 / 10; object-fit: cover; object-position: top; }
+.js-wall p { margin-top: 10px; font-size: 13px; font-weight: 400; color: var(--whisper); }
+
+/* The same week, said two ways */
+.js-rewrite { margin-top: 56px; }
+.js-rewrite .label { margin-bottom: 8px; }
+.js-rewrite-row { display: grid; grid-template-columns: 1fr 1.35fr; gap: 16px 40px; padding: 26px 0; border-top: 1px solid var(--hair); }
+.js-rewrite-row:last-child { border-bottom: 1px solid var(--hair); }
+.js-rewrite-row span { display: block; margin-bottom: 8px; font-family: var(--sans); font-size: 13px; font-weight: 400; color: var(--whisper); }
+.js-said { font-size: 16px; line-height: 1.55; color: var(--whisper); }
+.js-read { font-family: var(--serif); font-weight: 300; font-size: clamp(20px, 1.7vw, 24px); line-height: 1.38; letter-spacing: -.008em; }
+.js-read span { color: var(--green); }
+
+/* Four temperatures */
+.js-temps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 44px; }
+.js-temps .shot { border-radius: 16px; }
+.js-temps img { aspect-ratio: 900 / 808; object-fit: cover; object-position: top; }
+.js-temps p { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 8px; margin-top: 12px; font-size: 14px; font-weight: 400; color: var(--ink-2); }
+.js-temps b { font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 20px; color: var(--whisper); }
+.js-temps p span { font-size: 12px; color: var(--green); }
+.js-temps .is-picked .shot { box-shadow: 0 0 0 2px var(--green), var(--shadow-rest); }
+.js-temps .is-picked b { color: var(--green); }
+
+/* Feedback: who said it, what they said, what changed */
+.js-fb { list-style: none; margin-top: 40px; }
+.js-fb li { display: grid; grid-template-columns: 150px 1fr 1fr; gap: 8px 32px; padding: 22px 0; border-top: 1px solid var(--hair); }
+.js-fb li:last-child { border-bottom: 1px solid var(--hair); }
+.js-fb-who { font-size: 13px; line-height: 1.5; color: var(--whisper); }
+.js-fb-who span { display: block; margin-top: 2px; font-size: 15px; color: var(--ink); }
+.js-fb-said { font-family: var(--serif); font-weight: 300; font-size: 20px; line-height: 1.4; letter-spacing: -.006em; }
+.js-fb-did { position: relative; padding-left: 26px; font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+.js-fb-did::before { content: ""; position: absolute; left: 0; top: .72em; width: 14px; height: 1px; background: var(--green); }
+.js-fb-did::after { content: ""; position: absolute; left: 9px; top: calc(.72em - 3px); width: 5px; height: 5px; border-top: 1px solid var(--green); border-right: 1px solid var(--green); rotate: 45deg; }
+.js-quote { margin-top: 40px; padding-left: 30px; border-left: 2px solid var(--green); }
+.js-quote p { font-family: var(--serif); font-weight: 300; font-size: clamp(26px, 2.6vw, 38px); line-height: 1.25; letter-spacing: var(--track-title); }
+.js-quote footer { margin-top: 14px; font-size: 14px; color: var(--whisper); }
+
+/* What I learned */
+.js-learned { display: grid; grid-template-columns: 1fr 1fr; gap: 30px 40px; margin-top: 40px; }
+.js-learned .point h3 { font-family: var(--serif); font-weight: 300; font-size: clamp(24px, 2vw, 30px); letter-spacing: var(--track-title); }
+.js-next { margin-top: 64px; padding: 30px 34px 34px; border-radius: var(--radius-sm); corner-shape: squircle; background: var(--surface); }
+.js-next .label { margin-bottom: 10px; }
+.js-next p:last-child { max-width: 64ch; font-size: 17px; line-height: 1.62; color: var(--ink-2); }
+
+/* ───────── Call to action: the live site isn't public yet, so the walkthrough leads ───────── */
+.cs-cta .copy.is-soon { cursor: default; gap: 10px; }
+.cs-cta .copy.is-soon:hover { color: var(--ink-2); border-color: var(--glass-line); }
+
+/* ───────── Responsive ───────── */
+@media (max-width: 1180px) {
+  .js-story { grid-template-columns: minmax(0, 1fr); }
+  .js-rail { display: none; }
+  .js-wall { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 1040px) {
+  .js-hero-copy { grid-column: 1 / -1; }
+  .js-answers { grid-template-columns: 1fr; }
+  .js-fb li { grid-template-columns: 1fr; }
+  .js-fb-did { margin-top: 4px; }
+}
+@media (max-width: 700px) {
+  .js-stage .card { aspect-ratio: 4 / 5; }
+  .js-stage-desk { width: 150%; left: 6%; top: 8%; }
+  .js-stage-phone { width: 46%; left: 44%; top: 26%; border-radius: 22px; }
+  .js-versions-head { align-items: flex-start; flex-direction: column; }
+  .js-strip-nav { display: none; }
+  .js-v { flex-basis: 78vw; }
+  .js-pair, .js-principles, .js-learned { grid-template-columns: 1fr; }
+  .js-comp, .js-temps { grid-template-columns: 1fr 1fr; }
+  .js-wall { grid-template-columns: 1fr 1fr; }
+  .js-rewrite-row { grid-template-columns: 1fr; }
+  .js-warmth-row { grid-template-columns: 1fr; gap: 4px; }
+  .js-callout { padding-left: 22px; }
+  .js-prose p { font-size: 17px; }
+  .js-next { padding: 24px 22px 26px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  :is(.js-pill, .copy).is-soon i { animation: none; }
+}
