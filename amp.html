@@ -6,16 +6,16 @@
 <title>Amp, by Shea Wilson</title>
 <meta name="description" content="A music player built around smart playback and moving between devices.">
 <meta name="theme-color" content="#ffffff">
-<link rel="canonical" href="https://sheawilson.uk/amp.html">
+<link rel="canonical" href="https://sheawilson-portfolio.vercel.app/amp.html">
 <link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Shea Wilson">
 <meta property="og:locale" content="en_GB">
-<meta property="og:url" content="https://sheawilson.uk/amp.html">
+<meta property="og:url" content="https://sheawilson-portfolio.vercel.app/amp.html">
 <meta property="og:title" content="Amp, by Shea Wilson">
 <meta property="og:description" content="A music player built around smart playback and moving between devices.">
-<meta property="og:image" content="https://sheawilson.uk/assets/share/og.png">
+<meta property="og:image" content="https://sheawilson-portfolio.vercel.app/assets/share/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Shea Wilson, design engineer. Design people actually use.">
@@ -28,6 +28,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
 <link rel="preload" as="image" href="assets/media/amp/amp-floating-screens.webp">
+<script src="assets/js/lab.js"></script>
 <link rel="stylesheet" href="assets/css/site.css">
 <link rel="stylesheet" href="assets/css/case.css">
 </head>
@@ -58,19 +59,18 @@
       <div><dt>Type</dt><dd>Mobile app</dd></div>
       <div><dt>Status</dt><dd>Concept</dd></div>
       <div><dt>Tools</dt><dd>Figma</dd></div>
+      <div><dt>Made at</dt><dd>Ulster University</dd></div>
     </dl>
   </header>
 
-  <article class="item stage reveal" style="--d:.16s; --tone:#ff6a2b; --a:#ff6a2b; --b:#c33f1f; --c:#ffb347">
-    <div class="bleed" aria-hidden="true">
-      <span class="blob" style="--c:#ff6a2b; width:50%; left:6%; top:14%; rotate:-14deg"></span>
-      <span class="blob" style="--c:#c33f1f; width:40%; left:50%; top:38%; rotate:20deg; --ar:1.8"></span>
-      <span class="blob" style="--c:#ffb347; width:34%; left:30%; top:52%; rotate:-6deg; --ar:1.3"></span>
+  <figure class="hero-shot reveal" data-drift style="--d:.16s">
+    <div class="glow" aria-hidden="true">
+      <span class="blob" style="--c:#ff6a2b; width:62%; left:4%; top:6%; rotate:-24deg; --ar:1.4"></span>
+      <span class="blob" style="--c:#ffb347; width:44%; left:48%; top:30%; rotate:18deg; --ar:1.7"></span>
+      <span class="blob" style="--c:#c33f1f; width:52%; left:22%; top:52%; rotate:-10deg; --ar:1.5"></span>
     </div>
-    <div class="card">
-      <div class="media"><img data-depth="0.6" src="assets/media/amp/amp-floating-screens.webp" alt="Three Amp screens floating at an angle: the player, the library and the home screen" width="2000" height="2000" fetchpriority="high" decoding="async"></div>
-    </div>
-  </article>
+    <img src="assets/media/amp/amp-floating-screens.webp" alt="Three Amp screens floating at an angle: the player, the library and the home screen" width="2000" height="2000" fetchpriority="high" decoding="async">
+  </figure>
 
   <section class="cs-intro reveal">
     <p class="label">Overview</p>
@@ -79,7 +79,7 @@
 
   <section class="cs-row">
     <div class="cs-text reveal">
-      <p class="label">One control</p>
+      <p class="label eyebrow">Control</p>
       <h2>The Amp button</h2>
       <p>One control that does a lot. Swipe up or down for volume and the slider comes to your finger, not the other way round. Hold for precision. Tap once and it shows every nearby device, picking between AirPlay, Bluetooth and other wireless connections to find the best one automatically. Long hold to customise which actions live there, the same way iOS lets you rearrange Control Centre.</p>
     </div>
@@ -88,7 +88,7 @@
 
   <section class="cs-row is-flip">
     <div class="cs-text reveal">
-      <p class="label">The player</p>
+      <p class="label eyebrow">Player</p>
       <h2>Now playing</h2>
       <p>Album art sits at the centre of the player as a circle, with a progress ring running around the edge. Drag the handle to scrub through the track. Glassmorphic surfaces pull colour from the artwork underneath, so each track feels a bit different. The home screen also greets you differently depending on the time of day.</p>
     </div>
@@ -97,11 +97,11 @@
 
   <section class="cs-row">
     <div class="cs-text reveal">
-      <p class="label">The icon</p>
+      <p class="label eyebrow">Icon</p>
       <h2>Orange means something.</h2>
       <p>Spotify owns green. Apple Music owns a reddy pink. Orange was just sitting there. It felt confident without being loud, and it stood out on a home screen next to everything else. The icon keeps it simple: a soundwave on vivid orange.</p>
     </div>
-    <figure class="shot is-float reveal" style="--d:.08s"><img src="assets/media/amp/amp-icon.webp" alt="The Amp app icon, a white soundwave on orange, on an iPhone home screen" width="1000" height="667" loading="lazy" decoding="async"></figure>
+    <figure class="shot is-glow reveal" style="--d:.08s"><img src="assets/media/amp/amp-icon.webp" alt="The Amp app icon, a white soundwave on orange, on an iPhone home screen" width="1000" height="667" loading="lazy" decoding="async"></figure>
   </section>
 
   <section class="cs-cta">

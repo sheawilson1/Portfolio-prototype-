@@ -41,6 +41,11 @@
   --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
   --gutter: clamp(20px, 4vw, 56px);
   /* Squircle corners: continuous curves that start earlier. Plain rounded corners where unsupported. */
+  /* Display type: Spectral is spaced for reading sizes, so the bigger it gets the tighter it's set */
+  --track-display: -.03em;
+  --track-heading: -.022em;
+  --track-title: -.018em;
+  --word-display: -.04em;
   --radius: 56px;
   --radius-sm: 34px;
 }
@@ -161,8 +166,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 @keyframes turn { to { transform: rotate(1turn); } }
 
 .hero-copy { position: absolute; z-index: 4; left: 50%; top: 36%; width: min(90vw, 940px); translate: -50% -50%; text-align: center; will-change: transform; }
-.hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(48px, 8vw, 124px); line-height: 1; letter-spacing: -.016em; text-wrap: balance; }
-.hero h1 em { font-style: italic; letter-spacing: -.01em; }
+.hero h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(48px, 8vw, 124px); line-height: 1; letter-spacing: var(--track-display); word-spacing: var(--word-display); text-wrap: balance; }
+.hero h1 em { font-style: italic; letter-spacing: var(--track-heading); }
 .hero .intro { margin: 30px auto 0; max-width: 33em; font-size: clamp(17px, 1.35vw, 20px); line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
 .recent { margin-top: 28px; display: flex; justify-content: center; flex-wrap: wrap; gap: 8px 22px; font-size: 14px; font-weight: 400; color: var(--ink-2); }
 .recent > span { color: var(--whisper); }
@@ -204,7 +209,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 30px 34px 0; }
 .card-copy { position: relative; z-index: 2; padding: 16px 34px 0; }
-.card h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 2.6vw, 40px); line-height: 1.04; letter-spacing: -.016em; }
+.card h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(30px, 2.6vw, 40px); line-height: 1.04; letter-spacing: var(--track-title); }
 .card .line { margin-top: 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; }
 .media { position: relative; z-index: 1; flex: 1; will-change: transform; transform-style: preserve-3d; }
 
@@ -215,7 +220,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .t-jump .card { grid-template-rows: auto 1fr; }
 .t-jump .card-top { grid-column: 2; grid-row: 1; padding: 36px 48px 0 10px; }
 .t-snapshot .card-copy { padding: 26px 44px 46px; display: flex; flex-direction: column; }
-.t-snapshot h2, .t-jump h2 { font-size: clamp(42px, 4.6vw, 68px); }
+.t-snapshot h2, .t-jump h2 { font-size: clamp(42px, 4.6vw, 68px); letter-spacing: var(--track-heading); }
 .t-snapshot .line, .t-jump .line { font-size: 18px; max-width: 32ch; }
 .t-snapshot .media { position: relative; display: grid; place-items: center; padding-bottom: 30px; }
 .t-snapshot .device { position: relative; z-index: 2; margin-left: 22%; height: min(600px, 62vw); width: auto; filter: drop-shadow(0 40px 60px rgba(20, 0, 80, .3)); }
@@ -284,7 +289,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 /* Below the fold: let the browser skip layout and paint until they get close */
 .about, .contact { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .about { max-width: 1380px; margin: 0 auto; padding: 100px var(--gutter) 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 60px; }
-.about h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4.4vw, 66px); line-height: 1.05; letter-spacing: -.018em; margin-top: 14px; text-wrap: balance; }
+.about h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4.4vw, 66px); line-height: 1.05; letter-spacing: var(--track-heading); margin-top: 14px; text-wrap: balance; }
 .about-meta { margin-top: 22px; font-size: 14px; line-height: 1.6; color: var(--whisper); }
 .about h2 em { font-style: italic; }
 .about-body p { font-size: 18px; line-height: 1.6; color: var(--ink-2); max-width: 44ch; }
@@ -303,7 +308,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 /* ───────── Contact ───────── */
 .contact { position: relative; text-align: center; padding: 170px var(--gutter) 150px; overflow-x: clip; }
-.contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(64px, 10vw, 150px); line-height: .95; letter-spacing: -.024em; }
+.contact h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(64px, 10vw, 150px); line-height: .95; letter-spacing: var(--track-display); word-spacing: var(--word-display); }
 .contact h2 em { font-style: italic; }
 .contact .sub { margin-top: 20px; font-size: 18px; color: var(--ink-2); }
 /* One clear action: email. Copy sits beside it; LinkedIn is a quiet link underneath. */
