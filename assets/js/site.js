@@ -45,9 +45,8 @@
   const eclipse = hero && hero.querySelector('.eclipse');
   const disc = hero && hero.querySelector('.disc');
   const corona = hero && hero.querySelector('.corona');
-  const lines = copy ? [...copy.querySelectorAll('h1, .intro, .recent')] : [];
   const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
-  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1, H: 900, stop: 0 };
+  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1, stop: 0 };
   const firstCard = hero && document.querySelector('#snapshot');
   // Layout position, ignoring transforms, so the card's reveal offset can't move the resting place.
   const docTop = (el) => { let t = 0; for (; el; el = el.offsetParent) t += el.offsetTop; return t; };
@@ -71,7 +70,6 @@
     if (!hero) return;
     // Where the disc has to end up: centred on the screen and big enough to cover every corner.
     const H = hero.offsetHeight, W = innerWidth, R = disc.offsetWidth / 2;
-    geo.H = H;
     const halfDiag = Math.hypot(W / 2, H / 2) * 1.03;
     geo.scale = Math.max(1, halfDiag / R);
     geo.ty = H / 2 - (eclipse.offsetTop + R);
@@ -94,7 +92,7 @@
   function heroFrame() {
     let moving = false;
     if (!hero) { setPill(scrollY > 80); return false; }
-    const p = lerp(hs.p, hs.target, .22);
+    const p = lerp(hs.p, hs.target, .3);
     if (Math.abs(p - hs.target) > .0005) moving = true;
     hs.p = Math.abs(p - hs.target) < .0005 ? hs.target : p;
     const e = hs.p * hs.p * (3 - 2 * hs.p);
@@ -115,35 +113,32 @@
     disc.style.scale = sc.toFixed(4);
     corona.style.translate = `${(px * 6 * drift).toFixed(2)}px ${(y + py * 4 * drift).toFixed(2)}px`;
     corona.style.scale = sc.toFixed(4);
-    // What the words do as the disc arrives. Cover: they ease back. Depth: the lines part at different
-    // speeds, headline fastest. Push: they come towards you and fade, as if you were moving through them.
-    const fx = root.dataset.labHero || 'cover';
-    if (fx === 'depth') {
-      copy.style.transform = ''; copy.style.opacity = '';
-      lines.forEach((l, i) => {
-        l.style.transform = `translate3d(0, ${(-geo.H * [.16, .09, .04][i] * e).toFixed(1)}px, 0)`;
-        l.style.opacity = String(clamp(1 - e * [.7, 1.1, 1.6][i], 0, 1));
-      });
-    } else {
-      lines.forEach((l) => { l.style.transform = ''; l.style.opacity = ''; });
-      copy.style.transform = fx === 'push'
-        ? `translate3d(0, ${(-24 * e).toFixed(1)}px, 0) scale(${(1 + .22 * e).toFixed(4)})`
-        : `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
-      copy.style.opacity = String(fx === 'push' ? clamp(1 - 1.15 * e, 0, 1) : 1 - .55 * e);
-    }
+    // The words come towards you and fade, as if you were moving through them into the page.
+    copy.style.transform = `translate3d(0, ${(-24 * e).toFixed(1)}px, 0) scale(${(1 + .22 * e).toFixed(4)})`;
+    copy.style.opacity = String(clamp(1 - 1.15 * e, 0, 1));
     return moving;
   }
-  addEventListener('lab:change', wake);
 
   /* ── Settle: the intro has two resting places, the top and the first card under the nav.
      Scrolling is never blocked or taken over. When a scroll comes to rest between the two, the page
-     eases on to the one you were heading for, and any new scroll cancels that at once. ── */
+     glides on to the one you were heading for, and any wheel, touch, key or click stops the glide. ── */
   if (!reduced && firstCard) {
-    const st = { lastY: scrollY, dir: 1, at: 0, touching: false, timer: 0 };
+    const st = { lastY: scrollY, dir: 1, at: 0, touching: false, timer: 0, glide: 0 };
+    const easeInOut = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+    const stopGlide = () => { if (st.glide) { cancelAnimationFrame(st.glide); st.glide = 0; } };
+    const glide = (to) => {
+      const from = scrollY, dist = to - from, dur = clamp(520 + Math.abs(dist) * .35, 600, 1000), t0 = performance.now();
+      const step = (t) => {
+        const k = clamp((t - t0) / dur, 0, 1);
+        window.scrollTo({ top: from + dist * easeInOut(k), behavior: 'instant' });
+        st.glide = k < 1 ? requestAnimationFrame(step) : 0;
+      };
+      stopGlide(); st.glide = requestAnimationFrame(step);
+    };
     const settle = () => {
       const s = geo.stop, y = scrollY;
-      if (st.touching || y <= 1 || y >= s - 1) return;
-      window.scrollTo({ top: st.dir < 0 ? 0 : s, behavior: 'smooth' });
+      if (st.glide || st.touching || y <= 1 || y >= s - 1) return;
+      glide(st.dir < 0 ? 0 : s);
     };
     const hasEnd = 'onscrollend' in window;
     addEventListener('scroll', () => {
@@ -154,13 +149,22 @@
       if (!hasEnd) { clearTimeout(st.timer); st.timer = setTimeout(settle, 140); }
     }, { passive: true });
     if (hasEnd) addEventListener('scrollend', settle);
-    addEventListener('touchstart', () => { st.touching = true; }, { passive: true });
+    ['wheel', 'keydown', 'mousedown'].forEach((ev) => addEventListener(ev, stopGlide, { passive: true }));
+    addEventListener('touchstart', () => { st.touching = true; stopGlide(); }, { passive: true });
     addEventListener('touchend', () => {
       st.touching = false;
       // A lift with no fling produces no further scroll, so check once it has had a moment to start.
       setTimeout(() => { if (performance.now() - st.at > 120) settle(); }, 160);
     }, { passive: true });
   }
+
+  /* ── Videos loop only while they are on screen; with reduced motion they wait for a press ── */
+  document.querySelectorAll('video[data-inview]').forEach((v) => {
+    if (reduced) { v.controls = true; return; }
+    new IntersectionObserver(([en]) => {
+      if (en.isIntersecting) v.play().catch(() => {}); else v.pause();
+    }, { threshold: .2 }).observe(v);
+  });
 
   /* ── Reveal and count-up ── */
   const io = new IntersectionObserver((entries) => entries.forEach((en) => {

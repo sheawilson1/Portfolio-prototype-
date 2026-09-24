@@ -1,7 +1,5 @@
 /* Case study extras. site.js runs the nav, theme, tip, reveal and cards; this adds the pieces only these pages have. */
 (() => {
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
   /* ── Squircle clip for live media ──
      A WebGL canvas or a playing video gets its own compositor layer, and while scrolling the compositor
      clips it with plain rounded corners instead of a squircle, so the corners flicker. The media sits
@@ -54,12 +52,4 @@
     addEventListener('resize', queue);
     if (page.complete) update(); else page.addEventListener('load', update);
   }
-
-  /* ── Videos loop only while they are on screen ── */
-  document.querySelectorAll('video[data-inview]').forEach((v) => {
-    if (reduced) { v.controls = true; return; }
-    new IntersectionObserver(([en]) => {
-      if (en.isIntersecting) v.play().catch(() => {}); else v.pause();
-    }, { threshold: .2 }).observe(v);
-  });
 })();
