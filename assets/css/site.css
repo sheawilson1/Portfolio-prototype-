@@ -261,7 +261,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .card-link { position: absolute; inset: 0; z-index: 3; border-radius: inherit; }
 .card-link:focus-visible { outline: 2px solid var(--tone); outline-offset: -8px; }
 /* The copy sits over the link but lets clicks fall through to it, except on the buttons */
-.t-jump .card-copy { z-index: 4; pointer-events: none; }
+:is(.t-snapshot, .t-jump) .card-copy { z-index: 4; pointer-events: none; }
 .card-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 26px; pointer-events: auto; }
 .card-btn { display: inline-flex; align-items: center; gap: 9px; height: 44px; padding: 0 19px; border-radius: 999px; font-size: 15px; font-weight: 400; white-space: nowrap;
   color: var(--ink-2); background: var(--glass-strong); border: 1px solid var(--glass-line); transition: box-shadow .5s var(--ease); }
