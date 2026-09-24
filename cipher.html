@@ -1,700 +1,149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Cipher — Shea Wilson</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
-    rel="stylesheet"
-  />
-  <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    /* ── Theme variables ── */
-    :root {
-      --bg: #ffffff;
-      --bg-rgb: 255, 255, 255;
-      --text: #0a0a0a;
-      --text-rgb: 10, 10, 10;
-    }
-
-    body.dark {
-      --bg: #000000;
-      --bg-rgb: 0, 0, 0;
-      --text: #f0f0f0;
-      --text-rgb: 240, 240, 240;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      cursor: none;
-      overflow-x: hidden;
-      transition:
-        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
-        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    @media (hover: none) {
-      body { cursor: auto; }
-      #cursor-dot, #cursor-ring { display: none; }
-    }
-
-    /* ── Custom cursor ── */
-    #cursor-dot {
-      position: fixed;
-      width: 6px; height: 6px;
-      background: var(--text);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease, background 0.55s ease;
-      will-change: left, top;
-    }
-
-    #cursor-ring {
-      position: fixed;
-      width: 30px; height: 30px;
-      border: 1.5px solid rgba(var(--text-rgb), 0.32);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition:
-        width 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        border-color 0.3s ease, opacity 0.3s ease;
-      will-change: left, top, width, height;
-    }
-
-    body.cursor-hover #cursor-ring {
-      width: 52px; height: 52px;
-      border-color: rgba(var(--text-rgb), 0.16);
-    }
-
-    /* ── Nav ── */
-    nav#main-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 72px;
-      padding: 0 80px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 1000;
-      transition: background 0.5s ease, backdrop-filter 0.5s ease;
-    }
-
-    nav#main-nav.scrolled {
-      background: rgba(var(--bg-rgb), 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .nav-logo {
-      font-family: 'Spectral', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 22px;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-      transition: color 0.55s ease;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 40px;
-    }
-
-    .nav-links { display: flex; gap: 44px; list-style: none; }
-
-    .nav-links a {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 15px;
-      color: rgba(var(--text-rgb), 0.6);
-      text-decoration: none;
-      position: relative;
-      transition: color 0.25s ease;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0;
-      width: 0; height: 1px;
-      background: var(--text);
-      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-    /* ── Case study hero ── */
-    .cs-hero {
-      padding: 96px 80px 40px;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(24px);
-      animation: fadeUp 0.7s ease 0.1s forwards;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0);    }
-    }
-
-    .cs-eyebrow {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-      margin-bottom: 24px;
-    }
-
-    .cs-title {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 100px;
-      letter-spacing: -4.5px;
-      line-height: 1;
-      color: var(--text);
-      margin-bottom: 28px;
-      transition: color 0.55s ease;
-    }
-
-    .cs-subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 24px;
-      color: rgba(var(--text-rgb), 0.55);
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    /* ── Spline 3D viewer ── */
-    .cs-spline-wrap {
-      width: 100%;
-      max-width: none;
-      height: 80vh;
-      margin: 60px auto 80px;
-      padding: 0;
-      opacity: 0;
-      animation: fadeUp 0.7s ease 0.3s forwards;
-    }
-
-    .cs-spline-wrap spline-viewer {
-      width: 100%;
-      height: 100%;
-      border-radius: 20px;
-      display: block;
-      pointer-events: none; /* lock camera — no panning or zooming */
-    }
-
-    /* ── Overview ── */
-    .cs-overview {
-      max-width: 640px;
-      margin: 0 auto 100px;
-      padding: 0 80px;
-      text-align: center;
-    }
-
-    .cs-overview p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 1.85;
-      color: rgba(var(--text-rgb), 0.58);
-    }
-
-    /* ── Feature sections ── */
-    .cs-features {
-      padding: 0 80px 120px;
-      display: flex;
-      flex-direction: column;
-      gap: 120px;
-    }
-
-    .feature-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-      max-width: 1400px;
-      margin: 0 auto;
-      width: 100%;
-    }
-
-    .feature-row.flip .feature-text { order: 2; }
-    .feature-row.flip .feature-image { order: 1; }
-
-    .feature-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 11px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.35);
-      margin-bottom: 20px;
-    }
-
-    .feature-heading {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-style: italic;
-      font-size: 44px;
-      letter-spacing: -1.5px;
-      line-height: 1.1;
-      color: var(--text);
-      margin-bottom: 24px;
-      transition: color 0.55s ease;
-    }
-
-    .feature-body {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 17px;
-      line-height: 1.75;
-      color: rgba(var(--text-rgb), 0.62);
-    }
-
-    .feature-image {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .feature-image img {
-      width: 100%;
-      border-radius: 20px;
-      display: block;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.12);
-    }
-
-    body.dark .feature-image img {
-      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.06);
-    }
-
-    /* ── Browser tab mockup ── */
-    .cs-browser-section {
-      height: 250vh;
-      margin-bottom: 120px;
-    }
-
-    .cs-browser-sticky {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      padding: 0 80px;
-      gap: 32px;
-    }
-
-    .cs-website-intro {
-      max-width: 640px;
-      text-align: center;
-      flex-shrink: 0;
-    }
-
-    .cs-browser-frame {
-      background: #1c1c1e;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 32px 80px rgba(0,0,0,0.28), 0 0 0 1px rgba(255,255,255,0.06);
-    }
-
-    .cs-browser-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 11px 16px;
-      background: #2c2c2e;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-    }
-
-    .cs-browser-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
-
-    .cs-browser-dot:nth-child(1) { background: #ff5f57; }
-    .cs-browser-dot:nth-child(2) { background: #febc2e; }
-    .cs-browser-dot:nth-child(3) { background: #28c840; }
-
-    .cs-browser-url-bar {
-      flex: 1;
-      background: rgba(255,255,255,0.07);
-      border-radius: 5px;
-      padding: 4px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      font-weight: 300;
-      color: rgba(255,255,255,0.32);
-      text-align: center;
-    }
-
-    .cs-browser-screen {
-      height: 55vh;
-      overflow: hidden;
-      position: relative;
-    }
-
-    .cs-browser-content {
-      width: 100%;
-      display: block;
-      will-change: transform;
-    }
-
-    /* ── Brand guidelines CTA ── */
-    .cs-cta {
-      padding: 0 80px 140px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 36px;
-    }
-
-    .cs-cta-heading {
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-size: 60px;
-      letter-spacing: -2.5px;
-      line-height: 1;
-      color: var(--text);
-      transition: color 0.55s ease;
-    }
-
-    .cs-cta-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      padding: 18px 44px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 16px;
-      color: #7dffcb;
-      border: 1.5px solid rgba(0, 255, 153, 0.42);
-      background: rgba(0, 255, 153, 0.08);
-      border-radius: 100px;
-      text-decoration: none;
-      cursor: none;
-      transition:
-        border-color 0.3s ease,
-        background 0.3s ease,
-        color 0.3s ease;
-    }
-
-    .cs-cta-link:hover {
-      border-color: #00FF99;
-      background: #00FF99;
-      color: #042116;
-    }
-
-    /* ── Next project ── */
-    .cs-next {
-      padding: 80px 80px 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 20px;
-      border-top: 1px solid rgba(var(--text-rgb), 0.07);
-    }
-    .cs-next-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-    }
-    .cs-next-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-style: italic;
-      font-size: 52px;
-      letter-spacing: -2.5px;
-      color: var(--text);
-      text-decoration: none;
-      transition: gap 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
-    }
-    .cs-next-link:hover { opacity: 0.6; gap: 22px; }
-    @media (max-width: 1024px) { .cs-next { padding: 60px 40px 80px; } .cs-next-link { font-size: 40px; } }
-    @media (max-width: 640px) { .cs-next { padding: 52px 24px 72px; } .cs-next-link { font-size: 32px; letter-spacing: -1.5px; } }
-
-    /* ── Footer ── */
-    footer {
-      padding: 36px 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-top: 1px solid rgba(var(--text-rgb), 0.07);
-    }
-
-    .footer-copy {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 13px;
-      color: rgba(var(--text-rgb), 0.3);
-    }
-
-    /* ── Responsive: Tablet ── */
-    @media (max-width: 1024px) {
-      nav#main-nav { padding: 0 40px; }
-      .cs-hero { padding: 76px 40px 30px; }
-      .cs-title { font-size: 72px; letter-spacing: -3px; }
-      .cs-spline-wrap { height: 70vh; }
-      .cs-overview { padding: 0 40px; }
-      .cs-features { padding: 0 40px 100px; gap: 80px; }
-      .feature-row { gap: 48px; }
-      .feature-heading { font-size: 36px; }
-      .cs-browser-sticky { padding: 0 40px; }
-      .cs-browser-screen { height: 52vh; }
-      .cs-cta { padding: 80px 40px 100px; }
-      .cs-cta-heading { font-size: 48px; }
-      footer { padding: 36px 40px; }
-    }
-
-    /* ── Responsive: Phone ── */
-    @media (max-width: 640px) {
-      nav#main-nav { padding: 0 24px; height: 64px; }
-      .nav-logo { font-size: 20px; }
-      .nav-right { gap: 24px; }
-      .nav-links { gap: 24px; }
-      .nav-links a { font-size: 13px; }
-      .cs-hero { padding: 60px 24px 20px; }
-      .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
-      .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
-      .cs-subtitle { font-size: 18px; }
-      .cs-spline-wrap { height: 60vh; margin: 40px auto 60px; }
-      .cs-overview { padding: 0 24px; margin-bottom: 64px; }
-      .cs-overview p { font-size: 16px; }
-      .cs-features { padding: 0 24px 80px; gap: 64px; }
-      .feature-row { grid-template-columns: 1fr; gap: 36px; }
-      .feature-row.flip .feature-text { order: unset; }
-      .feature-row.flip .feature-image { order: unset; }
-      .feature-heading { font-size: 30px; }
-      .cs-browser-section { height: 290vh; }
-      .cs-browser-sticky { padding: 0 20px; gap: 20px; }
-      .cs-browser-screen { height: 36vh; }
-      .cs-website-intro .feature-body { font-size: 15px; }
-      .cs-cta { padding: 64px 24px 80px; gap: 28px; }
-      .cs-cta-heading { font-size: 36px; letter-spacing: -1.5px; }
-      footer { padding: 28px 24px; }
-      .footer-copy { font-size: 12px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cipher, by Shea Wilson</title>
+<meta name="description" content="Brand guidelines, website and app for an AI-first bank.">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://sheawilson.uk/cipher.html">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Shea Wilson">
+<meta property="og:locale" content="en_GB">
+<meta property="og:url" content="https://sheawilson.uk/cipher.html">
+<meta property="og:title" content="Cipher, by Shea Wilson">
+<meta property="og:description" content="Brand guidelines, website and app for an AI-first bank.">
+<meta property="og:image" content="https://sheawilson.uk/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shea Wilson, design engineer. Design people actually use.">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/case.css">
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
 </head>
+<body class="case" style="--tone:#0ec980">
 
-<body>
+<div class="tip" aria-hidden="true"><i></i><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>
 
-  <div id="cursor-dot"></div>
-  <div id="cursor-ring"></div>
-
-  <!-- ══════════════ NAV ══════════════ -->
-  <nav id="main-nav">
-    <a href="index.html#hero" class="nav-logo">SW</a>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="index.html#work">Work</a></li>
-        <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>    </div>
-  </nav>
-
-  <div class="cs-hero">
-    <p class="cs-eyebrow">Case Study</p>
-    <h2 class="cs-title">Cipher</h2>
-    <p class="cs-subtitle">
-      Your finances, finally made clear with AI
-    </p>
+<header class="nav">
+  <div class="nav-inner">
+    <span class="nav-pill" aria-hidden="true"></span>
+    <a class="logo" href="index.html" aria-label="Shea Wilson, home">S<span class="fold"><span>hea&nbsp;</span></span>W<span class="fold"><span>ilson</span></span></a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span>
+      </button>
+    </nav>
   </div>
+</header>
 
-  <div class="cs-spline-wrap">
-    <spline-viewer
-      url="https://prod.spline.design/WyPjkwRYCWi9H8W9/scene.splinecode"
-      loading-anim-type="spinner-small-dark"
-    ></spline-viewer>
-  </div>
+<main>
+  <header class="cs-hero" id="top">
+    <h1 class="reveal">Cipher</h1>
+    <p class="lede reveal" style="--d:.06s">Your finances, finally made clear with AI.</p>
+    <dl class="facts reveal" style="--d:.12s">
+      <div><dt>Type</dt><dd>Brand, web and app</dd></div>
+      <div><dt>Status</dt><dd>Concept</dd></div>
+      <div><dt>Tools</dt><dd>Relume, Figma and Spline</dd></div>
+    </dl>
+  </header>
 
-  <!-- ══════════════ OVERVIEW ══════════════ -->
-  <div class="cs-overview">
-    <p>
-      Cipher is a digital-first banking app built around AI. No physical card, just a glass card, crypto wallets, and an AI assistant called Ci that actually learns how you spend. The brand, the app, and the website were all designed from scratch.
-    </p>
-  </div>
-
-  <!-- ══════════════ WEBSITE INTRO ══════════════ -->
-  <!-- ══════════════ BROWSER ══════════════ -->
-  <div class="cs-browser-section">
-    <div class="cs-browser-sticky">
-      <div class="cs-website-intro reveal">
-        <p class="feature-label">The Website</p>
-        <h2 class="feature-heading">Introducing Ci</h2>
-        <p class="feature-body">
-          Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.
-        </p>
-      </div>
-      <div class="cs-browser-frame" style="width: 100%; max-width: 1240px;">
-        <div class="cs-browser-bar">
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-dot"></div>
-          <div class="cs-browser-url-bar">cipher.com</div>
-        </div>
-        <div class="cs-browser-screen">
-          <img src="assets/media/cipher/cipher-website.webp" class="cs-browser-content" alt="Cipher website landing page" />
-        </div>
+  <article class="item stage reveal" style="--d:.16s; --tone:#0ec980; --a:#0ec980; --b:#1ab796; --c:#7cf0c0">
+    <div class="bleed" aria-hidden="true">
+      <span class="blob" style="--c:#0ec980; width:50%; left:4%; top:16%; rotate:-14deg"></span>
+      <span class="blob" style="--c:#1ab796; width:40%; left:52%; top:36%; rotate:20deg; --ar:1.8"></span>
+      <span class="blob" style="--c:#7cf0c0; width:34%; left:30%; top:54%; rotate:-6deg; --ar:1.3"></span>
+    </div>
+    <div class="card">
+      <div class="stage-media">
+        <spline-viewer url="https://prod.spline.design/WyPjkwRYCWi9H8W9/scene.splinecode" loading-anim-type="spinner-small-dark" aria-label="3D render of the Cipher app on a phone, floating between green spheres"></spline-viewer>
       </div>
     </div>
-  </div>
+  </article>
 
-  <!-- ══════════════ APP + BRAND ══════════════ -->
-  <section class="cs-features">
-
-    <div class="feature-row reveal">
-      <div class="feature-text">
-        <p class="feature-label">The App</p>
-        <h2 class="feature-heading">Ci handles the thinking</h2>
-        <p class="feature-body">
-          Dark, immersive, with a glass card at the centre. Ci lives inside the app to answer questions, flag subscriptions, and predict cashflow. It adapts to how you actually use money. Everything else is there too: crypto, savings goals, spending limits, instant transfers.
-        </p>
-      </div>
-      <div class="feature-image">
-        <img src="assets/media/cipher/cipher-app-hand.webp" alt="Cipher app screens spread across an iPhone in hand" />
-      </div>
-    </div>
-
-    <div class="feature-row flip reveal">
-      <div class="feature-text">
-        <p class="feature-label">Brand</p>
-        <h2 class="feature-heading">The mark comes from Ci</h2>
-        <p class="feature-body">
-          Raleway typeface, electric green on navy, and a tone that's confident without being corporate.
-        </p>
-      </div>
-      <div class="feature-image">
-        <img src="assets/media/cipher/cipher-brand.webp" alt="Cipher brand collage showing logo, typography, card, and colour palette" />
-      </div>
-    </div>
-
+  <section class="cs-intro reveal">
+    <p class="label">Overview</p>
+    <p>Cipher is a digital-first banking app built around AI. No physical card, just a glass card, crypto wallets, and an AI assistant called Ci that actually learns how you spend. The brand, the app, and the website were all designed from scratch.</p>
   </section>
 
-  <!-- ══════════════ BRAND GUIDELINES ══════════════ -->
-  <div class="cs-cta">
-    <h2 class="cs-cta-heading">View the brand guidelines.</h2>
-    <a
-      href="assets/media/cipher/cipher-brand-guidelines.pdf"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="cs-cta-link"
-    >
-      Open brand guidelines
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-        <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-  </div>
+  <section class="browse" aria-label="The website">
+    <div class="browse-sticky">
+      <div class="cs-text reveal">
+        <p class="label">The website</p>
+        <h2>Introducing Ci</h2>
+        <p>Prototyped in Relume AI to establish the structure, then taken into Figma and finished with Spline interactions. The landing page introduces Ci, walks through the key features, and drives sign-up.</p>
+      </div>
+      <div class="browser reveal" style="--d:.08s">
+        <div class="browser-bar" aria-hidden="true"><i></i><i></i><i></i><span>cipher.com</span></div>
+        <div class="browser-screen"><img class="browser-page" src="assets/media/cipher/cipher-website.webp" alt="The Cipher landing page, from the hero through Meet Ci to the download section" width="2000" height="6216" loading="lazy" decoding="async"></div>
+      </div>
+    </div>
+  </section>
 
-  <!-- ══════════════ NEXT PROJECT ══════════════ -->
-  <div class="cs-next">
-    <p class="cs-next-label">Next project</p>
-    <a href="amp.html" class="cs-next-link">
-      Amp
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-  </div>
+  <section class="cs-row">
+    <div class="cs-text reveal">
+      <p class="label">The app</p>
+      <h2>Ci handles the thinking</h2>
+      <p>Dark, immersive, with a glass card at the centre. Ci lives inside the app to answer questions, flag subscriptions, and predict cashflow. It adapts to how you actually use money. Everything else is there too: crypto, savings goals, spending limits, instant transfers.</p>
+    </div>
+    <figure class="shot reveal" style="--d:.08s"><img src="assets/media/cipher/cipher-app-hand.webp" alt="Cipher app screens spread around an iPhone held in one hand" width="2000" height="1500" loading="lazy" decoding="async"></figure>
+  </section>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer>
-    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
-  </footer>
+  <section class="cs-row is-flip">
+    <div class="cs-text reveal">
+      <p class="label">Brand</p>
+      <h2>The mark comes from Ci</h2>
+      <p>Raleway typeface, electric green on navy, and a tone that’s confident without being corporate.</p>
+    </div>
+    <figure class="shot reveal" style="--d:.08s"><img src="assets/media/cipher/cipher-brand.webp" alt="Cipher brand collage: the logo, Raleway type, the glass card and the green palette" width="1088" height="1090" loading="lazy" decoding="async"></figure>
+  </section>
 
+  <section class="cs-cta">
+    <h2 class="reveal">View the <em>brand guidelines.</em></h2>
+    <div class="cta reveal" style="--d:.08s">
+      <a class="email" href="assets/media/cipher/cipher-brand-guidelines.pdf" target="_blank" rel="noopener">
+        <span>Open brand guidelines</span>
+        <svg class="email-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4.5 11.5l7-7M5.5 4.5h6v6"/></svg>
+      </a>
+    </div>
+  </section>
 
-  <script>
-    /* ── Custom cursor ── */
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    let ringX = mouseX, ringY = mouseY;
+  <section class="cs-next" aria-label="Next project">
+    <p class="label">Next project</p>
+    <article class="item t-small t-next reveal" data-cursor="View case study" style="--tone:#ff6a2b; --a:#ff6a2b; --b:#c33f1f; --c:#ffb347">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#ff6a2b; width:56%; left:40%; top:12%; rotate:-12deg"></span>
+        <span class="blob" style="--c:#c33f1f; width:36%; left:62%; top:44%; rotate:18deg; --ar:1.7"></span>
+        <span class="blob" style="--c:#ffb347; width:30%; left:30%; top:52%; rotate:-20deg; --ar:1.3"></span>
+      </div>
+      <a class="card" href="amp.html">
+        <div class="card-top"><span class="label">Mobile app</span><span class="label">Concept</span></div>
+        <div class="card-copy"><h2>Amp</h2><p class="line">A music player built around smart playback and moving between devices.</p></div>
+        <div class="media"><img src="assets/media/home/amp.webp" alt="Amp music player on a phone standing on dark rock" width="1400" height="1050" loading="lazy" decoding="async"></div>
+      </a>
+    </article>
+  </section>
+</main>
 
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
-    });
+<footer>
+  <span>© 2026 Shea Wilson</span>
+  <nav aria-label="Footer"><a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a><a href="#top">Back to top</a></nav>
+</footer>
 
-    (function animateRing() {
-      ringX += (mouseX - ringX) * 0.13;
-      ringY += (mouseY - ringY) * 0.13;
-      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    })();
-
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest('a, button')) document.body.classList.add('cursor-hover');
-    });
-    document.addEventListener('mouseout', e => {
-      if (e.target.closest('a, button')) document.body.classList.remove('cursor-hover');
-    });
-    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
-
-    /* ── Nav scroll effect ── */
-    const mainNav = document.getElementById('main-nav');
-    window.addEventListener('scroll', () => {
-      mainNav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    /* ── Dark mode — forced on (light mode disabled) ── */
-    document.body.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-
-    /* ── Browser scroll ── */
-    const browserSection = document.querySelector('.cs-browser-section');
-    const browserContent = document.querySelector('.cs-browser-content');
-
-    if (browserSection && browserContent) {
-      function updateBrowserScroll() {
-        const rect = browserSection.getBoundingClientRect();
-        const scrolled = -rect.top;
-        const scrollable = browserSection.offsetHeight - window.innerHeight;
-        const progress = Math.max(0, Math.min(1, scrolled / scrollable));
-        const imgH = browserContent.offsetHeight;
-        const screenH = browserContent.parentElement.offsetHeight;
-        const maxY = Math.max(0, imgH - screenH);
-        browserContent.style.transform = `translateY(-${(progress * maxY).toFixed(1)}px)`;
-      }
-      window.addEventListener('scroll', updateBrowserScroll, { passive: true });
-      updateBrowserScroll();
-    }
-  </script>
-
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/case.js" defer></script>
 </body>
 </html>

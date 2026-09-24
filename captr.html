@@ -1,559 +1,128 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Captr — Shea Wilson</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:opsz,wght@9..40,200;9..40,300;9..40,400&display=swap"
-    rel="stylesheet"
-  />
-
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    :root {
-      --bg: #ffffff;
-      --bg-rgb: 255, 255, 255;
-      --text: #0a0a0a;
-      --text-rgb: 10, 10, 10;
-    }
-
-    body.dark {
-      --bg: #000000;
-      --bg-rgb: 0, 0, 0;
-      --text: #f0f0f0;
-      --text-rgb: 240, 240, 240;
-    }
-
-    body {
-      background-color: var(--bg);
-      color: var(--text);
-      font-family: 'DM Sans', sans-serif;
-      cursor: none;
-      overflow-x: hidden;
-      transition:
-        background-color 0.55s cubic-bezier(0.23, 1, 0.32, 1),
-        color 0.55s cubic-bezier(0.23, 1, 0.32, 1);
-    }
-
-    @media (hover: none) {
-      body { cursor: auto; }
-      #cursor-dot, #cursor-ring { display: none; }
-    }
-
-    /* ── Custom cursor ── */
-    #cursor-dot {
-      position: fixed;
-      width: 6px; height: 6px;
-      background: var(--text);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9999;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition: opacity 0.3s ease, background 0.55s ease;
-      will-change: left, top;
-    }
-
-    #cursor-ring {
-      position: fixed;
-      width: 30px; height: 30px;
-      border: 1.5px solid rgba(var(--text-rgb), 0.32);
-      border-radius: 50%;
-      pointer-events: none;
-      z-index: 9998;
-      top: 0; left: 0;
-      transform: translate(-50%, -50%);
-      transition:
-        width 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        height 0.45s cubic-bezier(0.23, 1, 0.32, 1),
-        border-color 0.3s ease, opacity 0.3s ease;
-      will-change: left, top, width, height;
-    }
-
-    body.cursor-hover #cursor-ring {
-      width: 52px; height: 52px;
-      border-color: rgba(var(--text-rgb), 0.16);
-    }
-
-    /* ── Nav ── */
-    nav#main-nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      height: 72px;
-      padding: 0 80px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      z-index: 1000;
-      transition: background 0.5s ease, backdrop-filter 0.5s ease;
-    }
-
-    nav#main-nav.scrolled {
-      background: rgba(var(--bg-rgb), 0.82);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-    }
-
-    .nav-logo {
-      font-family: 'Spectral', serif;
-      font-style: italic;
-      font-weight: 400;
-      font-size: 22px;
-      color: var(--text);
-      text-decoration: none;
-      letter-spacing: -0.5px;
-      transition: color 0.55s ease;
-    }
-
-    .nav-right { display: flex; align-items: center; gap: 40px; }
-    .nav-links { display: flex; gap: 44px; list-style: none; }
-
-    .nav-links a {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 15px;
-      color: rgba(var(--text-rgb), 0.6);
-      text-decoration: none;
-      position: relative;
-      transition: color 0.25s ease;
-    }
-
-    .nav-links a::after {
-      content: '';
-      position: absolute;
-      bottom: -2px; left: 0;
-      width: 0; height: 1px;
-      background: var(--text);
-      transition: width 0.35s cubic-bezier(0.23, 1, 0.32, 1), background 0.55s ease;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-    .nav-links a:hover::after { width: 100%; }
-    /* ── Hero ── */
-    .cs-hero {
-      padding: 96px 80px 40px;
-      text-align: center;
-      opacity: 0;
-      transform: translateY(24px);
-      animation: fadeUp 0.7s ease 0.1s forwards;
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    .cs-eyebrow {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-      margin-bottom: 24px;
-    }
-
-    .cs-title {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 100px;
-      letter-spacing: -4.5px;
-      line-height: 1;
-      color: var(--text);
-      margin-bottom: 28px;
-      transition: color 0.55s ease;
-    }
-
-    .cs-subtitle {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 200;
-      font-size: 24px;
-      color: rgba(var(--text-rgb), 0.55);
-      max-width: 480px;
-      margin: 0 auto;
-      line-height: 1.5;
-    }
-
-    /* ── Lead image ── */
-    .cs-lead {
-      max-width: 860px;
-      margin: 60px auto 80px;
-      padding: 0 80px;
-      opacity: 0;
-      animation: fadeUp 0.7s ease 0.3s forwards;
-    }
-
-    .cs-lead img {
-      width: 100%;
-      display: block;
-      border-radius: 24px;
-    }
-
-    /* ── Overview ── */
-    .cs-overview {
-      max-width: 640px;
-      margin: 0 auto 100px;
-      padding: 0 80px;
-      text-align: center;
-    }
-
-    .cs-overview p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 18px;
-      line-height: 1.85;
-      color: rgba(var(--text-rgb), 0.58);
-    }
-
-    /* ── Feature grid ── */
-    .cs-features-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-      margin-bottom: 140px;
-      background: rgba(var(--text-rgb), 0.06);
-    }
-
-    .cs-feature-card {
-      padding: 60px;
-      background: var(--bg);
-      transition: background 0.55s ease;
-    }
-
-    .cs-feature-number {
-      font-family: 'Spectral', serif;
-      font-style: italic;
-      font-size: 48px;
-      font-weight: 600;
-      letter-spacing: -2px;
-      margin-bottom: 20px;
-      line-height: 1;
-    }
-
-    /* Sunset colour per card */
-    .cs-feature-card:nth-child(1) .cs-feature-number { color: #ff4444; }
-    .cs-feature-card:nth-child(2) .cs-feature-number { color: #ff8c2b; }
-    .cs-feature-card:nth-child(3) .cs-feature-number { color: #ffb830; }
-    .cs-feature-card:nth-child(4) .cs-feature-number { color: #ffd966; }
-
-    .cs-feature-card h3 {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 20px;
-      letter-spacing: -0.3px;
-      color: var(--text);
-      margin-bottom: 12px;
-    }
-
-    .cs-feature-card p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 15px;
-      line-height: 1.75;
-      color: rgba(var(--text-rgb), 0.5);
-    }
-
-    /* ── Sunset tag ── */
-    .cs-sunset-section {
-      padding: 0 80px 140px;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-
-    .cs-sunset-text h3 {
-      font-family: 'Spectral', serif;
-      font-weight: 600;
-      font-style: italic;
-      font-size: 44px;
-      letter-spacing: -2px;
-      line-height: 1.05;
-      color: var(--text);
-      margin-bottom: 20px;
-    }
-
-    .cs-sunset-text p {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 17px;
-      line-height: 1.8;
-      color: rgba(var(--text-rgb), 0.55);
-    }
-
-    .cs-sunset-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .cs-sunset-bar {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      padding: 16px 24px;
-      border-radius: 14px;
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 15px;
-      color: #fff;
-    }
-
-    .cs-sunset-bar:nth-child(1) { background: #ff4444; }
-    .cs-sunset-bar:nth-child(2) { background: #ff8c2b; }
-    .cs-sunset-bar:nth-child(3) { background: #ffb830; color: rgba(0,0,0,0.7); }
-    .cs-sunset-bar:nth-child(4) { background: #ffd966; color: rgba(0,0,0,0.6); }
-
-    .cs-sunset-bar-dot {
-      width: 8px; height: 8px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.6);
-      flex-shrink: 0;
-    }
-
-    .cs-sunset-bar:nth-child(3) .cs-sunset-bar-dot,
-    .cs-sunset-bar:nth-child(4) .cs-sunset-bar-dot {
-      background: rgba(0,0,0,0.25);
-    }
-
-    /* ── Next project ── */
-    .cs-next {
-      padding: 80px 80px 100px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      gap: 20px;
-      border-top: 1px solid rgba(var(--text-rgb), 0.07);
-    }
-    .cs-next-label {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 12px;
-      letter-spacing: 2.5px;
-      text-transform: uppercase;
-      color: rgba(var(--text-rgb), 0.38);
-    }
-    .cs-next-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      font-family: 'Spectral', serif;
-      font-weight: 400;
-      font-style: italic;
-      font-size: 52px;
-      letter-spacing: -2.5px;
-      color: var(--text);
-      text-decoration: none;
-      transition: gap 0.35s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.3s ease;
-    }
-    .cs-next-link:hover { opacity: 0.6; gap: 22px; }
-    @media (max-width: 1024px) { .cs-next { padding: 60px 40px 80px; } .cs-next-link { font-size: 40px; } }
-    @media (max-width: 640px) { .cs-next { padding: 52px 24px 72px; } .cs-next-link { font-size: 32px; letter-spacing: -1.5px; } }
-
-    /* ── Footer ── */
-    footer {
-      padding: 36px 80px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      border-top: 1px solid rgba(var(--text-rgb), 0.07);
-    }
-
-    .footer-copy {
-      font-family: 'DM Sans', sans-serif;
-      font-weight: 300;
-      font-size: 13px;
-      color: rgba(var(--text-rgb), 0.3);
-    }
-
-    /* ── Responsive: Tablet ── */
-    @media (max-width: 1024px) {
-      nav#main-nav { padding: 0 40px; }
-      .cs-hero { padding: 76px 40px 30px; }
-      .cs-title { font-size: 72px; letter-spacing: -3px; }
-      .cs-lead { padding: 0 40px; }
-      .cs-overview { padding: 0 40px; }
-      .cs-features-grid { grid-template-columns: 1fr; }
-      .cs-feature-card { padding: 48px 40px; }
-      .cs-sunset-section { padding: 0 40px 100px; gap: 48px; }
-      footer { padding: 36px 40px; }
-    }
-
-    /* ── Responsive: Phone ── */
-    @media (max-width: 640px) {
-      nav#main-nav { padding: 0 24px; height: 64px; }
-      .nav-logo { font-size: 20px; }
-      .nav-right { gap: 24px; }
-      .nav-links { gap: 24px; }
-      .nav-links a { font-size: 13px; }
-      .cs-hero { padding: 60px 24px 20px; }
-      .cs-eyebrow { font-size: 11px; margin-bottom: 16px; }
-      .cs-title { font-size: 48px; letter-spacing: -2px; margin-bottom: 20px; }
-      .cs-subtitle { font-size: 18px; }
-      .cs-lead { padding: 0 24px; margin: 40px auto 60px; }
-      .cs-overview { padding: 0 24px; margin-bottom: 64px; }
-      .cs-overview p { font-size: 16px; }
-      .cs-feature-card { padding: 40px 24px; }
-      .cs-feature-number { font-size: 36px; }
-      .cs-sunset-section { grid-template-columns: 1fr; padding: 0 24px 80px; gap: 40px; }
-      .cs-sunset-text h3 { font-size: 32px; }
-      footer { padding: 28px 24px; }
-      .footer-copy { font-size: 12px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Captr, by Shea Wilson</title>
+<meta name="description" content="Capture a task, give it a priority and tick it off from your wrist.">
+<meta name="theme-color" content="#ffffff">
+<link rel="canonical" href="https://sheawilson.uk/captr.html">
+<link rel="icon" href="favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Shea Wilson">
+<meta property="og:locale" content="en_GB">
+<meta property="og:url" content="https://sheawilson.uk/captr.html">
+<meta property="og:title" content="Captr, by Shea Wilson">
+<meta property="og:description" content="Capture a task, give it a priority and tick it off from your wrist.">
+<meta property="og:image" content="https://sheawilson.uk/assets/share/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Shea Wilson, design engineer. Design people actually use.">
+<meta name="twitter:card" content="summary_large_image">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="preload" as="image" href="assets/media/captr/Captrhome.webp">
+<link rel="stylesheet" href="assets/css/site.css">
+<link rel="stylesheet" href="assets/css/case.css">
 </head>
+<body class="case" style="--tone:#0f88f0">
 
-<body>
+<div class="tip" aria-hidden="true"><i></i><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>
 
-  <div id="cursor-dot"></div>
-  <div id="cursor-ring"></div>
-
-  <!-- ══════════════ NAV ══════════════ -->
-  <nav id="main-nav">
-    <a href="index.html#hero" class="nav-logo">SW</a>
-    <div class="nav-right">
-      <ul class="nav-links">
-        <li><a href="index.html#work">Work</a></li>
-        <li><a href="index.html#about">About</a></li>
-        <li><a href="index.html#contact">Contact</a></li>
-      </ul>    </div>
-  </nav>
-
-  <!-- ══════════════ HERO ══════════════ -->
-  <div class="cs-hero">
-    <p class="cs-eyebrow">Case Study</p>
-    <h2 class="cs-title">Captr</h2>
-    <p class="cs-subtitle">
-      Your day, at a glance.
-    </p>
+<header class="nav">
+  <div class="nav-inner">
+    <span class="nav-pill" aria-hidden="true"></span>
+    <a class="logo" href="index.html" aria-label="Shea Wilson, home">S<span class="fold"><span>hea&nbsp;</span></span>W<span class="fold"><span>ilson</span></span></a>
+    <nav class="links" aria-label="Main">
+      <a href="index.html#work">Work</a>
+      <a href="index.html#about">About</a>
+      <a href="index.html#contact">Contact</a>
+      <button class="theme-toggle" type="button" aria-label="Switch to dark mode" aria-pressed="false">
+        <span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span>
+      </button>
+    </nav>
   </div>
+</header>
 
-  <!-- ══════════════ LEAD IMAGE ══════════════ -->
-  <div class="cs-lead">
-    <img src="assets/media/captr/Captrhome.webp" alt="Captr on Apple Watch, stacked task cards with sunset priority colours" />
-  </div>
+<main>
+  <header class="cs-hero" id="top">
+    <h1 class="reveal">Captr</h1>
+    <p class="lede reveal" style="--d:.06s">Your day, at a glance.</p>
+    <dl class="facts reveal" style="--d:.12s">
+      <div><dt>Type</dt><dd>Apple Watch app</dd></div>
+      <div><dt>Status</dt><dd>Concept</dd></div>
+    </dl>
+  </header>
 
-  <!-- ══════════════ OVERVIEW ══════════════ -->
-  <div class="cs-overview">
-    <p>
-      A daily to-do companion for the wrist. Capture tasks as you go, wake up to a prioritised list, reorder it in seconds, and tick things off. If something doesn't get done, push it to tomorrow. No friction.
-    </p>
-  </div>
+  <article class="item stage is-wide reveal" style="--d:.16s; --tone:#0f88f0; --a:#0f88f0; --b:#0a5fd0; --c:#5ab4ff">
+    <div class="bleed" aria-hidden="true">
+      <span class="blob" style="--c:#0f88f0; width:50%; left:4%; top:16%; rotate:-14deg"></span>
+      <span class="blob" style="--c:#0a5fd0; width:40%; left:52%; top:36%; rotate:20deg; --ar:1.8"></span>
+      <span class="blob" style="--c:#5ab4ff; width:34%; left:30%; top:54%; rotate:-6deg; --ar:1.3"></span>
+    </div>
+    <div class="card">
+      <div class="stage-media"><img src="assets/media/captr/Captrhome.webp" alt="Captr on an Apple Watch: a stack of task cards in red, orange and yellow, with Walk the Dog on top" width="1200" height="800" fetchpriority="high" decoding="async"></div>
+    </div>
+  </article>
 
-  <!-- ══════════════ FEATURE GRID ══════════════ -->
-  <div class="cs-features-grid">
-    <div class="cs-feature-card">
-      <div class="cs-feature-number">01</div>
-      <h3>Quick capture</h3>
-      <p>Add a task any time. No categories, no setup. Just text and an optional date. Sort it later.</p>
-    </div>
-    <div class="cs-feature-card">
-      <div class="cs-feature-number">02</div>
-      <h3>Daily list</h3>
-      <p>Every morning, tasks tagged for today appear as a checklist. Your day, assembled while you slept.</p>
-    </div>
-    <div class="cs-feature-card">
-      <div class="cs-feature-number">03</div>
-      <h3>Reorder</h3>
-      <p>Drag tasks to set your priority. The order changes and the colours do the rest.</p>
-    </div>
-    <div class="cs-feature-card">
-      <div class="cs-feature-number">04</div>
-      <h3>Tick off</h3>
-      <p>Swipe to complete, with haptic feedback and a check animation. Small wins should feel good.</p>
-    </div>
-  </div>
+  <section class="cs-intro reveal">
+    <p class="label">Overview</p>
+    <p>A daily to-do companion for the wrist. Capture tasks as you go, wake up to a prioritised list, reorder it in seconds, and tick things off. If something doesn’t get done, push it to tomorrow. No friction.</p>
+  </section>
 
-  <!-- ══════════════ SUNSET PRIORITY SYSTEM ══════════════ -->
-  <div class="cs-sunset-section">
-    <div class="cs-sunset-text">
-      <h3>Priority through colour.</h3>
-      <p>
-        The sunset gradient does the thinking for you. Red is urgent. It shifts through orange and yellow as priority drops. In about three seconds on a watch face, you know where to start. Circular buttons are the ones you press; rectangular cards are the ones you swipe. The shapes tell you what to do.
-      </p>
+  <section class="points" aria-label="How it works">
+    <div class="point reveal"><h3>Quick capture</h3><p>Add a task any time. No categories, no setup. Just text and an optional date. Sort it later.</p></div>
+    <div class="point reveal" style="--d:.06s"><h3>Daily list</h3><p>Every morning, tasks tagged for today appear as a checklist. Your day, assembled while you slept.</p></div>
+    <div class="point reveal" style="--d:.12s"><h3>Reorder</h3><p>Drag tasks to set your priority. The order changes and the colours do the rest.</p></div>
+    <div class="point reveal" style="--d:.18s"><h3>Tick off</h3><p>Swipe to complete, with haptic feedback and a check animation. Small wins should feel good.</p></div>
+  </section>
+
+  <section class="cs-row">
+    <div class="cs-text reveal">
+      <p class="label">Priority</p>
+      <h2>Priority through colour.</h2>
+      <p>The sunset gradient does the thinking for you. Red is urgent. It shifts through orange and yellow as priority drops. In about three seconds on a watch face, you know where to start. Circular buttons are the ones you press; rectangular cards are the ones you swipe. The shapes tell you what to do.</p>
     </div>
-    <div class="cs-sunset-bars">
-      <div class="cs-sunset-bar">
-        <span class="cs-sunset-bar-dot"></span>
-        Most urgent, do it now
+    <ul class="priority reveal" style="--d:.08s">
+      <li style="--i:0; --c:#ff4444">Most urgent, do it now</li>
+      <li style="--i:1; --c:#ff8c2b">High priority, today</li>
+      <li style="--i:2; --c:#ffb830">Medium, later today</li>
+      <li style="--i:3; --c:#ffd966">Low priority, if time allows</li>
+    </ul>
+  </section>
+
+  <section class="cs-next" aria-label="Next project">
+    <p class="label">Next project</p>
+    <article class="item t-small t-next reveal" data-cursor="View case study" style="--tone:#8a3cff; --a:#8a3cff; --b:#5b2bff; --c:#c77dff">
+      <div class="bleed" aria-hidden="true">
+        <span class="blob" style="--c:#8a3cff; width:56%; left:40%; top:12%; rotate:-12deg"></span>
+        <span class="blob" style="--c:#5b2bff; width:36%; left:62%; top:44%; rotate:18deg; --ar:1.7"></span>
+        <span class="blob" style="--c:#c77dff; width:30%; left:30%; top:52%; rotate:-20deg; --ar:1.3"></span>
       </div>
-      <div class="cs-sunset-bar">
-        <span class="cs-sunset-bar-dot"></span>
-        High priority, today
-      </div>
-      <div class="cs-sunset-bar">
-        <span class="cs-sunset-bar-dot"></span>
-        Medium, later today
-      </div>
-      <div class="cs-sunset-bar">
-        <span class="cs-sunset-bar-dot"></span>
-        Low priority, if time allows
-      </div>
-    </div>
-  </div>
+      <a class="card" href="braindump.html">
+        <div class="card-top"><span class="label">Personal project</span><span class="label">In beta</span></div>
+        <div class="card-copy"><h2>Brain Dump</h2><p class="line">Type or talk, and it sorts the lot into tasks, routines, ideas and projects.</p></div>
+        <div class="media is-phones">
+          <img src="assets/media/home/brain-home.webp" alt="Brain Dump home: tasks and routines for the evening" width="520" height="1077" loading="lazy" decoding="async">
+          <img src="assets/media/home/brain-voice.webp" alt="" width="520" height="1077" loading="lazy" decoding="async">
+        </div>
+      </a>
+    </article>
+  </section>
+</main>
 
-  <!-- ══════════════ NEXT PROJECT ══════════════ -->
-  <div class="cs-next">
-    <p class="cs-next-label">Next project</p>
-    <a href="braindump.html" class="cs-next-link">
-      Brain Dump
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none">
-        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
-  </div>
+<footer>
+  <span>© 2026 Shea Wilson</span>
+  <nav aria-label="Footer"><a href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener">LinkedIn</a><a href="#top">Back to top</a></nav>
+</footer>
 
-  <!-- ══════════════ FOOTER ══════════════ -->
-  <footer>
-    <p class="footer-copy">&copy; 2026 Shea Wilson</p>
-  </footer>
-
-  <script>
-    /* ── Custom cursor ── */
-    const dot  = document.getElementById('cursor-dot');
-    const ring = document.getElementById('cursor-ring');
-    let mouseX = window.innerWidth / 2, mouseY = window.innerHeight / 2;
-    let ringX = mouseX, ringY = mouseY;
-
-    document.addEventListener('mousemove', e => {
-      mouseX = e.clientX; mouseY = e.clientY;
-      dot.style.left = mouseX + 'px'; dot.style.top = mouseY + 'px';
-    });
-
-    (function animateRing() {
-      ringX += (mouseX - ringX) * 0.13;
-      ringY += (mouseY - ringY) * 0.13;
-      ring.style.left = ringX + 'px'; ring.style.top = ringY + 'px';
-      requestAnimationFrame(animateRing);
-    })();
-
-    document.addEventListener('mouseover', e => {
-      if (e.target.closest('a, button')) document.body.classList.add('cursor-hover');
-    });
-    document.addEventListener('mouseout', e => {
-      if (e.target.closest('a, button')) document.body.classList.remove('cursor-hover');
-    });
-    document.addEventListener('mouseleave', () => { dot.style.opacity = '0'; ring.style.opacity = '0'; });
-    document.addEventListener('mouseenter', () => { dot.style.opacity = '1'; ring.style.opacity = '1'; });
-
-    /* ── Nav scroll ── */
-    const mainNav = document.getElementById('main-nav');
-    window.addEventListener('scroll', () => {
-      mainNav.classList.toggle('scrolled', window.scrollY > 60);
-    }, { passive: true });
-
-    /* ── Dark mode — forced on (light mode disabled) ── */
-    document.body.classList.add('dark');
-    localStorage.setItem('theme', 'dark');
-  </script>
-
+<script src="assets/js/site.js" defer></script>
+<script src="assets/js/case.js" defer></script>
 </body>
 </html>

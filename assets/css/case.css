@@ -1,0 +1,119 @@
+/* Case studies. Loaded after site.css, which supplies the tokens, nav, theme toggle, glass cards,
+   labels, reveal and footer. This file only lays out the pages that frame a single project. */
+
+:root { --surface: rgba(10, 10, 10, .035); }
+[data-theme="dark"] { --surface: rgba(255, 255, 255, .045); }
+:is(.shot, .priority li) { corner-shape: squircle; }
+
+.case main { max-width: 1380px; margin: 0 auto; padding: 0 var(--gutter); }
+
+/* ───────── Hero ───────── */
+.cs-hero { display: grid; grid-template-columns: repeat(12, 1fr); column-gap: 22px; align-items: end; padding: clamp(150px, 22vh, 220px) 0 clamp(44px, 5vw, 64px); }
+.cs-hero h1 { grid-column: 1 / -1; font-family: var(--serif); font-weight: 300; font-size: clamp(64px, 11vw, 176px); line-height: .92; letter-spacing: -.026em; }
+.cs-hero .lede { grid-column: 1 / span 6; margin-top: 30px; max-width: 30ch; font-size: clamp(20px, 1.7vw, 25px); line-height: 1.45; color: var(--ink-2); text-wrap: pretty; }
+.facts { grid-column: 8 / -1; margin-top: 30px; display: flex; flex-wrap: wrap; gap: 18px 46px; }
+.facts dt { font-size: 13px; font-weight: 400; color: var(--whisper); }
+.facts dd { margin-top: 6px; max-width: 30ch; font-size: 15px; font-weight: 400; line-height: 1.45; }
+
+/* ───────── Stage: the lead piece in the same glass card as the homepage ───────── */
+.stage .card { aspect-ratio: 16 / 9; max-height: 86svh; }
+.stage-media { position: absolute; inset: 0; z-index: 1; background: #000; }
+.stage-media :is(img, video, spline-viewer) { display: block; width: 100%; height: 100%; object-fit: cover; }
+.stage-media spline-viewer { pointer-events: none; }
+.stage .media { position: absolute; inset: 0; }
+.stage .media img { position: absolute; inset: 5%; width: 90%; height: 90%; object-fit: contain; filter: drop-shadow(0 40px 60px rgba(40, 10, 0, .28)); }
+
+/* ───────── Overview ───────── */
+.cs-intro { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; margin-top: clamp(90px, 11vw, 150px); }
+.cs-intro .label { grid-column: 1 / span 3; padding-top: .55em; }
+.cs-intro p:not(.label) { grid-column: 4 / -1; max-width: 34ch; font-family: var(--serif); font-weight: 300; font-size: clamp(26px, 2.7vw, 40px); line-height: 1.28; letter-spacing: -.012em; text-wrap: pretty; }
+
+/* ───────── Text and image rows ───────── */
+.cs-row { display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; align-items: center; margin-top: clamp(100px, 12vw, 170px); }
+.cs-text { grid-column: 1 / span 4; }
+.cs-row > :last-child { grid-column: 6 / -1; }
+.cs-row.is-flip .cs-text { grid-column: 9 / -1; grid-row: 1; }
+.cs-row.is-flip > :last-child { grid-column: 1 / span 7; grid-row: 1; }
+.cs-text .label { display: block; margin-bottom: 14px; }
+.cs-text h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(34px, 3.4vw, 52px); line-height: 1.06; letter-spacing: -.018em; text-wrap: balance; }
+.cs-text p:not(.label) { margin-top: 18px; max-width: 42ch; font-size: 17px; line-height: 1.62; color: var(--ink-2); text-wrap: pretty; }
+
+.shot { position: relative; margin: 0; overflow: hidden; border-radius: var(--radius-sm); background: var(--surface); box-shadow: var(--shadow-rest); }
+.shot img { width: 100%; height: auto; }
+/* Cut-out images float on a soft pool of the project's colour instead of a frame */
+.shot.is-float { display: grid; place-items: center; padding: clamp(36px, 6vw, 80px) 24px; box-shadow: none;
+  background: radial-gradient(64% 58% at 50% 64%, color-mix(in srgb, var(--tone) 24%, transparent), transparent 72%), var(--surface); }
+.shot.is-float img { width: auto; max-width: 100%; max-height: 640px; filter: drop-shadow(0 30px 48px color-mix(in srgb, var(--tone) 30%, rgba(0, 0, 0, .22))); }
+.shot.is-phone img { max-height: 600px; }
+
+/* ───────── Cipher: the site scrolls inside the browser as you scroll the page ───────── */
+.browse { height: 250vh; margin-top: clamp(80px, 10vw, 140px); }
+.browse-sticky { position: sticky; top: 0; height: 100svh; display: grid; grid-template-columns: repeat(12, 1fr); gap: 22px; align-items: center; padding-top: 60px; }
+.browse .cs-text { grid-column: 1 / span 4; }
+.browser { grid-column: 6 / -1; overflow: hidden; border-radius: 16px; background: var(--bg);
+  box-shadow: 0 0 0 1px var(--hair), 0 30px 80px rgba(10, 20, 60, .16); }
+[data-theme="dark"] .browser { background: #131417; box-shadow: 0 0 0 1px var(--hair), 0 30px 80px rgba(0, 0, 0, .55); }
+.browser-bar { display: flex; align-items: center; gap: 7px; padding: 11px 14px; border-bottom: 1px solid var(--hair); background: var(--surface); }
+.browser-bar i { width: 10px; height: 10px; border-radius: 50%; background: #ff5f57; }
+.browser-bar i:nth-child(2) { background: #febc2e; }
+.browser-bar i:nth-child(3) { background: #28c840; }
+.browser-bar span { flex: 1; margin-right: 44px; padding: 4px 12px; border-radius: 7px; text-align: center; font-size: 12px; font-weight: 400; color: var(--whisper); background: var(--bg); }
+[data-theme="dark"] .browser-bar span { background: rgba(255, 255, 255, .06); }
+.browser-screen { height: min(64svh, 660px); overflow: hidden; }
+.browser-page { width: 100%; will-change: transform; }
+
+/* ───────── Captr ───────── */
+.points { display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px 28px; margin-top: clamp(90px, 11vw, 150px); }
+.point { padding-top: 22px; border-top: 1px solid var(--hair); }
+.point h3 { font-family: var(--serif); font-weight: 300; font-size: clamp(24px, 2vw, 30px); letter-spacing: -.012em; }
+.point p { margin-top: 10px; font-size: 16px; line-height: 1.55; color: var(--ink-2); max-width: 30ch; }
+.priority { list-style: none; display: grid; gap: 10px; }
+.priority li { display: flex; align-items: center; gap: 14px; margin-inline: calc(var(--i) * 3%); padding: 20px 24px; border-radius: 22px;
+  font-size: 16px; font-weight: 400; color: #fff; background: var(--c); }
+.priority li:nth-child(n + 3) { color: rgba(0, 0, 0, .7); }
+.priority li::before { content: ""; width: 8px; height: 8px; flex: none; border-radius: 50%; background: currentColor; opacity: .55; }
+
+/* ───────── Call to action ───────── */
+.cs-cta { margin-top: clamp(120px, 14vw, 200px); text-align: center; }
+.cs-cta h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(44px, 6.4vw, 96px); line-height: 1; letter-spacing: -.022em; }
+.cs-cta h2 em { font-style: italic; }
+.cs-cta .cta { margin-top: 38px; }
+
+/* ───────── Next project: the homepage tile, laid out wide ───────── */
+.cs-next { margin-top: clamp(120px, 14vw, 190px); }
+.cs-next > .label { display: block; margin-bottom: 16px; }
+.t-next .card { display: grid; grid-template-columns: 1fr 1.25fr; grid-template-rows: auto 1fr; min-height: 440px; }
+.t-next .card-top { grid-column: 1; grid-row: 1; }
+.t-next .card-copy { grid-column: 1; grid-row: 2; align-self: end; padding-bottom: 38px; }
+.t-next .card h2 { font-size: clamp(40px, 4.4vw, 64px); }
+.t-next .media { grid-column: 2; grid-row: 1 / -1; margin: 22px; }
+/* Brain Dump has cut-out phone screens rather than a photo: they stand in the glass, cropped at the foot */
+.t-next .media.is-phones { display: flex; justify-content: center; align-items: flex-start; gap: 4%; padding-top: 34px; border-radius: 0; overflow: visible; margin-bottom: 0; }
+.t-next .media.is-phones img { width: auto; height: 118%; max-width: 44%; object-fit: contain; filter: drop-shadow(0 30px 44px rgba(50, 0, 110, .26)); }
+.t-next .media.is-phones img + img { margin-top: 44px; }
+
+.case footer { margin-top: 110px; }
+
+/* ───────── Responsive ───────── */
+@media (max-width: 1040px) {
+  .cs-hero .lede, .facts { grid-column: 1 / -1; }
+  .cs-intro .label, .cs-intro p:not(.label) { grid-column: 1 / -1; }
+  .cs-intro .label { padding-top: 0; }
+  .cs-row, .cs-row.is-flip { grid-template-columns: 1fr; gap: 34px; }
+  .cs-row .cs-text, .cs-row.is-flip .cs-text, .cs-row > :last-child, .cs-row.is-flip > :last-child { grid-column: 1; grid-row: auto; }
+  .browse-sticky { grid-template-columns: 1fr; align-content: center; gap: 26px; }
+  .browse .cs-text, .browser { grid-column: 1; }
+  .browse .cs-text p:not(.label) { display: none; }
+  .browser-screen { height: 46svh; }
+  .points { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 700px) {
+  .cs-hero { padding-top: 130px; }
+  .stage .card { aspect-ratio: 4 / 5; }
+  .stage.is-wide .card { aspect-ratio: 4 / 3; }
+  .points { grid-template-columns: 1fr; }
+  .t-next .card { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; min-height: 0; }
+  .t-next .card-copy { grid-row: 2; padding-bottom: 0; }
+  .t-next .media { grid-column: 1; grid-row: 3; min-height: 260px; }
+  .browser-bar span { margin-right: 0; }
+}
