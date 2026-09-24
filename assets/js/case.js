@@ -1,6 +1,5 @@
 /* Case study extras. site.js runs the nav, theme, tip, reveal and cards; this adds the pieces only these pages have. */
 (() => {
-  const root = document.documentElement;
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── Squircle clip for live media ──
@@ -54,30 +53,6 @@
     addEventListener('scroll', queue, { passive: true });
     addEventListener('resize', queue);
     if (page.complete) update(); else page.addEventListener('load', update);
-  }
-
-  /* ── Amp: the screens drift as you scroll past them, and the glow behind moves at its own pace ── */
-  const shot = document.querySelector('.hero-shot[data-drift]');
-  if (shot && !reduced) {
-    const img = shot.querySelector('img');
-    const blobs = [...shot.querySelectorAll('.blob')];
-    let queued = false;
-    const update = () => {
-      queued = false;
-      const off = root.dataset.labDrift === 'off';
-      const r = shot.getBoundingClientRect();
-      // -1 as it enters from below, 0 centred, 1 as it leaves at the top
-      const p = Math.max(-1, Math.min(1, (innerHeight / 2 - (r.top + r.height / 2)) / ((r.height + innerHeight) / 2)));
-      // Distances scale with the image, so the glow never wanders out of its own hero on a phone.
-      const h = r.height;
-      img.style.transform = off ? '' : `translate3d(0, ${(-p * h * .04).toFixed(1)}px, 0) rotate(${(-p * 3).toFixed(2)}deg)`;
-      blobs.forEach((bl, i) => { bl.style.transform = off ? '' : `translate3d(0, ${(p * h * (.06 + i * .04)).toFixed(1)}px, 0)`; });
-    };
-    const queue = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
-    addEventListener('scroll', queue, { passive: true });
-    addEventListener('resize', queue);
-    addEventListener('lab:change', queue);
-    update();
   }
 
   /* ── Videos loop only while they are on screen ── */

@@ -45,8 +45,12 @@
   const eclipse = hero && hero.querySelector('.eclipse');
   const disc = hero && hero.querySelector('.disc');
   const corona = hero && hero.querySelector('.corona');
+  const lines = copy ? [...copy.querySelectorAll('h1, .intro, .recent')] : [];
   const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
-  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1 };
+  const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1, H: 900, stop: 0 };
+  const firstCard = hero && document.querySelector('#snapshot');
+  // Layout position, ignoring transforms, so the card's reveal offset can't move the resting place.
+  const docTop = (el) => { let t = 0; for (; el; el = el.offsetParent) t += el.offsetTop; return t; };
   if (hero) new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
   // Hovering a recent project borrows that project's colours for the ring.
@@ -67,11 +71,13 @@
     if (!hero) return;
     // Where the disc has to end up: centred on the screen and big enough to cover every corner.
     const H = hero.offsetHeight, W = innerWidth, R = disc.offsetWidth / 2;
+    geo.H = H;
     const halfDiag = Math.hypot(W / 2, H / 2) * 1.03;
     geo.scale = Math.max(1, halfDiag / R);
     geo.ty = H / 2 - (eclipse.offsetTop + R);
     geo.sceneTop = scene.offsetTop;
     geo.sceneLen = Math.max(1, scene.offsetHeight - innerHeight);
+    if (firstCard) geo.stop = Math.max(geo.sceneTop + geo.sceneLen, docTop(firstCard) - nav.offsetHeight - 36);
   };
   measure(); addEventListener('resize', () => { measure(); onScroll(); });
   (document.fonts ? document.fonts.ready : Promise.resolve()).then(measure);
@@ -109,63 +115,51 @@
     disc.style.scale = sc.toFixed(4);
     corona.style.translate = `${(px * 6 * drift).toFixed(2)}px ${(y + py * 4 * drift).toFixed(2)}px`;
     corona.style.scale = sc.toFixed(4);
-    // The words ease back as the disc arrives.
-    copy.style.transform = `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
-    copy.style.opacity = String(1 - .55 * e);
+    // What the words do as the disc arrives. Cover: they ease back. Depth: the lines part at different
+    // speeds, headline fastest. Push: they come towards you and fade, as if you were moving through them.
+    const fx = root.dataset.labHero || 'cover';
+    if (fx === 'depth') {
+      copy.style.transform = ''; copy.style.opacity = '';
+      lines.forEach((l, i) => {
+        l.style.transform = `translate3d(0, ${(-geo.H * [.16, .09, .04][i] * e).toFixed(1)}px, 0)`;
+        l.style.opacity = String(clamp(1 - e * [.7, 1.1, 1.6][i], 0, 1));
+      });
+    } else {
+      lines.forEach((l) => { l.style.transform = ''; l.style.opacity = ''; });
+      copy.style.transform = fx === 'push'
+        ? `translate3d(0, ${(-24 * e).toFixed(1)}px, 0) scale(${(1 + .22 * e).toFixed(4)})`
+        : `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
+      copy.style.opacity = String(fx === 'push' ? clamp(1 - 1.15 * e, 0, 1) : 1 - .55 * e);
+    }
     return moving;
   }
+  addEventListener('lab:change', wake);
 
-  /* ── Snap: from the top, one scroll glides you to where the first card sits just right, and back ── */
-  const firstCard = hero && document.querySelector('#snapshot');
-  const snap = { busy: false, quietUntil: 0, touchY: null };
-  const snapTarget = () => Math.max(geo.sceneTop + geo.sceneLen, firstCard.getBoundingClientRect().top + scrollY - nav.offsetHeight - 36);
-  const easeInOut = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
-  function glide(to) {
-    const from = scrollY, dist = to - from;
-    if (Math.abs(dist) < 2) return;
-    const dur = clamp(700 + Math.abs(dist) * .45, 900, 1500), t0 = performance.now();
-    snap.busy = true;
-    const step = (t) => {
-      const k = clamp((t - t0) / dur, 0, 1);
-      window.scrollTo({ top: from + dist * easeInOut(k), behavior: 'instant' });
-      if (k < 1) requestAnimationFrame(step);
-      else { snap.busy = false; snap.quietUntil = performance.now() + 450; }
-    };
-    requestAnimationFrame(step);
-  }
-  // Decide whether a gesture in the intro should glide; returns true when it took the gesture.
-  function intro(dir) {
-    const target = snapTarget();
-    if (scrollY < target - 4) { glide(dir > 0 ? target : 0); return true; }
-    if (dir < 0 && scrollY <= target + 4) { glide(0); return true; }
-    return false;
-  }
+  /* ── Settle: the intro has two resting places, the top and the first card under the nav.
+     Scrolling is never blocked or taken over. When a scroll comes to rest between the two, the page
+     eases on to the one you were heading for, and any new scroll cancels that at once. ── */
   if (!reduced && firstCard) {
-    addEventListener('wheel', (e) => {
-      if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
-      const now = performance.now();
-      // Swallow the tail of a trackpad fling so it can't carry on past the stop.
-      if (snap.busy || now < snap.quietUntil) {
-        if (scrollY <= snapTarget() + 4) { e.preventDefault(); snap.quietUntil = Math.max(snap.quietUntil, now + 120); }
-        return;
-      }
-      if (intro(Math.sign(e.deltaY))) e.preventDefault();
-    }, { passive: false });
-    addEventListener('touchstart', (e) => { snap.touchY = e.touches[0].clientY; }, { passive: true });
-    addEventListener('touchmove', (e) => {
-      if (snap.touchY === null) return;
-      const dy = snap.touchY - e.touches[0].clientY;
-      if (snap.busy) { if (scrollY <= snapTarget() + 4) e.preventDefault(); return; }
-      if (Math.abs(dy) < 8) return;
-      if (intro(Math.sign(dy))) { e.preventDefault(); snap.touchY = null; }
-    }, { passive: false });
-    addEventListener('touchend', () => { snap.touchY = null; }, { passive: true });
-    addEventListener('keydown', (e) => {
-      if (e.target.closest('input, textarea, [contenteditable]') || snap.busy) return;
-      const down = ['ArrowDown', 'PageDown', ' '].includes(e.key) && !e.shiftKey;
-      const up = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
-      if ((down || up) && intro(down ? 1 : -1)) e.preventDefault();
-    });
+    const st = { lastY: scrollY, dir: 1, at: 0, touching: false, timer: 0 };
+    const settle = () => {
+      const s = geo.stop, y = scrollY;
+      if (st.touching || y <= 1 || y >= s - 1) return;
+      window.scrollTo({ top: st.dir < 0 ? 0 : s, behavior: 'smooth' });
+    };
+    const hasEnd = 'onscrollend' in window;
+    addEventListener('scroll', () => {
+      const y = scrollY;
+      if (Math.abs(y - st.lastY) > .5) st.dir = Math.sign(y - st.lastY);
+      st.lastY = y; st.at = performance.now();
+      // Browsers without scrollend: treat a short quiet spell as the end of the scroll.
+      if (!hasEnd) { clearTimeout(st.timer); st.timer = setTimeout(settle, 140); }
+    }, { passive: true });
+    if (hasEnd) addEventListener('scrollend', settle);
+    addEventListener('touchstart', () => { st.touching = true; }, { passive: true });
+    addEventListener('touchend', () => {
+      st.touching = false;
+      // A lift with no fling produces no further scroll, so check once it has had a moment to start.
+      setTimeout(() => { if (performance.now() - st.at > 120) settle(); }, 160);
+    }, { passive: true });
   }
 
   /* ── Reveal and count-up ── */

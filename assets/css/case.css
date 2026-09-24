@@ -28,7 +28,7 @@
 
 /* A cut-out hero that runs wider than the page and taller than the screen, so you scroll through it */
 .hero-shot { position: relative; isolation: isolate; width: min(100vw, 1600px); margin-left: calc(50% - min(50vw, 800px)); margin-top: -3vw; pointer-events: none; }
-.hero-shot img { position: relative; z-index: 1; width: 100%; height: auto; will-change: transform; }
+.hero-shot img { position: relative; z-index: 1; width: 100%; height: auto; }
 .hero-shot .glow { position: absolute; inset: 6% 4%; z-index: 0; }
 .hero-shot .blob { opacity: .8; }
 [data-theme="dark"] .hero-shot .blob { opacity: .7; }
@@ -44,9 +44,8 @@
 .cs-row > :last-child { grid-column: 6 / -1; }
 .cs-row.is-flip .cs-text { grid-column: 9 / -1; grid-row: 1; }
 .cs-row.is-flip > :last-child { grid-column: 1 / span 7; grid-row: 1; }
-.cs-text .eyebrow { display: none; margin-bottom: 14px; }
 .cs-text h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(34px, 3.4vw, 52px); line-height: 1.06; letter-spacing: var(--track-heading); text-wrap: balance; }
-.cs-text p:not(.label) { margin-top: 18px; max-width: 42ch; font-size: 17px; line-height: 1.62; color: var(--ink-2); text-wrap: pretty; }
+.cs-text p { margin-top: 18px; max-width: 42ch; font-size: 17px; line-height: 1.62; color: var(--ink-2); text-wrap: pretty; }
 
 .shot { position: relative; margin: 0; overflow: hidden; border-radius: var(--radius-sm); background: var(--surface); box-shadow: var(--shadow-rest); }
 .shot img { width: 100%; height: auto; }
@@ -117,7 +116,7 @@
   .cs-row .cs-text, .cs-row.is-flip .cs-text, .cs-row > :last-child, .cs-row.is-flip > :last-child { grid-column: 1; grid-row: auto; }
   .browse-sticky { grid-template-columns: 1fr; align-content: center; gap: 26px; }
   .browse .cs-text, .browser { grid-column: 1; }
-  .browse .cs-text p:not(.label) { display: none; }
+  .browse .cs-text p { display: none; }
   .browser-screen { height: 46svh; }
   .points { grid-template-columns: 1fr 1fr; }
 }
