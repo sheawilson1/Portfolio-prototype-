@@ -240,10 +240,12 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .t-jump .card { display: grid; grid-template-columns: 1.2fr 1fr; grid-template-rows: auto 1fr; min-height: 680px; }
 .t-jump .media { position: relative; grid-column: 1; grid-row: 1 / -1; min-height: 600px; }
 .t-jump .card-copy { grid-column: 2; grid-row: 2; padding: 26px 48px 46px 10px; display: flex; flex-direction: column; }
-.screen-front { width: 76%; left: 5%; top: 10%; transform: rotate(-2.5deg); }
-.screen-export { width: 46%; left: 48%; top: 50%; transform: rotate(3deg); }
-.item.is-hot .screen-front { transform: rotate(-3.5deg) translate3d(-3%, -2%, 0); }
-.item.is-hot .screen-export { transform: rotate(4.5deg) translate3d(5%, 4%, 0); }
+.screen-back { width: 68%; left: 3%; top: 5%; transform: rotate(-4deg); }
+.screen-front { width: 54%; left: 33%; top: 25%; transform: rotate(1.5deg); }
+.screen-export { width: 38%; left: 61%; top: 60%; transform: rotate(4deg); }
+.item.is-hot .screen-back { transform: rotate(-6deg) translate3d(-5%, -4%, 0); }
+.item.is-hot .screen-front { transform: rotate(2deg) translate3d(1%, 0, 0); }
+.item.is-hot .screen-export { transform: rotate(6deg) translate3d(8%, 6%, 0); }
 .img-dark { display: none !important; }
 [data-theme="dark"] .img-dark { display: block !important; }
 [data-theme="dark"] .img-light { display: none !important; }
