@@ -187,7 +187,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .blob { position: absolute; border-radius: 50%; aspect-ratio: var(--ar, 1.5); will-change: transform;
   background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 78%, transparent) 0%, color-mix(in srgb, var(--c) 54%, transparent) 26%,
     color-mix(in srgb, var(--c) 30%, transparent) 48%, color-mix(in srgb, var(--c) 12%, transparent) 70%, color-mix(in srgb, var(--c) 3%, transparent) 88%, transparent 100%); }
-.blob-img { position: absolute; border-radius: 40px; will-change: transform; background-size: cover; background-position: center; filter: blur(42px) saturate(var(--sat, 1.9)); opacity: var(--spill, 1); }
 
 /* The card draws its own lit border: an opaque base clipped to the inside, and the light clipped to the
    border ring, on one element with one corner shape. The colour and the glass tint sit inside as layers. */
@@ -199,8 +198,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   box-shadow: var(--shadow-rest);
   transition: box-shadow .9s var(--ease), --rimc .6s var(--ease); }
 .card::after { content: ""; position: absolute; inset: 0; z-index: 0; background: var(--glass); pointer-events: none; transition: background-color .6s var(--ease); }
-.item { --rim: color-mix(in srgb, var(--b, #8a93a8) 75%, white); }
-[data-theme="dark"] .item { --rim: rgba(255, 255, 255, .7); }
+.item { --rim: var(--tone, #8a93a8); }
+[data-theme="dark"] .item { --rim: color-mix(in srgb, var(--tone, #ffffff) 72%, white); }
 .item.is-hot .card { box-shadow: var(--shadow-hover); --rimc: var(--rim); }
 
 .card-top { position: relative; z-index: 2; display: flex; justify-content: space-between; gap: 16px; padding: 30px 34px 0; }
@@ -282,6 +281,8 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .item.is-hot.t-small .media img { transform: scale(1.06); }
 
 /* ───────── About ───────── */
+/* Below the fold: let the browser skip layout and paint until they get close */
+.about, .contact { content-visibility: auto; contain-intrinsic-size: auto 900px; }
 .about { max-width: 1380px; margin: 0 auto; padding: 100px var(--gutter) 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px 60px; }
 .about h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(40px, 4.4vw, 66px); line-height: 1.05; letter-spacing: -.018em; margin-top: 14px; text-wrap: balance; }
 .about-meta { margin-top: 22px; font-size: 14px; line-height: 1.6; color: var(--whisper); }

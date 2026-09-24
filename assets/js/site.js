@@ -38,18 +38,19 @@
   });
 
   /* ── Hero scene: the hero stays put while the disc rises and covers it ── */
+  // Pages without the hero scene (case studies) still get the nav, theme, tip and cards.
   const scene = document.querySelector('.scene');
-  const hero = document.querySelector('.hero');
-  const copy = hero.querySelector('.hero-copy');
-  const eclipse = hero.querySelector('.eclipse');
-  const disc = hero.querySelector('.disc');
-  const corona = hero.querySelector('.corona');
+  const hero = scene && scene.querySelector('.hero');
+  const copy = hero && hero.querySelector('.hero-copy');
+  const eclipse = hero && hero.querySelector('.eclipse');
+  const disc = hero && hero.querySelector('.disc');
+  const corona = hero && hero.querySelector('.corona');
   const hs = { px: 0, py: 0, p: 0, target: 0, inView: true };
   const geo = { ty: -900, scale: 1, sceneTop: 0, sceneLen: 1 };
-  new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
+  if (hero) new IntersectionObserver((en) => { hs.inView = en[0].isIntersecting; if (hs.inView) wake(); }).observe(hero);
 
   // Hovering a recent project borrows that project's colours for the ring.
-  hero.querySelectorAll('[data-palette]').forEach((a) => {
+  if (hero) hero.querySelectorAll('[data-palette]').forEach((a) => {
     const on = () => { hero.dataset.palette = a.dataset.palette; };
     const off = () => { delete hero.dataset.palette; };
     a.addEventListener('pointerenter', on); a.addEventListener('focus', on);
@@ -63,6 +64,7 @@
     nav.style.setProperty('--pill-w', `${pillW}px`);
     nav.style.setProperty('--logo-shift', `${(w - pillW) / 2 + 20}px`);
     nav.style.setProperty('--links-shift', `${(w - pillW) / 2 + 8}px`);
+    if (!hero) return;
     // Where the disc has to end up: centred on the screen and big enough to cover every corner.
     const H = hero.offsetHeight, W = innerWidth, R = disc.offsetWidth / 2;
     const halfDiag = Math.hypot(W / 2, H / 2) * 1.03;
@@ -76,7 +78,7 @@
 
   let pill = false;
   function onScroll() {
-    hs.target = reduced ? 0 : clamp((scrollY - geo.sceneTop) / geo.sceneLen, 0, 1);
+    hs.target = !hero ? 0 : reduced ? 0 : clamp((scrollY - geo.sceneTop) / geo.sceneLen, 0, 1);
     wake();
   }
   addEventListener('scroll', onScroll, { passive: true }); onScroll();
@@ -85,6 +87,7 @@
 
   function heroFrame() {
     let moving = false;
+    if (!hero) { setPill(scrollY > 80); return false; }
     const p = lerp(hs.p, hs.target, .22);
     if (Math.abs(p - hs.target) > .0005) moving = true;
     hs.p = Math.abs(p - hs.target) < .0005 ? hs.target : p;
@@ -110,6 +113,59 @@
     copy.style.transform = `translate3d(0, ${(-40 * e).toFixed(1)}px, 0) scale(${(1 - .07 * e).toFixed(4)})`;
     copy.style.opacity = String(1 - .55 * e);
     return moving;
+  }
+
+  /* ── Snap: from the top, one scroll glides you to where the first card sits just right, and back ── */
+  const firstCard = hero && document.querySelector('#snapshot');
+  const snap = { busy: false, quietUntil: 0, touchY: null };
+  const snapTarget = () => Math.max(geo.sceneTop + geo.sceneLen, firstCard.getBoundingClientRect().top + scrollY - nav.offsetHeight - 36);
+  const easeInOut = (t) => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  function glide(to) {
+    const from = scrollY, dist = to - from;
+    if (Math.abs(dist) < 2) return;
+    const dur = clamp(700 + Math.abs(dist) * .45, 900, 1500), t0 = performance.now();
+    snap.busy = true;
+    const step = (t) => {
+      const k = clamp((t - t0) / dur, 0, 1);
+      window.scrollTo({ top: from + dist * easeInOut(k), behavior: 'instant' });
+      if (k < 1) requestAnimationFrame(step);
+      else { snap.busy = false; snap.quietUntil = performance.now() + 450; }
+    };
+    requestAnimationFrame(step);
+  }
+  // Decide whether a gesture in the intro should glide; returns true when it took the gesture.
+  function intro(dir) {
+    const target = snapTarget();
+    if (scrollY < target - 4) { glide(dir > 0 ? target : 0); return true; }
+    if (dir < 0 && scrollY <= target + 4) { glide(0); return true; }
+    return false;
+  }
+  if (!reduced && firstCard) {
+    addEventListener('wheel', (e) => {
+      if (e.ctrlKey || Math.abs(e.deltaY) < Math.abs(e.deltaX)) return;
+      const now = performance.now();
+      // Swallow the tail of a trackpad fling so it can't carry on past the stop.
+      if (snap.busy || now < snap.quietUntil) {
+        if (scrollY <= snapTarget() + 4) { e.preventDefault(); snap.quietUntil = Math.max(snap.quietUntil, now + 120); }
+        return;
+      }
+      if (intro(Math.sign(e.deltaY))) e.preventDefault();
+    }, { passive: false });
+    addEventListener('touchstart', (e) => { snap.touchY = e.touches[0].clientY; }, { passive: true });
+    addEventListener('touchmove', (e) => {
+      if (snap.touchY === null) return;
+      const dy = snap.touchY - e.touches[0].clientY;
+      if (snap.busy) { if (scrollY <= snapTarget() + 4) e.preventDefault(); return; }
+      if (Math.abs(dy) < 8) return;
+      if (intro(Math.sign(dy))) { e.preventDefault(); snap.touchY = null; }
+    }, { passive: false });
+    addEventListener('touchend', () => { snap.touchY = null; }, { passive: true });
+    addEventListener('keydown', (e) => {
+      if (e.target.closest('input, textarea, [contenteditable]') || snap.busy) return;
+      const down = ['ArrowDown', 'PageDown', ' '].includes(e.key) && !e.shiftKey;
+      const up = ['ArrowUp', 'PageUp'].includes(e.key) || (e.key === ' ' && e.shiftKey);
+      if ((down || up) && intro(down ? 1 : -1)) e.preventDefault();
+    });
   }
 
   /* ── Reveal and count-up ── */
@@ -233,17 +289,6 @@
       try { await navigator.clipboard.writeText(copyBtn.dataset.email); } catch (e) { return; }
       label.textContent = 'Copied'; copyBtn.classList.add('is-copied');
       setTimeout(() => { label.textContent = 'Copy'; copyBtn.classList.remove('is-copied'); }, 2200);
-    });
-  }
-  const email = document.querySelector('.email');
-  if (email && fine && !reduced) {
-    email.addEventListener('pointermove', (e) => {
-      const r = email.getBoundingClientRect();
-      email.style.transform = `translate(${((e.clientX - r.left - r.width / 2) * .08).toFixed(1)}px, ${((e.clientY - r.top - r.height / 2) * .14).toFixed(1)}px)`;
-    });
-    email.addEventListener('pointerleave', () => {
-      email.style.transition = 'transform .7s var(--ease), box-shadow .6s var(--ease)'; email.style.transform = '';
-      setTimeout(() => { email.style.transition = ''; }, 700);
     });
   }
 })();
