@@ -1,0 +1,184 @@
+/* Walk through it. The world is a fixed canvas behind everything; the page scrolls a tall, empty track and the
+   camera follows it. What sits on top is the homepage's own type, buttons and glass. Nothing that moves is blurred. */
+html { overscroll-behavior-y: none; }
+body { transition: background-color .6s var(--ease), color .6s var(--ease); }
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+#stage { position: fixed; left: 0; top: 0; width: 100%; height: 100vh; height: 100lvh; background: var(--bg); }
+#stage canvas { width: 100%; height: 100%; }
+#track { position: relative; }
+.stop { height: calc(var(--len) * 100vh); height: calc(var(--len) * 100lvh); }
+#veil { position: fixed; inset: 0; z-index: 5; background: var(--bg); opacity: 0; pointer-events: none; }
+body.is-pointing { cursor: pointer; }
+
+/* ───────── Top bar: the name home, the theme ───────── */
+.bar { position: fixed; z-index: 20; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between;
+  padding: calc(16px + var(--safe-t)) var(--gutter) 0; pointer-events: none; }
+.bar > * { pointer-events: auto; }
+.logo { font-size: 22px; }
+.theme { width: 44px; height: 44px; margin-right: -4px; border-radius: 50%; display: grid; place-items: center; transition: opacity .6s var(--ease); }
+:root:not([data-ready="1"]) .theme { opacity: 0; pointer-events: none; }
+/* The homepage's theme toggle, as is */
+.tt { position: relative; width: 18px; height: 18px; border-radius: 50%; }
+.tt-ring { position: absolute; inset: -3px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%);
+  transition: transform 1s var(--ease); }
+.tt-disc { position: absolute; inset: 1px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: 0 0 0 .5px rgba(10, 10, 10, .12); }
+.tt-moon { position: absolute; inset: 0; border-radius: 50%; background: #05070b; transform: translateX(-115%); transition: transform .8s var(--ease-io); }
+.theme:hover .tt-ring { transform: rotate(180deg); }
+.theme[aria-pressed="true"] .tt-moon { transform: none; }
+
+/* The theme spreads from the toggle like the homepage: a soft umbra over the finished change */
+@property --umbra { syntax: '<length>'; inherits: false; initial-value: 0px; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  -webkit-mask-image: radial-gradient(circle at var(--vx, 90%) var(--vy, 4%), #000 var(--umbra), transparent calc(var(--umbra) + 220px));
+          mask-image: radial-gradient(circle at var(--vx, 90%) var(--vy, 4%), #000 var(--umbra), transparent calc(var(--umbra) + 220px));
+  animation: umbra 1.15s var(--ease-io) both; }
+@keyframes umbra { from { --umbra: -220px; } to { --umbra: 160vmax; } }
+
+/* ───────── What's on screen at each stop ───────── */
+.intro, .cap, .talk { position: fixed; z-index: 10; opacity: 0; visibility: hidden; pointer-events: none; }
+.intro.is-live, .cap.is-live, .talk.is-live { pointer-events: auto; }
+
+.intro { left: 50%; top: 57%; width: min(88vw, 600px); translate: -50% 0; text-align: center; }
+.lede { font-size: clamp(16px, 1.3vw, 19px); line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
+.hint { display: inline-flex; align-items: center; gap: 10px; margin-top: 20px; font-size: 14px; font-weight: 400; color: var(--ink-2); }
+
+.cap { left: var(--gutter); bottom: calc(108px + var(--safe-b)); width: min(420px, 36vw); }
+.cap.is-right { left: auto; right: var(--gutter); }
+.cap::before { content: ""; position: absolute; z-index: -1; inset: -56px -80px -40px -80px; pointer-events: none;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--bg) 74%, transparent) 40%, color-mix(in srgb, var(--bg) 30%, transparent) 72%, transparent); }
+.cap-meta { display: flex; align-items: center; gap: 9px; }
+.cap-meta i { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--tone); }
+.cap h2 { margin-top: 12px; font-family: var(--serif); font-weight: 300; font-size: clamp(36px, 3.4vw, 50px); line-height: 1.04; letter-spacing: -.022em; }
+.cap-line { margin-top: 12px; font-size: 16px; line-height: 1.5; color: var(--ink-2); max-width: 36ch; text-wrap: pretty; }
+.cap-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.cap-actions .btn { height: 46px; padding: 0 20px; font-size: 15px; }
+.cap-actions .btn svg { width: 12px; height: 12px; transition: transform .4s var(--ease); }
+.cap-actions .btn.is-primary:hover svg { transform: translateX(2px); }
+
+.talk { left: 50%; top: 46%; width: min(92vw, 760px); translate: -50% -50%; text-align: center; transform-origin: 50% 50%; }
+.talk h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(60px, 9vw, 132px); line-height: .95; letter-spacing: -.03em; word-spacing: -.04em; }
+.talk h2 em { font-style: italic; letter-spacing: -.022em; }
+.talk .sub { margin-top: 18px; font-size: 18px; line-height: 1.5; color: var(--ink-2); }
+.cta { display: inline-flex; align-items: center; gap: 10px; margin-top: 34px; }
+.email { position: relative; display: inline-flex; align-items: center; gap: 12px; padding: 19px 30px 19px 26px; border-radius: 999px;
+  font-size: clamp(17px, 1.5vw, 21px); font-weight: 400; letter-spacing: -.01em; color: var(--bg); background: var(--ink);
+  box-shadow: 0 8px 22px rgba(10, 10, 10, .16); transition: box-shadow .6s var(--ease); }
+.email:hover { box-shadow: 0 16px 44px rgba(10, 10, 10, .26); }
+@property --sweep { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+.email::before { content: ""; position: absolute; inset: -3px; border-radius: 999px; padding: 2px; opacity: 0; pointer-events: none;
+  background: conic-gradient(from var(--sweep), #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+.talk.is-live .email::before { animation: sweep 1.8s var(--ease-io) .3s both; }
+.talk.is-live .email:hover::before { animation: orbit 2.6s linear infinite; opacity: .95; }
+@keyframes sweep { 0% { opacity: 0; --sweep: 0deg; } 25% { opacity: 1; } 100% { opacity: 0; --sweep: 360deg; } }
+@keyframes orbit { to { --sweep: 360deg; } }
+[data-theme="dark"] .email { box-shadow: 0 10px 30px rgba(0, 0, 0, .55); }
+.email-icon { width: 18px; height: 18px; flex: none; }
+.copy { display: inline-flex; align-items: center; gap: 8px; height: 62px; padding: 0 22px 0 20px; border-radius: 999px; font-size: 14px; font-weight: 400; color: var(--ink-2);
+  background: var(--glass-strong); border: 1px solid var(--glass-line); transition: color .3s var(--ease), border-color .3s var(--ease); }
+.copy:hover, .copy.is-copied { color: var(--ink); }
+.copy svg { width: 16px; height: 16px; flex: none; }
+.linkedin { display: flex; width: max-content; align-items: center; gap: 9px; margin: 26px auto 0; font-size: 15px; font-weight: 400; color: var(--ink-2); transition: color .3s var(--ease); }
+.linkedin .mark { width: 16px; height: 16px; flex: none; background: currentColor; -webkit-mask-size: contain; mask-size: contain; -webkit-mask-repeat: no-repeat; mask-repeat: no-repeat; -webkit-mask-position: center; mask-position: center; }
+.linkedin .arr { width: 11px; height: 11px; transition: transform .4s var(--ease); }
+.linkedin:hover { color: var(--ink); }
+.linkedin:hover .arr { transform: translate(2px, -2px); }
+
+/* ───────── Stops: back, one dash per stop, on ───────── */
+.walk { position: fixed; z-index: 12; left: 50%; bottom: calc(22px + var(--safe-b)); translate: -50% 0; display: flex; align-items: center; gap: 2px; padding: 3px; border-radius: 999px; }
+.walk-btn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); transition: color .3s var(--ease), opacity .3s var(--ease); }
+.walk-btn:hover { color: var(--ink); }
+.walk-btn:disabled { opacity: .3; cursor: default; }
+.walk-btn svg { width: 15px; height: 15px; }
+.dashes { list-style: none; display: flex; align-items: center; }
+.dashes button { position: relative; width: 20px; height: 36px; display: grid; place-items: center; transition: width .6s var(--ease); }
+.dashes button::before { content: ""; width: 12px; height: 2px; border-radius: 2px; background: color-mix(in srgb, var(--ink) 20%, transparent); transition: width .6s var(--ease), background-color .6s var(--ease); }
+.dashes button:hover::before { background: color-mix(in srgb, var(--ink) 45%, transparent); }
+.dashes button[aria-current="step"] { width: 34px; }
+.dashes button[aria-current="step"]::before { width: 24px; background: var(--tone, var(--ink)); }
+:focus-visible { outline: 2px solid color-mix(in srgb, var(--ink) 60%, transparent); outline-offset: 3px; }
+
+/* ───────── The homepage's tip: rides above the cursor, says where a click goes ───────── */
+.tip { position: fixed; left: 0; top: 0; z-index: 30; pointer-events: none; display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; border-radius: 999px; font-size: 12px; font-weight: 500; letter-spacing: -.005em; white-space: nowrap; color: var(--ink);
+  background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6); backdrop-filter: blur(16px) saturate(1.6);
+  opacity: 0; scale: .94; transform-origin: 0% 100%; transition: opacity .35s var(--ease), scale .5s var(--ease); will-change: transform; }
+.tip.is-on { opacity: .94; scale: 1; }
+.tip svg { width: 12px; height: 12px; flex: none; rotate: 45deg; }
+.tip.is-out svg { rotate: 0deg; }
+
+/* ───────── Loading ───────── */
+.loader { position: fixed; inset: 0; z-index: 15; display: grid; place-items: center; background: var(--bg); transition: opacity .9s var(--ease), visibility 0s linear .9s; }
+.loader.is-done { opacity: 0; visibility: hidden; }
+.loader .ring { --size: 22px; animation: spin 1.4s linear infinite; }
+@keyframes spin { to { rotate: 1turn; } }
+.fail { max-width: 30em; padding: 24px; text-align: center; font-size: 16px; line-height: 1.55; color: var(--ink-2); }
+.fail a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+.fail small { display: block; margin-top: 14px; font-size: 12px; color: var(--whisper); word-break: break-word; }
+.nojs { position: fixed; inset: 0; z-index: 70; display: grid; place-items: center; padding: 24px; text-align: center; background: var(--bg); font-size: 16px; }
+.nojs a { text-decoration: underline; }
+
+/* ───────── Phones ───────── */
+@media (max-width: 700px), (max-aspect-ratio: 9/10) {
+  .cap { left: var(--gutter); right: var(--gutter); width: auto; max-width: 620px; bottom: calc(92px + var(--safe-b)); }
+  .cap.is-right { right: var(--gutter); left: var(--gutter); }
+  .cap h2 { font-size: clamp(34px, 5.2vw, 46px); }
+  .cap-line { font-size: clamp(15px, 2vw, 17px); }
+}
+@media (max-width: 700px) {
+  .logo { font-size: 20px; }
+  .lede { font-size: 16px; }
+  .hint { margin-top: 16px; }
+  .cap { left: 20px; right: 20px; width: auto; bottom: calc(86px + var(--safe-b)); }
+  .cap.is-right { right: 20px; left: 20px; }
+  .cap h2 { font-size: 34px; margin-top: 10px; }
+  .cap-line { font-size: 15px; margin-top: 8px; }
+  .cap-actions { margin-top: 16px; gap: 8px; }
+  .cap-actions .btn { height: 44px; padding: 0 17px; font-size: 14px; }
+  .talk .sub { font-size: 16px; margin-top: 14px; padding: 0 12px; }
+  .cta { flex-direction: column; gap: 10px; margin-top: 26px; }
+  .email { padding: 17px 24px 17px 22px; }
+  .copy { height: 48px; }
+  .linkedin { margin-top: 20px; }
+  .walk { bottom: calc(16px + var(--safe-b)); }
+  .walk-btn { width: 38px; height: 38px; }
+  .dashes button { width: 16px; }
+  .dashes button::before { width: 9px; }
+  .dashes button[aria-current="step"] { width: 30px; }
+  .dashes button[aria-current="step"]::before { width: 20px; }
+}
+
+/* Short screens: the walk controls say what to do, so the hint goes */
+@media (max-height: 640px) {
+  .hint { display: none; }
+}
+/* A phone on its side: everything compact */
+@media (max-height: 520px) and (min-aspect-ratio: 9/10) {
+  .bar { padding-top: calc(10px + var(--safe-t)); }
+  .logo { font-size: 19px; }
+  .intro { width: min(84vw, 720px); }
+  .lede { font-size: 14px; line-height: 1.5; }
+  .cap { bottom: calc(66px + var(--safe-b)); width: min(400px, 42vw); }
+  .cap::before { inset: -30px -50px -24px -50px; }
+  .cap-meta { font-size: 12px; }
+  .cap h2 { font-size: 28px; margin-top: 6px; }
+  .cap-line { font-size: 14px; line-height: 1.45; margin-top: 6px; }
+  .cap-actions { margin-top: 12px; gap: 8px; }
+  .cap-actions .btn { height: 38px; padding: 0 15px; font-size: 13px; }
+  .walk { bottom: calc(10px + var(--safe-b)); }
+  .walk-btn { width: 34px; height: 34px; }
+  .dashes button { height: 30px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .talk.is-live .email::before, .talk.is-live .email:hover::before { animation: none; opacity: 0; }
+  .loader .ring { animation-duration: 4s; }
+  ::view-transition-new(root) { animation: none; }
+  .tip { transition: none; }
+}

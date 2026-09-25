@@ -1,0 +1,133 @@
+/* The 3D lab shares the homepage's tokens: white daylight, glass, Spectral over DM Sans.
+   Only what these pages need is here; nothing that moves carries a blur filter. */
+:root {
+  color-scheme: light;
+  --bg: #ffffff;
+  --ink: #0a0a0a;
+  --ink-2: rgba(10, 10, 10, .64);
+  --whisper: rgba(10, 10, 10, .46);
+  --hair: rgba(10, 10, 10, .08);
+  --glass: rgba(255, 255, 255, .62);
+  --glass-strong: rgba(255, 255, 255, .8);
+  --glass-edge: rgba(255, 255, 255, .92);
+  --glass-line: rgba(10, 10, 10, .07);
+  --ease: cubic-bezier(.2, .9, .25, 1);
+  --ease-io: cubic-bezier(.65, 0, .35, 1);
+  --serif: 'Spectral', Georgia, serif;
+  --sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+  --gutter: clamp(20px, 4vw, 56px);
+  --radius: 34px;
+  --safe-t: env(safe-area-inset-top, 0px);
+  --safe-b: env(safe-area-inset-bottom, 0px);
+}
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #05070b;
+  --ink: #f2f0eb;
+  --ink-2: rgba(242, 240, 235, .68);
+  --whisper: rgba(242, 240, 235, .44);
+  --hair: rgba(242, 240, 235, .09);
+  --glass: rgba(18, 21, 28, .55);
+  --glass-strong: rgba(18, 20, 27, .8);
+  --glass-edge: rgba(255, 255, 255, .09);
+  --glass-line: rgba(255, 255, 255, .08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; background: var(--bg); touch-action: manipulation; /* pinch yes, double-tap zoom no */ }
+body { background: var(--bg); color: var(--ink); font-family: var(--sans); font-weight: 300; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+img, video, canvas { display: block; }
+.serif { font-family: var(--serif); }
+.label { font-size: 13px; font-weight: 400; line-height: 1.4; color: var(--whisper); }
+
+.logo { display: inline-flex; align-items: baseline; font-family: var(--serif); font-size: 21px; font-style: italic; font-weight: 400; letter-spacing: -.01em; white-space: nowrap; }
+
+/* Buttons: one dark primary, glass for the rest */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 52px; padding: 0 24px; border-radius: 999px; font-size: 16px; font-weight: 400;
+  letter-spacing: -.005em; white-space: nowrap; color: var(--ink-2); background: var(--glass-strong); border: 1px solid var(--glass-line);
+  transition: box-shadow .5s var(--ease), transform .4s var(--ease), color .3s var(--ease); }
+.btn svg { width: 14px; height: 14px; flex: none; }
+.btn:hover { color: var(--ink); }
+.btn:active { transform: scale(.98); }
+.btn.is-primary { color: var(--bg); background: var(--ink); border-color: transparent; box-shadow: 0 8px 22px rgba(10, 10, 10, .16); }
+.btn.is-primary:hover { box-shadow: 0 14px 36px rgba(10, 10, 10, .24); }
+.btn.is-quiet { background: none; border-color: transparent; height: 44px; padding: 0 12px; }
+
+/* Glass: frosted where the browser can, solid enough to read where it can't */
+.glass { background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: 0 10px 34px rgba(0, 0, 0, .12);
+  -webkit-backdrop-filter: blur(22px) saturate(1.7); backdrop-filter: blur(22px) saturate(1.7); }
+.pill { display: inline-flex; align-items: center; gap: 9px; min-height: 40px; padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 400; color: var(--ink); }
+.pill i { width: 7px; height: 7px; border-radius: 50%; flex: none; background: var(--c, #2fd67b); }
+
+.icon-btn { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; color: var(--ink); }
+.icon-btn svg { width: 16px; height: 16px; }
+
+/* The ring of colour, for small marks */
+.ring { --size: 18px; position: relative; width: var(--size); height: var(--size); border-radius: 50%; flex: none; }
+.ring::before { content: ""; position: absolute; inset: -3px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); }
+.ring::after { content: ""; position: absolute; inset: 1px; border-radius: 50%; background: var(--bg); box-shadow: 0 0 0 .5px rgba(10, 10, 10, .12); }
+
+/* Bottom sheet for a project */
+.sheet { position: fixed; left: 12px; right: 12px; bottom: calc(12px + var(--safe-b)); z-index: 40; max-width: 520px; margin: 0 auto; padding: 22px 22px 20px; border-radius: 30px;
+  translate: 0 calc(100% + 40px); transition: translate .7s var(--ease); }
+.sheet.is-open { translate: 0 0; }
+.sheet .top { display: flex; align-items: center; gap: 10px; }
+.sheet .top .label { flex: 1; }
+.sheet h2 { margin-top: 10px; font-family: var(--serif); font-weight: 300; font-size: 34px; line-height: 1.04; letter-spacing: -.02em; }
+.sheet p.line { margin-top: 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+.sheet .actions { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+.sheet .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tone, #2fd67b); flex: none; }
+
+@media (prefers-reduced-motion: reduce) { .sheet { transition: none; } }
+
+/* ───────── Project panel (js/project-panel.js) ─────────
+   A sheet from the bottom on phones, a panel on the right on wider screens. The buttons stay pinned at the foot. */
+.pp { position: fixed; z-index: 60; left: 10px; right: 10px; bottom: calc(10px + var(--safe-b)); max-height: min(74svh, 660px); display: flex; flex-direction: column;
+  border-radius: 30px; overflow: hidden; translate: 0 calc(100% + 40px); transition: translate .7s var(--ease); -webkit-tap-highlight-color: transparent; }
+.pp.is-open { translate: 0 0; }
+/* Smoked glass rather than white: a cool grey tint you can see the scene through */
+.pp.glass { background: rgba(228, 230, 236, .6); border: 1px solid rgba(255, 255, 255, .6);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .75), 0 18px 50px rgba(10, 14, 30, .16);
+  -webkit-backdrop-filter: blur(30px) saturate(1.7) brightness(1.02); backdrop-filter: blur(30px) saturate(1.7) brightness(1.02); }
+[data-theme="dark"] .pp.glass { background: rgba(14, 16, 22, .6); border-color: rgba(255, 255, 255, .1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 24px 60px rgba(0, 0, 0, .5); }
+.pp .pp-actions { border-top-color: rgba(10, 10, 10, .06); }
+.pp.is-dragging { transition: none; }
+.pp-grab { width: 38px; height: 5px; border-radius: 3px; margin: 8px auto 0; background: color-mix(in srgb, var(--ink) 18%, transparent); flex: none; }
+.pp-head { display: flex; align-items: center; gap: 4px; padding: 8px 10px 0 20px; flex: none; touch-action: none; }
+.pp-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--tone, #2fd67b); flex: none; margin-right: 6px; }
+.pp-label { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pp-icon { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; color: var(--ink-2); flex: none; transition: color .3s var(--ease), background-color .3s var(--ease); }
+.pp-icon svg { width: 15px; height: 15px; }
+.pp-icon:hover { color: var(--ink); background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.pp-scroll { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; flex: 1; min-height: 0; }
+.pp-body { padding: 6px 20px 18px; }
+.pp-body h2 { font-family: var(--serif); font-weight: 300; font-size: clamp(32px, 7vw, 40px); line-height: 1.04; letter-spacing: -.02em; }
+.pp-line { margin-top: 10px; font-size: 16px; line-height: 1.5; color: var(--ink-2); }
+/* The work itself: a row of screens you can swipe through */
+.pp-media { display: flex; gap: 10px; margin: 18px -20px 0; padding: 0 20px; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding: 0 20px; scrollbar-width: none; }
+.pp-media::-webkit-scrollbar { display: none; }
+.pp-media img, .pp-media video { height: 210px; width: auto; flex: none; border-radius: 18px; scroll-snap-align: start; background: color-mix(in srgb, var(--ink) 5%, transparent);
+  box-shadow: 0 0 0 1px var(--glass-line); object-fit: cover; }
+.pp-media.is-video video { width: 100%; height: auto; aspect-ratio: 1074 / 798; }
+.pp-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 22px; }
+.pp-num { display: block; font-family: var(--serif); font-weight: 200; font-size: 34px; line-height: 1; letter-spacing: -.02em; font-variant-numeric: tabular-nums lining-nums; }
+.pp-what { display: block; margin-top: 6px; font-size: 12.5px; line-height: 1.4; font-weight: 400; color: var(--whisper); }
+.pp-story { margin-top: 22px; }
+.pp-story p { margin-top: 6px; font-size: 16px; line-height: 1.5; color: var(--ink); }
+.pp-facts { margin-top: 18px; border-top: 1px solid var(--hair); }
+.pp-facts > div { display: grid; grid-template-columns: 96px 1fr; gap: 12px; padding: 11px 0; border-bottom: 1px solid var(--hair); }
+.pp-facts dt { font-size: 13px; font-weight: 400; color: var(--whisper); }
+.pp-facts dd { font-size: 14.5px; line-height: 1.45; color: var(--ink-2); }
+.pp-actions { display: flex; gap: 8px; padding: 12px 16px 14px; border-top: 1px solid var(--hair); flex: none; }
+.pp-actions .btn { flex: 1 1 0; min-width: 0; height: 46px; font-size: 15px; padding: 0 14px; }
+.pp-actions .btn svg { width: 12px; height: 12px; }
+@media (min-width: 760px) {
+  .pp { left: auto; top: 16px; right: 16px; bottom: 16px; width: 420px; max-height: none; border-radius: 34px; translate: calc(100% + 40px) 0; }
+  .pp-grab { display: none; }
+  .pp-head { padding-top: 14px; }
+}
+@media (prefers-reduced-motion: reduce) { .pp { transition: opacity .2s linear; } .pp:not(.is-open) { opacity: 0; } }

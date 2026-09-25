@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>On your desk. Shea Wilson</title>
+<meta name="description" content="A small model of Shea Wilson’s work that you can put on a real table with your phone.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="../favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/lab.css">
+<script type="module" src="vendor/model-viewer/model-viewer.min.js"></script>
+<style>
+  html, body { min-height: 100%; }
+  body { min-height: 100svh; display: grid; grid-template-rows: auto 1fr auto; }
+  header { display: flex; align-items: center; justify-content: space-between; padding: calc(20px + var(--safe-t)) var(--gutter) 0; }
+  main { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(300px, .65fr); align-items: center; gap: 0 40px; padding: 0 var(--gutter); max-width: 1380px; width: 100%; margin: 0 auto; }
+
+  .stage { position: relative; height: min(78svh, 760px); min-height: 420px; }
+  model-viewer { width: 100%; height: 100%; --poster-color: transparent; --progress-bar-color: transparent; background: transparent; }
+  model-viewer::part(default-progress-bar) { display: none; }
+  /* The work's own light behind the model, like the cards on the homepage */
+  .stage-glow { position: absolute; inset: 14% 10% 22%; z-index: -1; filter: blur(60px); opacity: .32; pointer-events: none;
+    background: radial-gradient(closest-side at 30% 60%, #ed1652, transparent), radial-gradient(closest-side at 50% 40%, #ffb22c, transparent 80%), radial-gradient(closest-side at 72% 58%, #8a3cff, transparent); }
+  [data-theme="dark"] .stage-glow { opacity: .45; }
+  .loading { position: absolute; left: 50%; top: 50%; translate: -50% -50%; display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--whisper); transition: opacity .5s var(--ease); pointer-events: none; }
+  .loading .ring { animation: spin 1.6s linear infinite; }
+  @keyframes spin { to { rotate: 1turn; } }
+  .is-loaded .loading { opacity: 0; }
+
+  .copy h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(44px, 5.4vw, 76px); line-height: 1.02; letter-spacing: -.03em; word-spacing: -.03em; }
+  .copy h1 em { font-style: italic; letter-spacing: -.02em; }
+  .copy .lede { margin-top: 18px; max-width: 30em; font-size: 17px; line-height: 1.55; color: var(--ink-2); text-wrap: pretty; }
+  .copy .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+  .copy .note { margin-top: 16px; font-size: 13px; line-height: 1.5; color: var(--whisper); max-width: 34em; }
+
+  /* On a computer: a code to open it on your phone */
+  .handoff { display: none; align-items: center; gap: 18px; margin-top: 30px; padding: 16px 20px 16px 16px; border-radius: 26px; width: fit-content; }
+  .no-ar .handoff { display: flex; }
+  .no-ar #ar { display: none; }
+  .note.elsewhere { display: none; }
+  .ar-elsewhere .note.elsewhere { display: block; color: var(--ink-2); }
+  .ar-elsewhere #ar, .ar-elsewhere #note { display: none; }
+  .handoff .code { width: 96px; height: 96px; padding: 8px; border-radius: 16px; background: #fff; flex: none; }
+  .handoff .code svg { display: block; width: 100%; height: 100%; }
+  .handoff p { font-size: 14px; line-height: 1.5; color: var(--ink-2); max-width: 17em; }
+  .handoff b { display: block; font-family: var(--serif); font-style: italic; font-weight: 300; font-size: 21px; color: var(--ink); letter-spacing: -.01em; margin-bottom: 2px; }
+
+  /* A marker over each project: tap it, or the project itself, for the panel */
+  .spot { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; padding: 0; cursor: pointer;
+    background: var(--glass-strong); border: 1px solid var(--glass-edge); box-shadow: 0 4px 14px rgba(0,0,0,.14);
+    -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); transition: opacity .3s var(--ease), scale .3s var(--ease); }
+  .spot i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); animation: spot 2.4s var(--ease) infinite; }
+  .spot:hover { scale: 1.12; }
+  .spot[data-visible] { opacity: 1; }
+  .spot:not([data-visible]) { opacity: 0; pointer-events: none; }
+  @keyframes spot { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--c) 50%, transparent); } 70%, 100% { box-shadow: 0 0 0 8px transparent; } }
+  .is-picking .spot { opacity: 0 !important; pointer-events: none; }
+  .stage .hint { position: absolute; left: 50%; bottom: 6%; translate: -50% 0; white-space: nowrap; transition: opacity .5s var(--ease); pointer-events: none; }
+  .stage:not(.is-loaded) .hint, .is-picking .hint { opacity: 0; }
+  @media (max-width: 759px) { .pp { max-height: min(52svh, 520px); } }
+  @media (prefers-reduced-motion: reduce) { .spot i { animation: none; } }
+
+  footer { display: flex; justify-content: space-between; gap: 16px; padding: 18px var(--gutter) calc(22px + var(--safe-b)); font-size: 13px; color: var(--whisper); }
+  footer a:hover { color: var(--ink); }
+
+  .theme-toggle { position: relative; width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; }
+  .tt { position: relative; width: 18px; height: 18px; border-radius: 50%; }
+  .tt-ring { position: absolute; inset: -3px; border-radius: 50%;
+    background: conic-gradient(from 0deg, #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+    -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%);
+    transition: transform 1s var(--ease); }
+  .tt-disc { position: absolute; inset: 1px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: 0 0 0 .5px rgba(10, 10, 10, .12); }
+  .tt-moon { position: absolute; inset: 0; border-radius: 50%; background: #05070b; transform: translateX(-115%); transition: transform .8s var(--ease-io); }
+  .theme-toggle:hover .tt-ring { transform: rotate(180deg); }
+  [data-theme="dark"] .tt-moon { transform: none; }
+
+  @media (max-width: 900px) {
+    main { grid-template-columns: 1fr; padding-bottom: 10px; }
+    .stage { height: 56svh; min-height: 340px; order: -1; }
+    .copy { text-align: center; }
+    .copy .lede, .copy .note { margin-left: auto; margin-right: auto; }
+    .copy .actions { justify-content: center; }
+    .handoff { margin-left: auto; margin-right: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="../" aria-label="Shea Wilson, homepage">Shea Wilson</a>
+  <button class="theme-toggle" type="button" id="theme" aria-label="Switch to the eclipse" aria-pressed="false"><span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span></button>
+</header>
+
+<main>
+  <div class="stage" id="stage">
+    <div class="stage-glow" aria-hidden="true"></div>
+    <model-viewer id="mv"
+      src="assets/models/desk-light.glb"
+      ios-src="assets/models/desk-light.usdz#callToAction=Open%20the%20site&checkoutTitle=Shea%20Wilson&checkoutSubtitle=Design%20engineer"
+      alt="A small white plinth with four pockets cut into it. Over each pocket floats one of Shea Wilson’s projects: Smoking Snapshot, JumpStart, Heart Health and Brain Dump. Behind them a disc rises out of a slot, ringed with colour, and the plinth reads Always making something."
+      ar ar-modes="webxr scene-viewer quick-look" ar-placement="floor"
+      camera-controls touch-action="pan-y" auto-rotate auto-rotate-delay="1200" rotation-per-second="12deg" interaction-prompt="none"
+      camera-orbit="-18deg 68deg 105%" min-camera-orbit="auto 20deg 0.16m" max-camera-orbit="auto 88deg auto" field-of-view="28deg"
+      shadow-intensity=".9" shadow-softness=".9" environment-image="neutral" exposure="1.02" tone-mapping="neutral">
+      <button slot="ar-button" hidden></button>
+      <button class="spot" slot="hotspot-snapshot" data-project="snapshot" data-position="-0.084m 0.082m 0.016m" data-normal="0 0 1" data-visibility-attribute="visible" style="--c:#ed1652" aria-label="Smoking Snapshot"><i></i></button>
+      <button class="spot" slot="hotspot-jumpstart" data-project="jumpstart" data-position="-0.028m 0.082m 0.016m" data-normal="0 0 1" data-visibility-attribute="visible" style="--c:#4fae86" aria-label="JumpStart"><i></i></button>
+      <button class="spot" slot="hotspot-heart" data-project="heart" data-position="0.028m 0.082m 0.016m" data-normal="0 0 1" data-visibility-attribute="visible" style="--c:#43d9ff" aria-label="Heart Health"><i></i></button>
+      <button class="spot" slot="hotspot-brain" data-project="brain" data-position="0.084m 0.082m 0.016m" data-normal="0 0 1" data-visibility-attribute="visible" style="--c:#8a3cff" aria-label="Brain Dump"><i></i></button>
+    </model-viewer>
+    <p class="loading" id="loading"><span class="ring" style="--size:14px"></span>Loading the model</p>
+    <p class="hint pill glass" id="hint"><span class="ring" style="--size:12px"></span>Tap a project to find out more</p>
+  </div>
+
+  <div class="copy">
+    <h1>On your <em>desk.</em></h1>
+    <p class="lede">A small model of the work, about 25 cm across. On a phone, put it on a real table and walk round it. On a computer, drag to turn it.</p>
+    <div class="actions">
+      <button class="btn is-primary" id="ar" type="button">
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.8l5.5 3.1v6.2L8 14.2l-5.5-3.1V4.9z"/><path d="M8 8l5.5-3.1M8 8v6.2M8 8L2.5 4.9"/></svg>
+        Put it on your desk
+      </button>
+      <a class="btn" href="card.html">Try the card</a>
+    </div>
+    <div class="handoff glass">
+      <div class="code" id="code" aria-hidden="true"></div>
+      <p><b>Use your phone</b>Scan this to open the page there, then tap ‘Put it on your desk’.</p>
+    </div>
+    <p class="note" id="note">On iPhone it opens in Quick Look. On Android it uses Google’s viewer.</p>
+    <p class="note elsewhere">To put it on your desk, open this page in Safari on iPhone or Chrome on Android.</p>
+  </div>
+</main>
+
+<footer>
+  <span>© 2026 Shea Wilson</span>
+  <a href="./">More ways to see it</a>
+</footer>
+
+<script type="module">
+  import qrcode from './vendor/qr/qrcode.mjs';
+  import { projectPanel } from './js/project-panel.js';
+  const mv = document.getElementById('mv');
+  const root = document.documentElement;
+  const q = new URLSearchParams(location.search);
+  let dark = root.dataset.theme === 'dark';
+  const banner = '#callToAction=Open%20the%20site&checkoutTitle=Shea%20Wilson&checkoutSubtitle=Design%20engineer';
+
+  function setModel() {
+    const name = dark ? 'desk-dark' : 'desk-light';
+    mv.src = `assets/models/${name}.glb`;
+    mv.iosSrc = `assets/models/${name}.usdz${banner}`;
+    document.getElementById('theme').setAttribute('aria-pressed', String(dark));
+  }
+  if (dark) setModel();
+  document.getElementById('theme').addEventListener('click', () => {
+    dark = !dark;
+    if (dark) root.dataset.theme = 'dark'; else delete root.dataset.theme;
+    try { localStorage.setItem('theme', dark ? 'dark' : 'light'); } catch (e) {}
+    setModel();
+  });
+
+  mv.addEventListener('load', () => { document.getElementById('stage').classList.add('is-loaded'); root.dataset.ready = '1'; });
+  // Tap a project (its marker, its screens or its pocket) for the panel; the camera glides over to it
+  const stage = document.getElementById('stage');
+  const home = { orbit: mv.getAttribute('camera-orbit'), target: 'auto auto auto' };
+  // Auto-rotate turns the model itself, like a turntable, so a front view can land on its back. Before gliding
+  // in, stop the turntable and hand its turn to the camera: nothing moves on screen, and "front" means front.
+  function faceFront() {
+    mv.autoRotate = false;
+    const yaw = mv.turntableRotation || 0;
+    if (yaw) {
+      const o = mv.getCameraOrbit();
+      mv.resetTurntableRotation(0);
+      mv.cameraOrbit = `${o.theta - yaw}rad ${o.phi}rad ${o.radius}m`;
+      mv.jumpCameraToGoal();
+    }
+  }
+  // Go the short way round: pick the version of the angle nearest where the camera already is
+  function nearestTheta(deg) {
+    const cur = mv.getCameraOrbit().theta * 180 / Math.PI;
+    return (deg + Math.round((cur - deg) / 360) * 360).toFixed(1);
+  }
+  const spots = Object.fromEntries([...document.querySelectorAll('.spot')].map((b) => [b.dataset.project, b]));
+  const panel = projectPanel({
+    onChange(id) {
+      stage.classList.toggle('is-picking', !!id);
+      if (id) {
+        const [x] = spots[id].dataset.position.split(' ').map(parseFloat);
+        faceFront();
+        mv.cameraTarget = `${x}m 0.05m 0.016m`;
+        mv.cameraOrbit = `${nearestTheta(x * 110)}deg 72deg ${innerWidth < 760 ? 0.34 : 0.4}m`;
+        if (innerWidth < 760) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        mv.cameraTarget = home.target;
+        mv.cameraOrbit = home.orbit;
+        mv.autoRotate = true;
+      }
+    },
+  });
+  Object.values(spots).forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); panel.open(b.dataset.project); }));
+  let down = null;
+  mv.addEventListener('pointerdown', (e) => { down = { x: e.clientX, y: e.clientY }; });
+  mv.addEventListener('click', (e) => {
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6 || e.target.closest?.('.spot')) return;
+    const name = mv.materialFromPoint(e.clientX, e.clientY)?.name || '';
+    const m = /^(snapshot|jumpstart|heart|brain)_|^(?:Glow|Pocket)_(snapshot|jumpstart|heart|brain)$/.exec(name);
+    const id = m && (m[1] || m[2]);
+    if (id) panel.open(id); else panel.close();
+  });
+
+  // Quick Look's banner button brings you back to the site
+  mv.addEventListener('quick-look-button-tapped', () => { location.href = '../'; });
+
+  // Our own button starts AR; without AR support, show a code for the phone instead
+  const arBtn = document.getElementById('ar');
+  arBtn.addEventListener('click', () => mv.activateAR());
+  // A code to scan only makes sense on a computer. On a phone that can't do AR here (an in-app browser,
+  // say), point to the browser that can instead.
+  const phone = matchMedia('(pointer: coarse)').matches && !q.has('desktop');
+  const decide = () => {
+    document.body.classList.toggle('no-ar', !phone && (!mv.canActivateAR || q.has('desktop')));
+    document.body.classList.toggle('ar-elsewhere', phone && !mv.canActivateAR);
+  };
+  mv.addEventListener('load', decide);
+  customElements.whenDefined('model-viewer').then(() => setTimeout(decide, 300));
+  decide();
+
+  const qr = qrcode(0, 'M');
+  qr.addData(location.href.split('#')[0].replace(/[?&]desktop\b/, ''));
+  qr.make();
+  const n = qr.getModuleCount();
+  let d = '';
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) if (qr.isDark(r, c)) d += `M${c} ${r}h1v1h-1z`;
+  document.getElementById('code').innerHTML = `<svg viewBox="0 0 ${n} ${n}" shape-rendering="crispEdges"><path d="${d}" fill="#0a0a0a"/></svg>`;
+</script>
+</body>
+</html>

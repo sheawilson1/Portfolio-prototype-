@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Walk through it. Shea Wilson</title>
+<meta name="description" content="Shea Wilson’s homepage as a place. Scroll to move past each project, all the way to the horizon.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="../favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  // If the 3D can't start, say so instead of loading forever. Only our own scripts count: browsers with
+  // built-in assistants and extensions put their own code on every page, and their errors aren't ours.
+  function fail(detail) {
+    if (document.documentElement.dataset.ready === '1') return;
+    var l = document.getElementById('loader');
+    if (!l || l.querySelector('.fail')) return;
+    l.innerHTML = '<p class="fail">Something stopped the 3D from loading. <a href="">Try again</a>, or <a href="../">the homepage</a> has all the same work.<small></small></p>';
+    l.querySelector('small').textContent = detail;
+  }
+  var ours = function (src) { return !!src && src.indexOf(location.origin + location.pathname.replace(/[^/]*$/, '')) === 0; };
+  addEventListener('error', function (e) {
+    if (ours(e.filename)) fail(e.message + ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')');
+  });
+  addEventListener('unhandledrejection', function (e) {
+    var r = e.reason, stack = (r && r.stack) || '';
+    if (ours((stack.match(/https?:\/\/[^\s)]+/) || [])[0])) fail(String(r && r.message || r));
+  });
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/lab.css">
+<link rel="stylesheet" href="css/world.css">
+<link rel="modulepreload" href="vendor/three/three.module.js">
+<script type="importmap">{ "imports": { "three": "./vendor/three/three.module.js", "three/addons/": "./vendor/three/addons/" } }</script>
+</head>
+<body>
+
+<div id="stage" aria-hidden="true"></div>
+<div id="veil" aria-hidden="true"></div>
+
+<header class="bar">
+  <a class="logo" href="../" aria-label="Shea Wilson, homepage">Shea Wilson</a>
+  <button class="theme" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark mode"><span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span></button>
+</header>
+
+<h1 class="sr">Always making something.</h1>
+<!-- The page scrolls this empty track; the camera follows it -->
+<main id="track"></main>
+
+<section class="intro" id="intro">
+  <p class="lede">I’m Shea, a design engineer. I designed and built Smoking Snapshot for an NHS campaign, where it was used 975 times. Right now I’m building a reporting product that’s in pilot with the National Football Museum.</p>
+  <p class="hint"><span class="ring" style="--size:12px"></span>Scroll to walk through</p>
+</section>
+
+<article class="cap" id="cap" aria-live="polite">
+  <p class="label cap-meta"><i></i><span id="c-label"></span></p>
+  <h2 id="c-name"></h2>
+  <p class="cap-line" id="c-line"></p>
+  <div class="cap-actions" id="c-actions"></div>
+</article>
+
+<section class="talk" id="talk" aria-labelledby="talk-title">
+  <h2 id="talk-title">Let’s <em>talk.</em></h2>
+  <p class="sub">Got a project or an idea? Email is the quickest way to reach me.</p>
+  <div class="cta">
+    <a class="email" href="mailto:design@sheawilson.uk">
+      <svg class="email-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="1.75" y="3.25" width="12.5" height="9.5" rx="2"/><path d="M2.5 4.5l5.5 4.25 5.5-4.25"/></svg>
+      <span>design@sheawilson.uk</span>
+    </a>
+    <button class="copy" id="copy" type="button" data-email="design@sheawilson.uk" aria-label="Copy email address">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" aria-hidden="true"><rect x="5.25" y="5.25" width="8.5" height="8.5" rx="2"/><path d="M10.75 5.25V4.25a2 2 0 0 0-2-2h-4.5a2 2 0 0 0-2 2v4.5a2 2 0 0 0 2 2h1"/></svg>
+      <span class="copy-label" aria-live="polite">Copy</span>
+    </button>
+  </div>
+  <a class="linkedin" href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener"><span class="mark" style="-webkit-mask-image:url(../assets/media/tools/linkedin.svg);mask-image:url(../assets/media/tools/linkedin.svg)"></span>Find me on LinkedIn<svg class="arr" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+</section>
+
+<nav class="walk glass" id="walk" aria-label="Stops">
+  <button class="walk-btn" id="prev" type="button" aria-label="Previous stop"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg></button>
+  <ol class="dashes" id="dashes"></ol>
+  <button class="walk-btn" id="next" type="button" aria-label="Next stop"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
+</nav>
+
+<div class="tip" id="tip" aria-hidden="true"><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>
+
+<div class="loader" id="loader" role="status"><span class="ring"></span><span class="sr">Loading</span></div>
+<noscript><p class="nojs">This page needs JavaScript and WebGL. The <a href="../">homepage</a> has all the same work.</p></noscript>
+
+<script type="module" src="js/world.js"></script>
+</body>
+</html>

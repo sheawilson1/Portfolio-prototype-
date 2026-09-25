@@ -1,0 +1,259 @@
+/* The card, on your phone. The page is daylight and one object: the printed card, rebuilt from real layers so
+   they can separate in depth. Units inside the card are millimetres of the print (--mm), so it keeps the print's
+   layout at any size. While it moves, only transforms, opacity and the light's position change. */
+
+@property --umbra { syntax: '<length>'; inherits: false; initial-value: 0px; }
+
+:root {
+  --pale-a: #fde9cf;
+  --pale-b: #e3ebff;
+  --stock: #ffffff;
+  --stock-edge: #e4e1da;
+  --disc: #ffffff;
+  --rim: rgba(10, 10, 10, .075);
+  --tile-bg: #ffffff;
+  --tile-rim: rgba(10, 10, 10, .07);
+  --shadow: 20, 24, 52;
+  --shadow-a: .2;
+  --glow-o: .42;
+  /* The light: a bright lobe where it lands, falling off into a faint shade across the stock */
+  --hi: rgba(255, 255, 255, .5);
+  --hi-2: rgba(255, 255, 255, .18);
+  --lo-2: rgba(12, 16, 36, .018);
+  --lo: rgba(12, 16, 36, .06);
+}
+[data-theme="dark"] {
+  --pale-a: #3a2a22;
+  --pale-b: #1c2436;
+  --stock: #0b0e14;
+  --stock-edge: #1d212a;
+  --disc: #030409;
+  --rim: rgba(255, 255, 255, .09);
+  --tile-bg: #11141b;
+  --tile-rim: rgba(255, 255, 255, .08);
+  --shadow: 0, 0, 0;
+  --shadow-a: .55;
+  --glow-o: .8;
+  --hi: rgba(255, 255, 255, .085);
+  --hi-2: rgba(255, 255, 255, .035);
+  --lo-2: rgba(0, 0, 0, .12);
+  --lo: rgba(0, 0, 0, .3);
+}
+
+html { height: 100%; }
+body { min-height: 100%; min-height: 100svh; display: grid; grid-template-rows: auto 1fr; overflow-x: clip;
+  transition: background-color .6s var(--ease), color .6s var(--ease); }
+.theme-switching *, .theme-switching *::before, .theme-switching *::after { transition: none !important; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+/* ───────── Top: the name, and the homepage's theme toggle ───────── */
+.top { position: relative; z-index: 4; display: flex; align-items: center; justify-content: space-between;
+  min-height: calc(58px + var(--safe-t)); padding: calc(10px + var(--safe-t)) calc(var(--gutter) - 12px) 0 var(--gutter); }
+.theme { width: 44px; height: 44px; border-radius: 50%; display: grid; place-items: center; }
+.tt { position: relative; width: 18px; height: 18px; border-radius: 50%; }
+.tt-ring { position: absolute; inset: -3px; border-radius: 50%;
+  background: conic-gradient(from 0deg, #ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%);
+  transition: transform 1s var(--ease); }
+.tt-disc { position: absolute; inset: 1px; border-radius: 50%; background: #fff; overflow: hidden; box-shadow: 0 0 0 .5px rgba(10, 10, 10, .12); }
+.tt-moon { position: absolute; inset: 0; border-radius: 50%; background: #05070b; transform: translateX(-115%); transition: transform .8s var(--ease-io); }
+.theme:hover .tt-ring { transform: rotate(180deg); }
+[data-theme="dark"] .tt-moon { transform: none; }
+
+::view-transition-old(root), ::view-transition-new(root) { animation: none; mix-blend-mode: normal; }
+::view-transition-new(root) {
+  -webkit-mask-image: radial-gradient(circle at var(--vx, 90%) var(--vy, 4%), #000 var(--umbra), transparent calc(var(--umbra) + 220px));
+          mask-image: radial-gradient(circle at var(--vx, 90%) var(--vy, 4%), #000 var(--umbra), transparent calc(var(--umbra) + 220px));
+  animation: umbra 1.15s var(--ease-io) both; }
+@keyframes umbra { from { --umbra: -220px; } to { --umbra: 160vmax; } }
+
+/* ───────── Stage: the card with its label under it, like a work on a wall. Actions sit in reach of a thumb. ───────── */
+.stage { display: grid; grid-template-rows: 1fr auto; justify-items: center; row-gap: 28px; padding: 0 var(--gutter) calc(16px + var(--safe-b));
+  --cw: min(calc(100vw - 2 * var(--gutter)), 600px, calc((100svh - 450px) * 85 / 55)); }
+.hero { align-self: center; width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+.caption { display: flex; flex-direction: column; align-items: center; text-align: center; margin-top: clamp(40px, 7svh, 64px); }
+.caption h1 { font-family: var(--serif); font-weight: 300; font-size: clamp(29px, 7.8vw, 42px); line-height: 1.06; letter-spacing: -.03em; word-spacing: -.03em; }
+.caption h1 em { font-style: italic; letter-spacing: -.02em; }
+.hint { margin-top: 12px; max-width: 30em; font-size: 14px; line-height: 1.5; color: var(--whisper); text-wrap: balance; transition: opacity .3s var(--ease); }
+.hint.is-swapping { opacity: 0; }
+.motion { margin-top: 18px; }
+.motion[hidden] { display: none; }
+
+.actions { width: min(100%, 420px); display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-self: end; }
+.actions .btn { padding: 0 18px; }
+.actions .is-primary { grid-column: 1 / -1; }
+
+/* Save contact answers in place: the label crossfades to what's happening, with the site's ring turning, then comes back.
+   Both labels share one cell, so the button never changes size. */
+.swap { display: inline-grid; }
+.swap > span { grid-area: 1 / 1; display: inline-flex; align-items: center; justify-content: center; gap: 10px; transition: opacity .3s var(--ease); }
+.swap svg { width: 14px; height: 14px; flex: none; }
+.swap-busy { opacity: 0; }
+.save.is-busy .swap-rest { opacity: 0; }
+.save.is-busy .swap-busy { opacity: 1; }
+.save .ring::before { animation: turn 1.8s linear infinite paused; }
+.save.is-busy .ring::before { animation-play-state: running; }
+@keyframes turn { to { transform: rotate(1turn); } }
+/* In an app's own browser the contact card often can't open, so say how to get out */
+.save-note { grid-column: 1 / -1; flex-basis: 100%; margin-top: 2px; font-size: 13px; line-height: 1.45; color: var(--whisper); text-align: center; text-wrap: balance; }
+.save-note[hidden] { display: none; }
+
+/* ───────── The object: glow and shadow on the page, the card in 3D above them ───────── */
+.object { position: relative; flex: none; width: var(--cw); aspect-ratio: 85 / 55;
+  --mm: calc(var(--cw) / 85); --r: calc(var(--mm) * 3.2); --tr: calc(var(--mm) * 2.3); --ls: calc(var(--cw) * 2.2);
+  perspective: calc(var(--cw) * 2.6); }
+
+/* The work's light, spilling onto the wall round the edges. Soft edges from gradients, never a blur. */
+.glow { position: absolute; inset: -22% -16%; pointer-events: none; opacity: 0; transition: opacity .8s var(--ease); will-change: transform; }
+.glow.is-on { opacity: var(--glow-o); }
+.glow i { position: absolute; left: var(--x); top: var(--y); width: var(--w); aspect-ratio: var(--ar, 1.5); rotate: var(--rot, 0deg); border-radius: 50%; opacity: var(--o, 1);
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--c) 78%, transparent) 0%, color-mix(in srgb, var(--c) 54%, transparent) 26%,
+    color-mix(in srgb, var(--c) 30%, transparent) 48%, color-mix(in srgb, var(--c) 12%, transparent) 70%, color-mix(in srgb, var(--c) 3%, transparent) 88%, transparent 100%); }
+
+/* Shadows stay on the page: a soft rectangle from two crossed gradient masks */
+.shadow { position: absolute; pointer-events: none; will-change: transform, opacity; background: rgba(var(--shadow), var(--shadow-a));
+  --fx: 16%; --fy: 22%;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, rgba(0,0,0,.1) calc(var(--fx) * .25), rgba(0,0,0,.38) calc(var(--fx) * .5), rgba(0,0,0,.76) calc(var(--fx) * .75), #000 var(--fx),
+      #000 calc(100% - var(--fx)), rgba(0,0,0,.76) calc(100% - var(--fx) * .75), rgba(0,0,0,.38) calc(100% - var(--fx) * .5), rgba(0,0,0,.1) calc(100% - var(--fx) * .25), transparent),
+    linear-gradient(transparent, rgba(0,0,0,.1) calc(var(--fy) * .25), rgba(0,0,0,.38) calc(var(--fy) * .5), rgba(0,0,0,.76) calc(var(--fy) * .75), #000 var(--fy),
+      #000 calc(100% - var(--fy)), rgba(0,0,0,.76) calc(100% - var(--fy) * .75), rgba(0,0,0,.38) calc(100% - var(--fy) * .5), rgba(0,0,0,.1) calc(100% - var(--fy) * .25), transparent);
+          mask-image:
+    linear-gradient(90deg, transparent, rgba(0,0,0,.1) calc(var(--fx) * .25), rgba(0,0,0,.38) calc(var(--fx) * .5), rgba(0,0,0,.76) calc(var(--fx) * .75), #000 var(--fx),
+      #000 calc(100% - var(--fx)), rgba(0,0,0,.76) calc(100% - var(--fx) * .75), rgba(0,0,0,.38) calc(100% - var(--fx) * .5), rgba(0,0,0,.1) calc(100% - var(--fx) * .25), transparent),
+    linear-gradient(transparent, rgba(0,0,0,.1) calc(var(--fy) * .25), rgba(0,0,0,.38) calc(var(--fy) * .5), rgba(0,0,0,.76) calc(var(--fy) * .75), #000 var(--fy),
+      #000 calc(100% - var(--fy)), rgba(0,0,0,.76) calc(100% - var(--fy) * .75), rgba(0,0,0,.38) calc(100% - var(--fy) * .5), rgba(0,0,0,.1) calc(100% - var(--fy) * .25), transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect; }
+.shadow.is-near { left: 2%; right: 2%; top: 4%; bottom: -5%; --fx: 9%; --fy: 14%; }
+.shadow.is-far { left: -5%; right: -5%; top: 14%; bottom: -20%; --fx: 22%; --fy: 30%; opacity: .75; }
+
+/* The card: lift (tilt and the hop of a flip) > card (the flip) > faces > planes, each plane at its own depth.
+   --depth drops to nothing while the card is edge-on, so the layers settle onto the stock as it turns. */
+.lift, .card, .face { position: absolute; inset: 0; transform-style: preserve-3d; }
+.card { --depth: 1; --lx: calc(var(--cw) * .42); --ly: calc(var(--cw) * .07); }
+.face { transform: translateZ(calc(var(--mm) * .18)); }
+.back { transform: rotateY(180deg) translateZ(calc(var(--mm) * .18)); }
+/* Each plane is lifted by its depth and scaled back by the same amount, so at rest every layer lines up with the
+   print exactly and only tilting separates them. The perspective is 2.6 card widths, which is 221 mm. */
+.plane { position: absolute; margin: 0; pointer-events: none; --lz: calc(var(--z) * var(--depth) + var(--dz, 0));
+  transform: translateZ(calc(var(--lz) * var(--mm))) scale(calc(1 - var(--lz) / 221)); }
+.clip { inset: 0; overflow: hidden; border-radius: var(--r); }
+.base { background: var(--stock); transition: background-color .6s var(--ease); }
+.base::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 .5px var(--rim); pointer-events: none; }
+
+/* The card's edge, so it has a thickness when it's side on */
+.edge { position: absolute; top: var(--r); bottom: var(--r); width: calc(var(--mm) * .36); background: var(--stock-edge); }
+.edge.is-l { left: calc(var(--mm) * -.18); transform: rotateY(90deg); }
+.edge.is-r { right: calc(var(--mm) * -.18); transform: rotateY(90deg); }
+
+/* The light. One big soft lobe per lit surface, all moved to the same point on the card, so it reads as one lamp.
+   Each lobe lives in its own "glint" plane just above its surface: a plane that clips a moving layer is drawn
+   as a separate surface, which Chrome renders at 1x once it's tilted in perspective. That's invisible in a soft
+   gradient and very visible in type and screenshots, so the content planes never hold anything that moves. */
+.glint { --dz: .08; background: none !important; clip-path: inset(0 round var(--r)); }
+.glint::after { content: none !important; }
+.lit { position: absolute; left: 0; top: 0; width: var(--ls); height: var(--ls); margin: calc(var(--ls) / -2) 0 0 calc(var(--ls) / -2); pointer-events: none;
+  will-change: transform; translate: calc(var(--lx) - var(--ox, 0px)) calc(var(--ly) - var(--oy, 0px));
+  background: radial-gradient(closest-side, var(--hi) 0%, var(--hi-2) 14%, transparent 30%, transparent 38%, var(--lo-2) 66%, var(--lo) 100%); }
+
+/* ───────── Front: the horizon from the homepage and the print ───────── */
+.corona { position: absolute; left: calc(50% - var(--mm) * 77.88); top: calc(var(--mm) * 20.12); width: calc(var(--mm) * 155.76); aspect-ratio: 1; border-radius: 50%;
+  background: conic-gradient(from -64deg, #ed1652 0deg, #ff6a1a 36deg, #ffb22c 64deg, var(--pale-a) 96deg, var(--pale-b) 140deg, #43d9ff 182deg, var(--pale-b) 220deg,
+    #8a3cff 256deg, var(--pale-a) 292deg, #3a17e0 326deg, #ed1652 360deg);
+  /* The print's falloff outside the disc (its edge is at 84.7%). Inside, where the print never shows it, the ring
+     fades out, so when the disc slides over it you see a little more glow rather than a saturated seam. */
+  -webkit-mask: radial-gradient(closest-side, transparent 77%, rgba(0, 0, 0, .5) 82%, rgba(0, 0, 0, .58) 84%, rgba(0, 0, 0, .3) 89%, rgba(0, 0, 0, .11) 94%, transparent 100%);
+          mask: radial-gradient(closest-side, transparent 77%, rgba(0, 0, 0, .5) 82%, rgba(0, 0, 0, .58) 84%, rgba(0, 0, 0, .3) 89%, rgba(0, 0, 0, .11) 94%, transparent 100%); }
+[data-theme="dark"] .corona { opacity: .92; }
+
+/* The disc is its own cut layer, clipped to the card's corners */
+.disc { inset: 0; border-radius: var(--r); overflow: hidden; }
+.disc-shape { position: absolute; left: calc(50% - var(--mm) * 66); top: calc(var(--mm) * 32); width: calc(var(--mm) * 132); aspect-ratio: 1; border-radius: 50%;
+  background: var(--disc); transition: background-color .6s var(--ease); }
+.disc::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 .5px var(--rim); pointer-events: none;
+  -webkit-mask: radial-gradient(circle calc(var(--mm) * 66) at 50% calc(var(--mm) * 98), #000 calc(100% - 1px), transparent 100%);
+          mask: radial-gradient(circle calc(var(--mm) * 66) at 50% calc(var(--mm) * 98), #000 calc(100% - 1px), transparent 100%); }
+.disc.glint { -webkit-mask: radial-gradient(circle calc(var(--mm) * 66) at 50% calc(var(--mm) * 98), #000 calc(100% - .75px), transparent 100%);
+                      mask: radial-gradient(circle calc(var(--mm) * 66) at 50% calc(var(--mm) * 98), #000 calc(100% - .75px), transparent 100%); }
+
+.who { left: 0; right: 0; top: calc(var(--mm) * 11.4); height: calc(var(--mm) * 11.6); text-align: center; }
+.name { font-family: var(--serif); font-style: italic; font-weight: 400; font-size: calc(var(--mm) * 6.4); letter-spacing: -.012em; line-height: 1; }
+.role { position: absolute; left: 0; right: 0; top: calc(var(--mm) * 8.2); font-size: calc(var(--mm) * 2.55); font-weight: 400; color: var(--ink-2); letter-spacing: .005em; }
+.reach { left: 0; right: 0; bottom: calc(var(--mm) * 6.2); text-align: center; font-size: calc(var(--mm) * 2.35); font-weight: 400; line-height: 1.6; color: var(--ink-2); }
+.reach b { font-weight: 500; color: var(--ink); }
+
+/* ───────── Back: the work, and the code that opens it in 3D ───────── */
+.head { left: calc(var(--mm) * 6); top: calc(var(--mm) * 5.4); font-family: var(--serif); font-weight: 300; font-size: calc(var(--mm) * 4.9); line-height: 1.02;
+  letter-spacing: -.028em; word-spacing: -.03em; white-space: nowrap; }
+.head em { font-style: italic; letter-spacing: -.018em; }
+/* Each tile's shadow sits on the stock, well below the tile, so the gap between them shows as you tilt */
+.shade { left: calc(var(--mm) * 6); right: calc(var(--mm) * 6); top: calc(var(--mm) * 13.6); height: calc(var(--mm) * 16.6);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(var(--mm) * 2.2); }
+.shade i { border-radius: 50%; transform: translateY(calc(var(--mm) * 1.3)) scale(1.16, 1.1);
+  background: radial-gradient(closest-side, rgba(var(--shadow), calc(var(--shadow-a) * .9)), rgba(var(--shadow), calc(var(--shadow-a) * .45)) 45%, rgba(var(--shadow), calc(var(--shadow-a) * .12)) 75%, transparent); }
+/* Each tile is its own plane and clips itself, so the light moving inside it stays a plain composited layer */
+.tile { left: calc(var(--mm) * (6 + var(--i) * 18.8)); top: calc(var(--mm) * 13.6); width: calc(var(--mm) * 16.6); height: calc(var(--mm) * 16.6);
+  overflow: hidden; border-radius: var(--tr); background: var(--tile-bg); }
+.tile.glint { clip-path: inset(0 round var(--tr)); }
+.tile::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 calc(var(--mm) * .18) var(--tile-rim); pointer-events: none; }
+.tile .lit { --ox: calc(var(--mm) * (6 + var(--i) * 18.8)); --oy: calc(var(--mm) * 13.6); }
+.wash { position: absolute; inset: -30%; z-index: -1; opacity: .78;
+  background: radial-gradient(closest-side at 50% 42%, var(--a), color-mix(in srgb, var(--a) 40%, transparent) 60%, transparent),
+    radial-gradient(closest-side at 70% 70%, var(--b), color-mix(in srgb, var(--b) 35%, transparent) 60%, transparent 90%),
+    radial-gradient(closest-side at 28% 72%, var(--c), color-mix(in srgb, var(--c) 35%, transparent) 60%, transparent 90%); }
+[data-theme="dark"] .wash { opacity: .9; }
+.tile img { position: absolute; display: block; max-width: none; height: auto; }
+.t-snap .res { width: 118%; left: -26%; top: 14%; rotate: -5deg; border-radius: calc(var(--mm) * .9); box-shadow: 0 calc(var(--mm) * .6) calc(var(--mm) * 1.6) rgba(20, 0, 80, .25); }
+.t-snap .phone { height: 116%; width: auto; left: 44%; top: 8%; filter: drop-shadow(0 calc(var(--mm) * .8) calc(var(--mm) * 1.2) rgba(20, 0, 80, .3)); }
+.t-jump .rep { width: 132%; left: -8%; top: 22%; rotate: 2deg; border-radius: calc(var(--mm) * .8); box-shadow: 0 calc(var(--mm) * .6) calc(var(--mm) * 1.8) rgba(0, 40, 20, .2); }
+.t-heart { background: #06161b; }
+.t-heart .scr { width: 150%; left: -18%; top: 16%; rotate: -7deg; border-radius: calc(var(--mm) * .9); box-shadow: 0 calc(var(--mm) * .8) calc(var(--mm) * 2) rgba(0, 0, 0, .4); }
+.t-brain .ph { height: 118%; width: auto; left: 16%; top: 10%; rotate: 3deg; filter: drop-shadow(0 calc(var(--mm) * .8) calc(var(--mm) * 1.4) rgba(50, 0, 110, .35)); }
+.img-dark { display: none !important; }
+[data-theme="dark"] .img-dark { display: block !important; }
+[data-theme="dark"] .img-light { display: none !important; }
+
+.names { left: calc(var(--mm) * 6); right: calc(var(--mm) * 6); top: calc(var(--mm) * 31.6); display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(var(--mm) * 2.2);
+  font-size: calc(var(--mm) * 1.85); white-space: nowrap; font-weight: 400; color: var(--ink-2); letter-spacing: .004em; }
+.how { left: calc(var(--mm) * 6); bottom: calc(var(--mm) * 5.2); max-width: calc(var(--mm) * 44); font-size: calc(var(--mm) * 2.3); font-weight: 400; line-height: 1.45; color: var(--ink-2); }
+.how b { display: block; font-family: var(--serif); font-style: italic; font-weight: 300; font-size: calc(var(--mm) * 3.5); color: var(--ink); letter-spacing: -.01em; margin-bottom: calc(var(--mm) * .5); }
+.qr { right: calc(var(--mm) * 6); bottom: calc(var(--mm) * 5.4); width: calc(var(--mm) * 12); height: calc(var(--mm) * 12); color: var(--ink); }
+.qr svg { display: block; width: 100%; height: 100%; }
+
+/* The whole card is the button that turns it over; the faces stay readable underneath */
+.hit { position: absolute; inset: 0; z-index: 3; border-radius: var(--r); cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.hit:focus-visible { outline: 2px solid var(--ink); outline-offset: 10px; }
+
+/* ───────── Arriving ───────── */
+.js .object { opacity: 0; transition: opacity .9s var(--ease); }
+.js .caption, .js .actions { opacity: 0; translate: 0 12px; transition: opacity .9s var(--ease) .1s, translate 1.1s var(--ease) .1s; }
+.js .actions { transition-delay: .18s; }
+.is-in .object, .is-in .caption, .is-in .actions { opacity: 1; translate: none; }
+.is-in .object.is-fading { opacity: 0; transition-duration: .17s; }
+
+/* ───────── Wider screens: everything in one centred column ───────── */
+@media (min-width: 760px) and (min-height: 600px) {
+  .stage { grid-template-rows: auto auto; align-content: center; row-gap: 0; padding-bottom: calc(36px + 5svh); }
+  .actions { display: flex; flex-wrap: wrap; justify-content: center; width: auto; margin-top: 34px; }
+}
+
+/* ───────── Phones on their side: the card on the left, the label and actions beside it ───────── */
+@media (orientation: landscape) and (max-height: 540px) {
+  .stage { grid-template-columns: auto minmax(0, 320px); grid-template-rows: auto auto; align-content: center; justify-content: center; justify-items: start;
+    column-gap: clamp(28px, 5vw, 56px); row-gap: 0; padding-bottom: calc(14px + var(--safe-b));
+    --cw: min(46vw, calc((100svh - 110px) * 85 / 55), 520px); }
+  .hero { display: contents; }
+  .object { grid-column: 1; grid-row: 1 / 3; align-self: center; }
+  .caption { grid-column: 2; grid-row: 1; align-self: end; margin: 0; align-items: flex-start; text-align: left; }
+  .caption h1 { font-size: 28px; text-wrap: balance; }
+  .motion { margin-top: 14px; }
+  .actions { grid-column: 2; grid-row: 2; align-self: start; margin-top: 20px; width: 100%; }
+  .actions .btn { height: 46px; padding: 0 14px; font-size: 15px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .js .caption, .js .actions { translate: none; }
+  .save .ring::before { animation: none; }
+  ::view-transition-new(root) { animation: none; }
+}

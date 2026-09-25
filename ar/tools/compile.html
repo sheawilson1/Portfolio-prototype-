@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Compile the card target</title>
+<meta name="robots" content="noindex">
+<style>body { font: 15px/1.5 system-ui, sans-serif; margin: 40px; } img { width: 420px; display: block; margin: 16px 0; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,.12); }</style>
+</head>
+<body>
+<h1>Card target</h1>
+<p>Compiles the back of the card into the file the phone tracks. With the save server running
+(<code>AR_SAVE=1 PORT=4421 node ar/tools/serve.mjs</code>) it writes <code>ar/assets/card.mind</code>; otherwise it downloads it.</p>
+<img id="src" src="../print/card-back.png" alt="">
+<p id="status">Waiting…</p>
+<script type="module">
+  import { Compiler } from '../vendor/mindar/mindar-image.prod.js';
+  const status = document.getElementById('status');
+  const img = document.getElementById('src');
+  await img.decode();
+  const compiler = new Compiler();
+  const t0 = performance.now();
+  await compiler.compileImageTargets([img], (p) => { status.textContent = `Compiling ${p.toFixed(0)}%`; });
+  const buffer = compiler.exportData();
+  // How much there is to hold on to, per scale: more points means faster, steadier tracking
+  const target = compiler.data[0];
+  const report = {
+    ms: Math.round(performance.now() - t0), bytes: buffer.byteLength,
+    matching: target.matchingData.map((s) => ({ w: s.width, maxima: s.maximaPoints?.length ?? 0, minima: s.minimaPoints?.length ?? 0 })),
+    tracking: target.trackingData.map((s) => ({ w: s.width, points: s.points?.length ?? 0 })),
+  };
+  window.report = report;
+  const out = new URLSearchParams(location.search).get('out') || 'ar/assets/card.mind';
+  const res = await fetch('/__save?path=' + encodeURIComponent(out), { method: 'POST', body: buffer }).catch(() => null);
+  if (!res || !res.ok) {
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([buffer])), download: out.split('/').pop() });
+    a.click();
+  }
+  status.textContent = `Done in ${report.ms} ms, ${report.bytes} bytes. ${res && res.ok ? 'Saved to ' + out : 'Downloaded.'}`;
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

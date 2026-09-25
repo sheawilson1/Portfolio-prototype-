@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Export the desk model</title>
+<meta name="robots" content="noindex">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<script type="importmap">{ "imports": { "three": "../vendor/three/three.module.js", "three/addons/": "../vendor/three/addons/" } }</script>
+<style>
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: #fff; }
+  canvas { display: block; width: 100vw; height: 70vh; }
+  #log { padding: 16px 24px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+<canvas id="view"></canvas>
+<div id="log">Building…</div>
+<script type="module">
+  // Builds the desk sculpture in both themes and writes GLB (web, Android) and USDZ (iPhone) files.
+  // With the save server (AR_SAVE=1 PORT=4421 node ar/tools/serve.mjs) they land in ar/assets/models/.
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+  import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
+  import { USDZExporter } from 'three/addons/exporters/USDZExporter.js';
+  import { buildDeskModel } from '../js/desk-model.js';
+  import { environment } from '../js/kit.js';
+
+  const q = new URLSearchParams(location.search);
+  const log = (s) => { document.getElementById('log').textContent += '\n' + s; };
+  const canvas = document.getElementById('view');
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight, false);
+  renderer.toneMapping = THREE.NeutralToneMapping;
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color('#ffffff');
+  scene.environment = environment(renderer, RoomEnvironment);
+  const camera = new THREE.PerspectiveCamera(30, canvas.clientWidth / canvas.clientHeight, .01, 20);
+  camera.position.set(0, .3, .52);
+  const controls = new OrbitControls(camera, canvas);
+  controls.target.set(0, .05, 0);
+  controls.update();
+
+  async function save(path, data) {
+    const res = await fetch('/__save?path=' + encodeURIComponent(path), { method: 'POST', body: data }).catch(() => null);
+    if (res && res.ok) return 'saved';
+    const a = Object.assign(document.createElement('a'), { href: URL.createObjectURL(new Blob([data])), download: path.split('/').pop() });
+    a.click();
+    return 'downloaded';
+  }
+
+  const themes = q.get('theme') ? [q.get('theme')] : ['light', 'dark'];
+  let shown = null;
+  const report = {};
+  for (const theme of themes) {
+    // Two builds: the web copy lets three.js fade the light, the Quick Look copy has the fade baked in
+    const model = await buildDeskModel({ dark: theme === 'dark' });
+    const glb = await new GLTFExporter().parseAsync(model, { binary: true, onlyVisible: true, maxTextureSize: 2048 });
+    const qlModel = await buildDeskModel({ dark: theme === 'dark', forQuickLook: true });
+    const usdz = await new USDZExporter().parseAsync(qlModel, {
+      quickLookCompatible: true, maxTextureSize: 2048, ar: { anchoring: { type: 'plane' }, planeAnchoring: { alignment: 'horizontal' } },
+    });
+    report[theme] = { glb: glb.byteLength, usdz: usdz.byteLength };
+    if (!q.has('dry')) {
+      report[theme].glbSaved = await save(`ar/assets/models/desk-${theme}.glb`, glb);
+      report[theme].usdzSaved = await save(`ar/assets/models/desk-${theme}.usdz`, usdz);
+    }
+    log(`${theme}: GLB ${(glb.byteLength / 1e6).toFixed(2)} MB, USDZ ${(usdz.byteLength / 1e6).toFixed(2)} MB`);
+    if (!shown || theme === (q.get('show') || 'light')) { if (shown) scene.remove(shown); shown = model; scene.add(model); }
+  }
+  window.report = report;
+  renderer.setAnimationLoop(() => { controls.update(); renderer.render(scene, camera); });
+  document.documentElement.dataset.ready = '1';
+</script>
+</body>
+</html>

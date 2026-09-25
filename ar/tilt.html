@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>The card, on your phone. Shea Wilson</title>
+<meta name="description" content="Shea Wilson’s card, on your phone. Save the contact, or turn it over to see the work.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="../favicon.ico" sizes="48x48">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<script>
+  document.documentElement.classList.add('js');
+  try { if (localStorage.getItem('theme') === 'dark') document.documentElement.dataset.theme = 'dark'; } catch (e) {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&family=Spectral:ital,wght@0,200;0,300;1,300;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/lab.css">
+<link rel="stylesheet" href="css/tilt.css">
+</head>
+<body>
+
+<header class="top">
+  <a class="logo" href="../" aria-label="Shea Wilson, homepage">Shea Wilson</a>
+  <button class="theme" type="button" aria-pressed="false" aria-label="Switch to dark mode"><span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span></button>
+</header>
+
+<main class="stage">
+  <div class="hero">
+    <div class="object" id="object">
+      <div class="glow is-front is-on" aria-hidden="true">
+        <i style="--c:#ed1652; --x:2%; --y:50%; --w:36%; --ar:1.15; --rot:-18deg"></i>
+        <i style="--c:#ff6a1a; --x:20%; --y:60%; --w:34%; --ar:1.3"></i>
+        <i style="--c:#ffb22c; --x:38%; --y:62%; --w:32%; --ar:1.35"></i>
+        <i style="--c:#43d9ff; --x:62%; --y:58%; --w:32%; --ar:1.3; --o:.45"></i>
+      </div>
+      <div class="glow is-back" aria-hidden="true">
+        <i style="--c:#ed1652; --x:9%; --y:56%; --w:32%; --ar:1.1"></i>
+        <i style="--c:#4fae86; --x:26%; --y:58%; --w:32%; --ar:1.1"></i>
+        <i style="--c:#43d9ff; --x:43%; --y:58%; --w:32%; --ar:1.1"></i>
+        <i style="--c:#8a3cff; --x:60%; --y:56%; --w:32%; --ar:1.1"></i>
+      </div>
+      <div class="shadow is-far" aria-hidden="true"></div>
+      <div class="shadow is-near" aria-hidden="true"></div>
+
+      <div class="lift">
+        <div class="card" id="card">
+
+          <!-- Front: the horizon from the homepage. Deepest first: the ring, the disc, the name, the contact lines. -->
+          <section class="face front" aria-label="Front of the card">
+            <div class="plane clip base" style="--z:0"><div class="corona"></div></div>
+            <div class="plane clip glint" style="--z:0" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane disc" style="--z:2.4"><div class="disc-shape"></div></div>
+            <div class="plane disc glint" style="--z:2.4" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane who" style="--z:5"><p class="name">Shea Wilson</p><p class="role">Design engineer</p></div>
+            <div class="plane reach" style="--z:7"><p><b>design@sheawilson.uk</b><br>sheawilson.uk</p></div>
+          </section>
+
+          <!-- Back: the work, lifted off the stock, and the code that opens it in 3D -->
+          <section class="face back" aria-label="Back of the card" aria-hidden="true">
+            <div class="plane clip base" style="--z:0"></div>
+            <div class="plane clip glint" style="--z:0" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane shade" style="--z:.35" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+            <div class="plane head" style="--z:3.4"><p>Always making <em>something.</em></p></div>
+            <div class="plane tile t-snap" style="--z:7; --i:0; --a:#3a17e0; --b:#ed1652; --c:#ff6a1a"><i class="wash"></i><img class="res" src="../assets/media/home/snapshot-results.webp" alt="" width="1400" height="1050"><img class="phone" src="../assets/media/home/snapshot-phone.webp" alt="" width="720" height="1491"></div>
+            <div class="plane tile t-jump" style="--z:7; --i:1; --a:#4fae86; --b:#8fd4b4; --c:#0b5c45"><i class="wash"></i><img class="rep img-light" src="../assets/media/home/jumpstart-report.webp" alt="" width="1289" height="1000"><img class="rep img-dark" src="../assets/media/home/jumpstart-report-dark.webp" alt="" width="1289" height="1000" loading="lazy"></div>
+            <div class="plane tile t-heart" style="--z:7; --i:2; --a:#43d9ff; --b:#ed1652; --c:#08717d"><i class="wash"></i><img class="scr" src="assets/heart-frame.webp" alt="" width="1074" height="798"></div>
+            <div class="plane tile t-brain" style="--z:7; --i:3; --a:#8a3cff; --b:#5b2bff; --c:#c77dff"><i class="wash"></i><img class="ph" src="../assets/media/home/brain-home.webp" alt="" width="520" height="1077"></div>
+            <div class="plane tile glint" style="--z:7; --i:0" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane tile glint" style="--z:7; --i:1" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane tile glint" style="--z:7; --i:2" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane tile glint" style="--z:7; --i:3" aria-hidden="true"><i class="lit"></i></div>
+            <div class="plane names" style="--z:3.4"><span>Smoking Snapshot</span><span>JumpStart</span><span>Heart Health</span><span>Brain Dump</span></div>
+            <div class="plane how" style="--z:3"><p><b>See it in 3D</b>Scan the code, then point your camera at this side of the card.</p></div>
+            <div class="plane qr" style="--z:4.6"><svg viewBox="0 0 25 25" role="img" aria-label="QR code for sheawilson.uk/card"><path fill="currentColor" d="M0 0h7v1.04h-7zM8 0h3v1.04h-3zM14 0h1v1.04h-1zM18 0h7v1.04h-7zM0 1h1v1.04h-1zM6 1h1v1.04h-1zM9 1h3v1.04h-3zM13 1h2v1.04h-2zM16 1h1v1.04h-1zM18 1h1v1.04h-1zM24 1h1v1.04h-1zM0 2h1v1.04h-1zM2 2h3v1.04h-3zM6 2h1v1.04h-1zM8 2h1v1.04h-1zM12 2h3v1.04h-3zM18 2h1v1.04h-1zM20 2h3v1.04h-3zM24 2h1v1.04h-1zM0 3h1v1.04h-1zM2 3h3v1.04h-3zM6 3h1v1.04h-1zM10 3h4v1.04h-4zM15 3h1v1.04h-1zM18 3h1v1.04h-1zM20 3h3v1.04h-3zM24 3h1v1.04h-1zM0 4h1v1.04h-1zM2 4h3v1.04h-3zM6 4h1v1.04h-1zM10 4h3v1.04h-3zM14 4h1v1.04h-1zM18 4h1v1.04h-1zM20 4h3v1.04h-3zM24 4h1v1.04h-1zM0 5h1v1.04h-1zM6 5h1v1.04h-1zM8 5h3v1.04h-3zM13 5h2v1.04h-2zM16 5h1v1.04h-1zM18 5h1v1.04h-1zM24 5h1v1.04h-1zM0 6h7v1.04h-7zM8 6h1v1.04h-1zM10 6h1v1.04h-1zM12 6h1v1.04h-1zM14 6h1v1.04h-1zM16 6h1v1.04h-1zM18 6h7v1.04h-7zM10 7h1v1.04h-1zM12 7h1v1.04h-1zM15 7h1v1.04h-1zM0 8h1v1.04h-1zM2 8h1v1.04h-1zM6 8h2v1.04h-2zM10 8h2v1.04h-2zM15 8h1v1.04h-1zM19 8h1v1.04h-1zM22 8h1v1.04h-1zM24 8h1v1.04h-1zM0 9h1v1.04h-1zM2 9h4v1.04h-4zM10 9h3v1.04h-3zM14 9h3v1.04h-3zM18 9h2v1.04h-2zM21 9h1v1.04h-1zM23 9h2v1.04h-2zM2 10h1v1.04h-1zM4 10h1v1.04h-1zM6 10h1v1.04h-1zM8 10h2v1.04h-2zM11 10h1v1.04h-1zM13 10h1v1.04h-1zM15 10h3v1.04h-3zM21 10h2v1.04h-2zM24 10h1v1.04h-1zM0 11h2v1.04h-2zM5 11h1v1.04h-1zM7 11h4v1.04h-4zM12 11h1v1.04h-1zM14 11h1v1.04h-1zM16 11h1v1.04h-1zM21 11h1v1.04h-1zM0 12h1v1.04h-1zM4 12h3v1.04h-3zM9 12h1v1.04h-1zM11 12h2v1.04h-2zM16 12h1v1.04h-1zM18 12h1v1.04h-1zM24 12h1v1.04h-1zM1 13h3v1.04h-3zM7 13h1v1.04h-1zM10 13h1v1.04h-1zM13 13h1v1.04h-1zM15 13h2v1.04h-2zM18 13h2v1.04h-2zM23 13h2v1.04h-2zM0 14h2v1.04h-2zM4 14h3v1.04h-3zM9 14h1v1.04h-1zM11 14h2v1.04h-2zM14 14h2v1.04h-2zM18 14h1v1.04h-1zM21 14h2v1.04h-2zM24 14h1v1.04h-1zM4 15h1v1.04h-1zM8 15h3v1.04h-3zM12 15h1v1.04h-1zM14 15h1v1.04h-1zM17 15h1v1.04h-1zM19 15h3v1.04h-3zM0 16h2v1.04h-2zM6 16h3v1.04h-3zM11 16h2v1.04h-2zM14 16h1v1.04h-1zM16 16h5v1.04h-5zM23 16h1v1.04h-1zM8 17h1v1.04h-1zM11 17h3v1.04h-3zM16 17h1v1.04h-1zM20 17h1v1.04h-1zM24 17h1v1.04h-1zM0 18h7v1.04h-7zM8 18h2v1.04h-2zM11 18h2v1.04h-2zM16 18h1v1.04h-1zM18 18h1v1.04h-1zM20 18h1v1.04h-1zM24 18h1v1.04h-1zM0 19h1v1.04h-1zM6 19h1v1.04h-1zM11 19h1v1.04h-1zM14 19h3v1.04h-3zM20 19h1v1.04h-1zM24 19h1v1.04h-1zM0 20h1v1.04h-1zM2 20h3v1.04h-3zM6 20h1v1.04h-1zM9 20h3v1.04h-3zM15 20h6v1.04h-6zM23 20h1v1.04h-1zM0 21h1v1.04h-1zM2 21h3v1.04h-3zM6 21h1v1.04h-1zM11 21h2v1.04h-2zM15 21h3v1.04h-3zM20 21h1v1.04h-1zM22 21h2v1.04h-2zM0 22h1v1.04h-1zM2 22h3v1.04h-3zM6 22h1v1.04h-1zM8 22h2v1.04h-2zM11 22h1v1.04h-1zM14 22h1v1.04h-1zM16 22h2v1.04h-2zM19 22h3v1.04h-3zM23 22h2v1.04h-2zM0 23h1v1.04h-1zM6 23h1v1.04h-1zM9 23h2v1.04h-2zM14 23h3v1.04h-3zM19 23h2v1.04h-2zM0 24h7v1.04h-7zM8 24h5v1.04h-5zM16 24h1v1.04h-1zM18 24h1v1.04h-1zM21 24h1v1.04h-1zM24 24h1v1.04h-1z"/></svg></div>
+          </section>
+
+          <i class="edge is-l" aria-hidden="true"></i><i class="edge is-r" aria-hidden="true"></i>
+        </div>
+      </div>
+
+      <button class="hit" id="hit" type="button" aria-label="Turn the card over"></button>
+    </div>
+
+    <div class="caption">
+      <h1>The card, <em>on your phone.</em></h1>
+      <button class="pill glass motion" id="motion" type="button" hidden><span class="ring" style="--size:12px"></span>Turn on tilt</button>
+      <p class="hint" id="hint">Tap the card to turn it over.</p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <a class="btn is-primary save" id="save" href="assets/shea-wilson.vcf" download="Shea Wilson.vcf" type="text/vcard">
+      <span class="swap">
+        <span class="swap-rest"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="6.5" cy="5.2" r="2.45"/><path d="M1.9 13.6c.55-2.5 2.3-3.9 4.6-3.9s4.05 1.4 4.6 3.9M12.9 4.2v4.2M10.8 6.3H15"/></svg>Save contact</span>
+        <span class="swap-busy" aria-hidden="true"><span class="ring" style="--size:12px"></span><span class="busy-text">Opening your contacts</span></span>
+      </span>
+    </a>
+    <a class="btn" href="../">Open the site<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.5 3l3 3-3 3"/></svg></a>
+    <a class="btn" href="card.html">See it in 3D<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6h7M6.5 3l3 3-3 3"/></svg></a>
+    <p class="save-note" id="save-note" aria-live="polite" hidden></p>
+  </div>
+</main>
+
+<p class="sr-only" id="status" aria-live="polite"></p>
+
+<script type="module" src="js/tilt.js"></script>
+</body>
+</html>
