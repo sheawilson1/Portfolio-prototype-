@@ -1,6 +1,6 @@
 // Shared pieces for the 3D and AR versions of the site: the palette, the work, and the objects they're built from.
 // Units are millimetres of the printed card (85 x 55), so the same scene sits on the card, on a desk or in the world.
-import * as THREE from 'three';
+import * as THREE from '../vendor/three/three.module.js';
 
 import { asset, SITE, CARD, CORONA, SPECTRUM, PROJECTS, MORE } from './projects.js';
 export { asset, SITE, CARD, CORONA, SPECTRUM, PROJECTS, MORE };

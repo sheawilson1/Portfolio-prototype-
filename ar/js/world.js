@@ -1,7 +1,7 @@
 // Walk through it: the homepage as a place you move through. The page scrolls a tall, empty track and the camera
 // follows a path through the world: from high over the headline and the disc, down to eye level past each pane of
 // work, and on to the disc itself, where the page ends the way the homepage does.
-import * as THREE from 'three';
+import * as THREE from '../vendor/three/three.module.js';
 import { fontsReady } from './kit.js';
 import { THEME, TEX, MOTION, shared, rgb, DISC, buildSky, buildGround, buildEclipse, buildType, buildPane, placeWorks, pathX } from './world-scene.js';
 
@@ -352,8 +352,11 @@ const here = () => (cutTo !== null ? cutTo : anim ? anim.i : Math.round(sFromY(w
 
 /* ───────── Layout ───────── */
 function measure() {
-  const w = window.innerWidth, h = stage.clientHeight || window.innerHeight;
+  // innerWidth can include overflow on iOS. Measure the layout viewport instead,
+  // and ignore toolbar/visual-viewport events that don't change the scene.
+  const w = root.clientWidth, h = stage.clientHeight || window.innerHeight;
   const changed = w !== view.w || Math.abs(h - view.h) > 1;
+  if (!changed) return;
   const keep = path && stopY[LAST] > 0 ? sFromY(cam.y) : null;
   view.w = w; view.h = h;
   if (changed) {

@@ -4,7 +4,7 @@
 // Units are metres. The walk heads towards -z, where the disc stands on the horizon.
 // Every material is unlit and works in the site's own colour space: textures are sampled raw and colours are
 // mixed the way the browser mixes them, so a hex value here looks the same as it does in site.css.
-import * as THREE from 'three';
+import * as THREE from '../vendor/three/three.module.js';
 import { CORONA, PROJECTS, MORE, squircleSlab, squirclePlane, hexA, asset } from './kit.js';
 
 const D2R = Math.PI / 180;
