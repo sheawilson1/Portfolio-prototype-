@@ -1,0 +1,7 @@
+# Kept out of every deploy
+.env*
+.vercel
+.DS_Store
+CLAUDE.md
+ar/tools
+ar/README.md
