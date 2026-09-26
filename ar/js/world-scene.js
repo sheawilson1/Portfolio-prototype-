@@ -32,6 +32,32 @@ export const THEME = {
   },
 };
 
+// The glass, picked in the lab. Each has a daylight and an eclipse version: either the site's card, baked
+// ('light' or 'dark'), or see-through glass with how much tint, reflection, held light and edge it has.
+// Smoked is what's live; White is the first build's daylight card.
+export const GLASS = {
+  white: { day: { card: 'light' }, night: { card: 'dark' } },
+  smoked: { day: { smoke: '#131820', a: .3 }, night: { card: 'dark' } },
+  clear: {
+    day: { smoke: '#8b97aa', a: .045, fres: .46, light: .5, rim: 1.3, band: 2.2 },
+    night: { smoke: '#0b0e14', a: .12, fres: .4, light: .75, rim: .55, band: 1.4 },
+  },
+  tinted: {
+    day: { tone: 1, a: .2, fres: .3, light: 1.1, rim: .9 },
+    night: { tone: 1, a: .26, fres: .3, light: 1.25, rim: .5, band: .8 },
+  },
+  ink: { day: { card: 'dark' }, night: { card: 'dark' } },
+};
+
+// How a card is put together, picked in the lab. Layered is what's live; Tall is the first build's small cards.
+export const CARDS = {
+  layered: {},
+  tall: { tall: true },
+  flat: { layer: (L, k) => ({ ...L, z: .01 + k * .006, rot: 0 }), shadow: { drop: () => .014, blur: 8, k: 1.25 } },
+  deep: { layer: (L) => ({ ...L, z: L.z * 2.6 + .05 }), shadow: { blur: 26, k: .8 } },
+  open: { open: true },
+};
+
 // Whether things may move on their own (off with reduced motion)
 export const MOTION = { on: true };
 
@@ -215,14 +241,20 @@ export function buildEclipse() {
   const mesh = new THREE.Mesh(new THREE.PlaneGeometry(DISC.r * EXTENT * 2, DISC.r * EXTENT * 2), mat);
   mesh.position.set(DISC.x, DISC.y, DISC.z);
   mesh.renderOrder = -10;
+  // Its edge, picked in the lab: lit (a line of the corona's light just inside the disc, and a halo past it),
+  // or sharp, the disc straight against its corona as on the homepage
+  let edge = 'lit', last = null;
   return {
     mesh, uniforms,
     theme(t, dark) {
+      last = t;
       setRgb(uniforms.uDiscCol.value, t.disc);
       uniforms.uLut.value = lut(dark);
-      uniforms.uCoronaK.value = t.coronaK; uniforms.uCoronaW.value = t.coronaW; uniforms.uHaloK.value = t.haloK;
-      uniforms.uRimK.value = t.rimK; uniforms.uHazeK.value = t.hazeK;
+      uniforms.uCoronaK.value = t.coronaK; uniforms.uCoronaW.value = t.coronaW;
+      uniforms.uHaloK.value = edge === 'lit' ? t.haloK : 0;
+      uniforms.uRimK.value = edge === 'lit' ? t.rimK : 0; uniforms.uHazeK.value = t.hazeK;
     },
+    edge(mode) { edge = mode; if (last) this.theme(last); },
   };
 }
 
@@ -239,6 +271,7 @@ export function buildGround(panes) {
     uPaneC: { value: panes.map((p) => rgb(p.def.colors[2])) },
     uShadowK: { value: .34 }, uPoolMix: { value: .3 }, uPoolAdd: { value: 0 },
     uReflK: { value: .75 }, uRingK: { value: .75 }, uDiscReflK: { value: .55 },
+    uShade: { value: panes.map(() => new THREE.Vector4(0, 1, 0, 0)) }, uShadowMode: { value: 0 },
     uDisc: { value: new THREE.Vector4(DISC.x, DISC.y, DISC.z, DISC.r) },
     uDiscCol: { value: rgb(THEME.light.disc) },
     uLut: { value: lut(false) },
@@ -253,6 +286,8 @@ export function buildGround(panes) {
       uniform vec3 uPaneA[NP];
       uniform vec3 uPaneB[NP];
       uniform vec3 uPaneC[NP];
+      uniform vec4 uShade[NP];
+      uniform float uShadowMode;
       uniform float uShadowK, uPoolMix, uPoolAdd, uReflK, uRingK, uDiscReflK, uSpin;
       uniform vec4 uDisc;
       uniform sampler2D uLut;
@@ -275,10 +310,23 @@ export function buildGround(panes) {
           float c = uPane[i].z, s = uPane[i].w, hw = uPaneK[i].x;
           float u = rel.x * c - rel.y * s;   // along the pane
           float v = rel.x * s + rel.y * c;   // out of its face, towards the viewer (the disc lights it from behind)
-          float core = exp(-pow(v / 0.075, 2.0)) * band(u, hw - 0.02, 0.05);
-          float soft = exp(-pow((v - 0.45) / 0.95, 2.0)) * band(u, hw + 0.1, 0.6);
           float amb = exp(-d2 / (hw * hw * 2.4 + 1.5));
-          shadow += (core * 0.85 + soft * 0.32 + amb * 0.1) * uPaneK[i].z;
+          if (uShadowMode < 0.5) {
+            // a line where the glass meets the floor, and a soft fall of shadow towards you
+            float core = exp(-pow(v / 0.075, 2.0)) * band(u, hw - 0.02, 0.05);
+            float soft = exp(-pow((v - 0.45) / 0.95, 2.0)) * band(u, hw + 0.1, 0.6);
+            shadow += (core * 0.85 + soft * 0.32 + amb * 0.1) * uPaneK[i].z;
+          } else if (uShadowMode < 1.5) {
+            // under what's actually there: the pictures' own width, as high off the floor as they float.
+            // The higher it is, the softer, wider and fainter, and the further the light behind pushes it towards you.
+            vec4 sh = uShade[i];
+            float g = sh.z, uu = u - sh.x;
+            float spread = 0.14 + g * 0.55;
+            float along = band(uu, max(sh.y - spread * 0.35, 0.05), spread);
+            float across = exp(-pow((v - (0.06 + g * 0.32)) / (0.2 + g * 0.7), 2.0));
+            float contact = exp(-pow(v / 0.09, 2.0)) * band(uu, sh.y - 0.04, 0.08) * (1.0 - smoothstep(0.0, 0.2, g));
+            shadow += across * along * 0.62 / (1.0 + g * 1.6) + contact * 0.3 + amb * 0.05;
+          }
           float t = clamp(u / hw * 0.5 + 0.5, 0.0, 1.0);
           vec3 lc = t < 0.5 ? mix(uPaneA[i], uPaneB[i], t * 2.0) : mix(uPaneB[i], uPaneC[i], t * 2.0 - 1.0);
           float li = band(u, hw * 0.8, hw * 0.45) * (exp(-pow((v - 0.75) / 0.95, 2.0)) + 0.4 * exp(-pow((v + 0.5) / 0.7, 2.0)));
@@ -321,13 +369,26 @@ export function buildGround(panes) {
   const mesh = new THREE.Mesh(geo, mat);
   mesh.frustumCulled = false;
   mesh.renderOrder = 900;
+  let reflect = true, last = null;
   return {
     mesh, uniforms,
     follow(camera) { mesh.position.set(camera.position.x, 0, camera.position.z); },
+    // a card with no glass casts only its soft shadow
+    setPanes(list) {
+      list.forEach((p, i) => {
+        uniforms.uPaneK.value[i].set(p.def.w / 2, .7, CARDS[p.card]?.open ? .3 : 1, 0);
+        uniforms.uShade.value[i].set(p.shade.u0, p.shade.hw, p.shade.gap, 0);
+      });
+    },
+    // 'line' (a line at the foot, as it was), 'soft' (under what's really there) or 'off'
+    shadows(mode) { uniforms.uShadowMode.value = { line: 0, soft: 1, off: 2 }[mode] ?? 0; },
+    // the eclipse in the floor, unless the lab's taken it out
+    reflect(on) { reflect = on; if (last) this.theme(...last); },
     theme(t, dark) {
+      last = [t, dark];
       setRgb(uniforms.uNear.value, t.near); setRgb(uniforms.uFar.value, t.far); setRgb(uniforms.uDiscCol.value, t.disc);
       uniforms.uShadowK.value = t.shadowK; uniforms.uPoolMix.value = t.poolMix; uniforms.uPoolAdd.value = t.poolAdd;
-      uniforms.uReflK.value = t.reflK; uniforms.uRingK.value = t.ringK; uniforms.uDiscReflK.value = t.discReflK;
+      uniforms.uReflK.value = reflect ? t.reflK : 0; uniforms.uRingK.value = t.ringK; uniforms.uDiscReflK.value = t.discReflK;
       uniforms.uLut.value = lut(dark);
     },
   };
@@ -434,15 +495,26 @@ export const WORKS = [
   })),
 ];
 
+function worksFor(card) {
+  const k = CARDS[card] || CARDS.layered;
+  return WORKS.map((def) => {
+    let d = def;
+    // the first build: taller frames, each photo at its own shape
+    if (k.tall && !def.main) d = { ...d, w: 1.7, h: 2.05, radius: Math.min(1.7, 2.05) * .12, layers: [{ src: def.img, w: 1.42, x: 0, y: 0, z: .035, r: .11 }] };
+    if (k.layer) d = { ...d, layers: d.layers.map(k.layer) };
+    return d;
+  });
+}
+
 // Where they stand: alternating either side of a path that bends gently on its way to the disc
 export const pathX = (z) => 2.2 * Math.sin((z + 6) / 26);
 const PLACE = { snapshot: -18, jumpstart: -34, heart: -50, brain: -65, cipher: -79, amp: -86, captr: -93 };
-export function placeWorks() {
-  return WORKS.map((def, i) => {
+export function placeWorks(card = 'layered') {
+  return worksFor(card).map((def, i) => {
     const side = i % 2 === 0 ? 1 : -1;
     const z = PLACE[def.id];
     const off = def.main ? 4.3 : 3.5;
-    return { def, side, z, x: pathX(z) + side * off, yaw: -side * .42 };
+    return { def, card, side, z, x: pathX(z) + side * off, yaw: -side * .42 };
   });
 }
 
@@ -484,12 +556,13 @@ function tintCanvas(def) {
   def.blobs.forEach((b, k) => drawBlob(g, { ...b, w: b.w * .8, c: def.colors[k % 3] }, c.width, c.height, .95));
   return c;
 }
-// The light behind the glass, bigger than the pane so it spills round the edges
-function glowCanvas(def, gw, gh) {
+// The light behind the glass, bigger than the pane so it spills round the edges (with no glass, just the blobs)
+function glowCanvas(def, gw, gh, box = true) {
   const ppm = 64;
   const [c, g] = canvas(gw * ppm, gh * ppm);
   const map = (b) => ({ ...b, x: (b.x - .5) * def.w / gw + .5, y: (b.y - .5) * def.h / gh + .5, w: b.w * def.w / gw * 1.35 });
   def.blobs.forEach((b, k) => drawBlob(g, { ...map(b), c: def.colors[k % 3] }, c.width, c.height, 1));
+  if (!box) return c;
   // a soft box of light just bigger than the glass, so light spills round every edge
   const [pc, pg] = canvas(28, 28);
   const lg = pg.createLinearGradient(8, 8, 20, 20);
@@ -615,8 +688,12 @@ function heartScreenMaterial(video) {
   });
 }
 
-export async function buildPane(place, dark) {
+export async function buildPane(place, dark, glassKey = 'smoked') {
   const { def } = place;
+  const design = CARDS[place.card] || CARDS.layered;
+  // the textures this pane draws for itself, to let go of if it's rebuilt (pictures are cached and shared)
+  const mine = [];
+  const own = (t) => { mine.push(t); return t; };
   const group = new THREE.Group();
   group.name = def.id;
   group.position.set(place.x, 0, place.z);
@@ -628,19 +705,20 @@ export async function buildPane(place, dark) {
   // The slab of glass
   const depth = def.main ? .07 : .06;
   const radius = def.radius ?? Math.min(def.w, def.h) * .1;
-  const wash = { dark: canvasTexture(washCanvas(def, true)) }; // daylight glass is drawn live, not baked
+  const wash = { dark: own(canvasTexture(washCanvas(def, true))), light: null }; // the white card is only baked if it's asked for
   const faceU = {
-    ...shared, uWash: { value: wash.dark }, uTint: { value: canvasTexture(tintCanvas(def)) },
+    ...shared, uWash: { value: wash.dark }, uTint: { value: own(canvasTexture(tintCanvas(def))) },
     uSheen: { value: rgb('#ffffff') }, uSheenK: { value: .5 }, uGlass: { value: dark ? 0 : 1 },
     uSmoke: { value: rgb(THEME.light.smoke) }, uSmokeA: { value: THEME.light.smokeA }, uSky: { value: rgb(THEME.light.sky) },
+    uTone: { value: rgb(def.tone) }, uToneK: { value: 0 }, uFresK: { value: .34 }, uLightK: { value: 1 }, uRimK: { value: 1 }, uBandK: { value: 1 },
     uSize: { value: new THREE.Vector2(def.w, def.h) }, uRadius: { value: radius }, uBevel: { value: .014 },
   };
   const faceMat = new THREE.ShaderMaterial({
     uniforms: faceU, vertexShader: VS,
     fragmentShader: /* glsl */`
       uniform sampler2D uWash, uTint;
-      uniform vec3 uSheen, uSmoke, uSky;
-      uniform float uSheenK, uGlass, uSmokeA, uRadius, uBevel;
+      uniform vec3 uSheen, uSmoke, uSky, uTone;
+      uniform float uSheenK, uGlass, uSmokeA, uRadius, uBevel, uToneK, uFresK, uLightK, uRimK, uBandK;
       uniform vec2 uSize;
       varying vec2 vUv;
       varying vec3 vWorld;
@@ -675,8 +753,9 @@ export async function buildPane(place, dark) {
         float rim = 1.0 - smoothstep(0.004, 0.016, edge);
         vec4 tint = texture2D(uTint, vUv);
         float top = smoothstep(0.2, 1.0, vUv.y);
-        float a = uSmokeA + fres * 0.34 + top * 0.04 + band * 0.06 + tint.a * 0.16 + rim * 0.5;
-        vec3 c = uSmoke * uSmokeA + uSky * (fres * 0.34 + top * 0.04) + vec3(band * 0.06) + tint.rgb * 0.62 + vec3(rim * 0.62);
+        vec3 base = mix(uSmoke, uTone, uToneK);
+        float a = uSmokeA + fres * uFresK + top * 0.04 + band * 0.06 * uBandK + tint.a * 0.16 * uLightK + rim * 0.5 * uRimK;
+        vec3 c = base * uSmokeA + uSky * (fres * uFresK + top * 0.04) + vec3(band * 0.06 * uBandK) + tint.rgb * 0.62 * uLightK + vec3(rim * 0.62 * uRimK);
         a = clamp(a, 0.0, 1.0);
         float k = dist * uFogDensity;
         float f = 1.0 - exp(-k * k);
@@ -708,11 +787,12 @@ export async function buildPane(place, dark) {
   });
   const slab = new THREE.Mesh(squircleSlab(def.w, def.h, radius, depth, .014), [faceMat, edgeMat]);
   slab.renderOrder = .5; // after the light behind it, before the pictures in front
+  slab.visible = !design.open;
   holder.add(slab);
 
   // The light behind it
   const gw = def.w + 2.6, gh = def.h + 2.0;
-  const glowU = { ...shared, uMap: { value: canvasTexture(glowCanvas(def, gw, gh)) }, uK: { value: .5 } };
+  const glowU = { ...shared, uMap: { value: own(canvasTexture(glowCanvas(def, gw, gh, !design.open))) }, uK: { value: .5 } };
   const glowMat = new THREE.ShaderMaterial({
     uniforms: glowU, vertexShader: VS,
     fragmentShader: /* glsl */`
@@ -738,15 +818,18 @@ export async function buildPane(place, dark) {
   // The pictures, each with a soft shadow on the glass
   const face = depth / 2 + .004;
   const pictures = [];
+  const box = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity }; // in the pane's own metres, from the floor
   let heart = null;
   let cycler = null;
   for (const L of def.layers) {
     const startDark = dark && !!L.dark;
     let tex = await rawTexture(startDark ? L.dark : L.src);
-    if (L.aspect) tex = extendTo(tex, L.aspect);
+    if (L.aspect) { const ext = extendTo(tex, L.aspect); if (ext !== tex) tex = own(ext); }
     const aspect = tex.image.width / tex.image.height;
     const w = L.w ?? L.h * aspect, h = L.h ?? L.w / aspect;
     const y = L.bottom !== undefined ? -def.h / 2 + L.bottom + h / 2 : L.y;
+    box.x0 = Math.min(box.x0, L.x - w / 2); box.x1 = Math.max(box.x1, L.x + w / 2);
+    box.y0 = Math.min(box.y0, def.h / 2 + y - h / 2); box.y1 = Math.max(box.y1, def.h / 2 + y + h / 2);
     const opaque = !L.alpha;
     const mat = imageMaterial(tex, { opaque, fade: L.fade || 0 });
     const geo = L.r ? squirclePlane(w, h, L.r) : new THREE.PlaneGeometry(w, h);
@@ -756,10 +839,12 @@ export async function buildPane(place, dark) {
     mesh.renderOrder = 2;
     holder.add(mesh);
 
-    const sh = shadowCanvas(tex.image, { rounded: L.alpha ? 0 : L.r / Math.min(w, h), blur: L.alpha ? 14 : 18 });
-    const smat = tintMaterial(canvasTexture(sh.canvas), .3);
+    const shd = design.shadow || {};
+    const sh = shadowCanvas(tex.image, { rounded: L.alpha ? 0 : L.r / Math.min(w, h), blur: shd.blur ?? (L.alpha ? 14 : 18) });
+    const smat = tintMaterial(own(canvasTexture(sh.canvas)), .3);
     const smesh = new THREE.Mesh(new THREE.PlaneGeometry(w * sh.sx, h * sh.sy), smat);
-    const drop = .05 + L.z * .35;
+    smesh.visible = !design.open; // nothing to fall on
+    const drop = shd.drop ? shd.drop(L) : .05 + L.z * .35;
     smesh.position.set(L.x + L.z * .12, y - drop, face + .002);
     smesh.rotation.z = mesh.rotation.z;
     smesh.renderOrder = 1;
@@ -776,7 +861,7 @@ export async function buildPane(place, dark) {
       for (const [src, type] of [['assets/media/heart/heart-screen.mp4', 'video/mp4'], ['assets/media/heart/heart-screen.webm', 'video/webm']]) {
         const s = document.createElement('source'); s.src = asset(src); s.type = type; video.appendChild(s);
       }
-      const vtex = new THREE.VideoTexture(video);
+      const vtex = own(new THREE.VideoTexture(video));
       vtex.colorSpace = THREE.NoColorSpace;
       vtex.generateMipmaps = false;
       vtex.minFilter = THREE.LinearFilter;
@@ -793,23 +878,42 @@ export async function buildPane(place, dark) {
     }
   }
 
-  // Something to catch taps and pointers
-  const hit = new THREE.Mesh(new THREE.BoxGeometry(def.w + .2, def.h + .2, .6), new THREE.MeshBasicMaterial({ visible: false }));
+  // Something to catch taps and pointers, deep enough for pictures that stand well off the glass
+  const reach = Math.max(.3, ...def.layers.map((L) => face + L.z + .06));
+  const hit = new THREE.Mesh(new THREE.BoxGeometry(def.w + .2, def.h + .2, reach * 2), new THREE.MeshBasicMaterial({ visible: false }));
   hit.userData.pane = def.id;
   holder.add(hit);
 
   const state = { hot: 0, hover: 0 };
+  const shadowK = design.shadow?.k ?? 1;
+  // with no glass, what's there is only the pictures; otherwise the whole pane, standing on the floor
+  const shown = design.open ? box : { x0: -def.w / 2, x1: def.w / 2, y0: 0, y1: def.h };
+  const shade = { u0: (shown.x0 + shown.x1) / 2, hw: (shown.x1 - shown.x0) / 2, gap: Math.max(0, shown.y0) };
   return {
-    ...place, group, holder, hit, glow, faceMat, edgeMat, pictures, heart, state,
+    ...place, group, holder, hit, glow, faceMat, edgeMat, pictures, heart, state, glassKey, box: shown, shade,
     centre: new THREE.Vector3(place.x, def.h / 2, place.z),
     normal: new THREE.Vector3(Math.sin(place.yaw), 0, Math.cos(place.yaw)),
+    glass(key) { this.glassKey = GLASS[key] ? key : 'smoked'; if (this.t) this.theme(this.t, this.dark); },
     theme(t, isDark) {
-      faceU.uGlass.value = t.glass; setRgb(faceU.uSmoke.value, t.smoke); faceU.uSmokeA.value = t.smokeA; setRgb(faceU.uSky.value, t.sky);
-      setRgb(faceU.uSheen.value, t.sheen);
-      faceU.uSheenK.value = t.sheenK;
-      setRgb(edgeU.uEdge.value, isDark ? '#2a303c' : '#ffffff');
-      edgeU.uLow.value = isDark ? .6 : .9;
-      edgeU.uTint.value = isDark ? .18 : .05;
+      const g = GLASS[this.glassKey][isDark ? 'night' : 'day'];
+      setRgb(faceU.uSky.value, t.sky);
+      if (g.card) {
+        // the site's card, baked, with the sheen of the theme it was made for
+        if (!wash[g.card]) wash[g.card] = own(canvasTexture(washCanvas(def, g.card === 'dark')));
+        const ct = THEME[g.card];
+        faceU.uGlass.value = 0; faceU.uWash.value = wash[g.card];
+        setRgb(faceU.uSheen.value, ct.sheen); faceU.uSheenK.value = ct.sheenK;
+      } else {
+        faceU.uGlass.value = 1;
+        setRgb(faceU.uSmoke.value, g.smoke || '#131820'); faceU.uSmokeA.value = g.a ?? .3;
+        faceU.uToneK.value = g.tone || 0; faceU.uFresK.value = g.fres ?? .34; faceU.uLightK.value = g.light ?? 1;
+        faceU.uRimK.value = g.rim ?? 1; faceU.uBandK.value = g.band ?? 1;
+        setRgb(faceU.uSheen.value, t.sheen); faceU.uSheenK.value = t.sheenK;
+      }
+      const darkEdge = g.card ? g.card === 'dark' : isDark;
+      setRgb(edgeU.uEdge.value, darkEdge ? '#2a303c' : '#ffffff');
+      edgeU.uLow.value = darkEdge ? .6 : .9;
+      edgeU.uTint.value = g.tone ? .3 : darkEdge ? .18 : .05;
       this.dark = isDark;
       for (const p of pictures) {
         if (p.src.dark) {
@@ -817,9 +921,18 @@ export async function buildPane(place, dark) {
           if (p.tex[k]) p.mat.uniforms.uMap.value = p.tex[k];
           else rawTexture(p.src[k]).then((tx) => { p.tex[k] = tx; if (this.dark === isDark) p.mat.uniforms.uMap.value = tx; });
         }
-        p.shadow.uniforms.uK.value = t.layerShadow;
+        p.shadow.uniforms.uK.value = t.layerShadow * shadowK;
       }
       this.t = t;
+    },
+    // Let go of everything this pane made for itself (the pictures stay cached for the next build)
+    dispose() {
+      holder.traverse((o) => {
+        if (o.geometry) o.geometry.dispose();
+        for (const m of o.material ? [].concat(o.material) : []) m.dispose();
+      });
+      for (const t of mine) t.dispose();
+      if (heart) { heart.video.pause(); heart.video.removeAttribute('src'); heart.video.replaceChildren(); heart.video.load(); }
     },
     // Fetch the pictures for the other theme, so switching later doesn't wait on the network
     async preload() {

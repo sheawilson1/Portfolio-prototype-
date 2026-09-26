@@ -372,6 +372,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .linkedin:hover { color: var(--ink); }
 .linkedin:hover .arr { transform: translate(2px, -2px); }
 .contact .linkedin { display: flex; width: max-content; margin-left: auto; margin-right: auto; }
+/* The way into the 3D walk-through: the eclipse's ring, small */
+.in3d { display: flex; width: max-content; align-items: center; gap: 9px; margin: 14px auto 0; font-size: 15px; font-weight: 400; color: var(--ink-2); transition: color .3s var(--ease); }
+.in3d .arr { width: 11px; height: 11px; transition: transform .4s var(--ease); }
+.in3d:hover { color: var(--ink); }
+.in3d:hover .arr { transform: translateX(2px); }
+.in3d-ring { position: relative; width: 14px; height: 14px; border-radius: 50%; flex: none; }
+.in3d-ring::before { content: ""; position: absolute; inset: -2px; border-radius: 50%; background: conic-gradient(#ed1652, #ff6a1a, #ffb22c, #43d9ff, #8a3cff, #3a17e0, #ed1652);
+  -webkit-mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); mask: radial-gradient(closest-side, transparent 62%, #000 72%, transparent 100%); }
 .contact-glow { position: absolute; z-index: -1; left: 50%; top: 58%; width: min(900px, 110vw); aspect-ratio: 2.2; translate: -50% -50%; pointer-events: none; opacity: .35; filter: blur(60px);
   background: radial-gradient(closest-side, var(--p2), transparent), radial-gradient(closest-side at 30% 60%, var(--p5), transparent 70%), radial-gradient(closest-side at 72% 40%, var(--p4), transparent 70%);
   mix-blend-mode: var(--bleed-blend); }

@@ -44,7 +44,10 @@
 
 <header class="bar">
   <a class="logo" href="../" aria-label="Shea Wilson, homepage">Shea Wilson</a>
-  <button class="theme" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark mode"><span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span></button>
+  <div class="bar-end">
+    <button class="snd" id="snd" type="button" aria-pressed="true" aria-label="Sound off" hidden><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 7.75h2.75L10 4.5v11l-3.75-3.25H3.5z"/><path class="snd-wave" d="M13 7.4a3.6 3.6 0 0 1 0 5.2"/><path class="snd-wave snd-wave-2" d="M15.2 5.4a6.6 6.6 0 0 1 0 9.2"/><path class="snd-x" d="M13.25 8l4 4M17.25 8l-4 4"/></svg></button>
+    <button class="theme" id="theme" type="button" aria-pressed="false" aria-label="Switch to dark mode"><span class="tt"><span class="tt-ring"></span><span class="tt-disc"><span class="tt-moon"></span></span></span></button>
+  </div>
 </header>
 
 <h1 class="sr">Always making something.</h1>
@@ -77,12 +80,13 @@
     </button>
   </div>
   <a class="linkedin" href="https://www.linkedin.com/in/sheawilson0/" target="_blank" rel="noopener"><span class="mark" style="-webkit-mask-image:url(../assets/media/tools/linkedin.svg);mask-image:url(../assets/media/tools/linkedin.svg)"></span>Find me on LinkedIn<svg class="arr" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></a>
+  <button class="restart" id="restart" type="button"><svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5v-7M3 5.5l3-3 3 3"/></svg>Back to the start</button>
 </section>
 
 <nav class="walk glass" id="walk" aria-label="Stops">
   <button class="walk-btn" id="prev" type="button" aria-label="Previous stop"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5L5.5 8l4.5 4.5"/></svg></button>
   <ol class="dashes" id="dashes"></ol>
-  <button class="walk-btn" id="next" type="button" aria-label="Next stop"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
+  <button class="walk-btn" id="next" type="button" aria-label="Next stop"><span class="next-up" aria-hidden="true"><span class="next-say">Next</span><span class="next-name"></span></span><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3.5L10.5 8 6 12.5"/></svg></button>
 </nav>
 
 <div class="tip" id="tip" aria-hidden="true"><span class="tip-text"></span><svg class="tip-arrow" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 8.5l5-5M4.5 3.5h4v4"/></svg></div>

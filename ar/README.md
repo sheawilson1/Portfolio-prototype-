@@ -11,6 +11,21 @@ Four ways to see the work off the page. `index.html` is the hub.
 
 Tapping a project anywhere opens the same panel (`js/project-panel.js`, styles at the end of `css/lab.css`): the numbers, what I did, a few screens and the links. Its words live in `js/projects.js`, taken from the homepage and the case studies. That file has no three.js, so plain pages can use it; `js/kit.js` re-exports it.
 
+## The walk-through's lab
+
+`world.html` has a lab for trying it different ways (`js/world-lab.js`). Everything in it is decided, so it only shows with `?lab`; `?lab=0` hides it again in that browser. With the lab off, the page is exactly what's live (the dot on each option marks it). Rows still being decided come first; the rest are folded away under "Locked in".
+
+Names used throughout: the **eclipse** is the whole hero shape, the **disc** its face, the **corona** its ring of colour (the homepage's CSS uses the same three names).
+
+Decided (the lab keeps the alternatives):
+- **Motion**: Glide (live): one swipe, key or tap is one stop, on a gentle arc at eye height that looks first and then moves, turning evenly to how it will look at the next pane. Swoop, Sweep and Dive are the same kind of flight on bolder curves; Spring is the first live version, driven by the scroll. See Flights in `js/world.js`.
+- **Pace**: Brisk (live), Steady, Slow, for every flight. Clicks in quick succession are gathered up, so the camera sets off once for where they add up to.
+- **Info** (wide screens only; phones keep their caption): Close (live), Corner, Beside. On a wide screen each stop stands far enough round its pane that a slice of the next pane shows at the far edge (`peekAngle`), and the view moves with the pointer the way a head does at a window, so reaching towards that slice brings more of it in.
+
+Locked in: Hint Next up, Cards Open, Edge Sharp, Shadows Soft, Opening Above it, Ending On the disc, Sound Deep (all made with Web Audio in `js/world-sound.js`; visitors get a switch in the bar to turn it off, kept in `localStorage 'world-sound'`, and on iPhones it follows the ringer switch except in the lab).
+
+Choices are kept in the browser (dropped when the set of rows changes) and in the address (`?motion=swoop&pace=slow`), so a link opens the same combination. On a keyboard the letter beside each row flips through it and L opens the panel.
+
 `/card` (in the site root) redirects to `card.html`. The printed code points to `https://sheawilson.uk/card`, so that address has to stay live.
 
 ## Running it locally
